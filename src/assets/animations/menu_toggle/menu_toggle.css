@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  background: rgb(181, 178, 166);
+}
+
+#togglewrapper{
+  background: rgb(150, 149, 141);
+}
+
+#toggle {
+  /*background: red;*/
+  display: block;
+  margin: 20px auto;
+  width: 100px;
+  cursor: pointer;
+}
+
+#circle_nav {
+  visibility: hidden;
+}

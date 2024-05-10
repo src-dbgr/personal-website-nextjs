@@ -1,7 +1,16 @@
 {
   "compilerOptions": {
+    "module": "esnext",
+    "target": "es6",
+    "jsx": "preserve",
+    "checkJs": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "moduleResolution": "node",
     "paths": {
       "@/*": ["./src/*"]
     }
   }
+  ,
+  "exclude": ["node_modules"]
 }

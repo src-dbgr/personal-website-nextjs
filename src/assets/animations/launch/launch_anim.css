@@ -1,0 +1,90 @@
+/* removing browser default settings*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: rgb(181, 178, 166); /* fallback*/
+  background: radial-gradient(rgb(181, 178, 166), rgb(150, 149, 141));
+  height: 100vh;
+  width: 100vw;
+}
+
+#imagewrapper {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+#logo {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 300px;
+  opacity: 0;
+}
+
+#triangle {
+  cursor: pointer;
+}
+
+/* The animation code */
+@keyframes highlight_descr {
+  0% {
+    fill: rgb(52, 69, 73);
+  }
+  50% {
+    fill: rgb(52, 69, 73, 0.5);
+  }
+  95% {
+    fill: rgb(52, 69, 73);
+  }
+  100% {
+    fill: rgb(201, 201, 201, 0.5);
+  }
+}
+
+/* The animation code */
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#description path:not(#_12hypen) {
+  animation-name: highlight_descr;
+  animation-duration: 3.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+}
+
+@keyframes breathe {
+  0% {
+    transform: scale(0.95);
+    transform-origin: 149.9px 148.4px;
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    transform-origin: 149.9px 148.4px;
+    opacity: 1;
+  }
+}
+
+#outercircle ellipse,
+#innercircle ellipse {
+  animation-name: breathe;
+  animation-duration: 3.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+}
