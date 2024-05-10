@@ -1,0 +1,21 @@
+<svg id="toggle" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="250" height="250" viewBox="0 0 250 250">
+  <defs>
+    <linearGradient id="circle_gradient" data-name="Unbenannter Verlauf 221" x1="187.28" y1="232.76" x2="62.42" y2="16.49" gradientUnits="userSpaceOnUse">
+      <stop id="circle_grad_1" offset="0" stop-color="#32a169"/>
+      <stop id="circle_grad_2" offset="0.32" stop-color="#467b6a"/>
+      <stop id="circle_grad_3" offset="0.53" stop-color="#51656b"/>
+      <stop id="circle_grad_4" offset="1" stop-color="#b5b2a6"/>
+    </linearGradient>
+    <linearGradient id="triangle_gradient" data-name="Unbenannter Verlauf 224" x1="24" y1="191.69" x2="163.5" y2="-49.94" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2fa169"/>
+      <stop offset="0.12" stop-color="#339969"/>
+      <stop offset="0.3" stop-color="#3f856a"/>
+      <stop offset="0.51" stop-color="#51656c"/>
+      <stop offset="0.72" stop-color="#828b88"/>
+      <stop offset="0.9" stop-color="#a7a79e"/>
+      <stop offset="1" stop-color="#b5b2a6"/>
+    </linearGradient>
+  </defs>
+  <path id="circle_nav" d="M125.3,0C191.9-1.3,249.9,56,250,124.8S191.9,251.2,123,250C55.6,248.8.5,193.4,0,124.8S58.4-1.7,125.3,0Z" transform="translate(0 0)" fill="url(#circle_gradient)"/>
+  <polygon id="triangle_nav" points="250 0 125 250 0 0 250 0" fill="url(#triangle_gradient)"/>
+</svg>

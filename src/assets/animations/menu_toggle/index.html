@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html class="" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Navbar toggle</title>
+    <link rel="stylesheet" href="menu_toggle.css" />
+  </head>
+
+  <body>
+    <svg
+    id="toggle"
+    xmlns="http://www.w3.org/2000/svg"
+    width="250"
+    height="200"
+    viewBox="0 0 250 200"
+  >
+    <defs>
+      <radialGradient
+        id="circle_gradient"
+        data-name="circle_gradient"
+        cx="125"
+        cy="100"
+        r="100"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop offset="0" stop-color="#9a988e" />
+        <stop offset="1" stop-color="#51656a" />
+      </radialGradient>
+      <linearGradient
+        id="triangle_gradient"
+        data-name="triangle_gradient"
+        x1="512.1"
+        y1="96.4"
+        x2="762.1"
+        y2="96.4"
+        gradientTransform="matrix(-1, 0, 0, 1, 762.1, 3.6)"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop offset="0" stop-color="#ac4a9c" />
+        <stop offset="1" stop-color="#00af64" />
+      </linearGradient>
+    </defs>
+    <path
+      id="circle_nav"
+      d="M125,0A100,100,0,1,0,225,100,100,100,0,0,0,125,0Z"
+      fill="url(#circle_gradient)"
+    />
+    <path
+      id="triangle_nav"
+      d="M0,0,124.3,200,250,0Z"
+      fill="url(#triangle_gradient)"
+    />
+  </svg>
+
+      <!-- <script src="https://unpkg.co/gsap@3/dist/gsap.min.js"></script> -->
+      <script src="gsap.min.js"></script>
+      <!-- <script src="https://assets.codepen.io/16327/MorphSVGPlugin3.min.js"></script> -->
+      <script src="morph.svg.min.js"></script>
+      <script src="menu_toggle.js"></script>
+    </div>
+  </body>
+</html>

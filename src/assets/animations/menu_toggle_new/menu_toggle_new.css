@@ -1,0 +1,96 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #333;
+  font-size: 10px;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#wrapper {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 50%;
+}
+#toggle {
+  width: 5rem;
+  height: 5rem;
+  cursor: pointer;
+}
+
+#wrapper svg .icon {
+  fill: #ff6e48;
+}
+
+#circle_nav {
+  transform: scale(0.9);
+  transform-origin: 50% 50% 0;
+}
+
+@keyframes makeVisible {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes makeInvisible {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes scaling {
+  0% {
+    transform: scale(0.9);
+    transform-origin: 50% 50% 0;
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    transform-origin: 50% 50% 0;
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0.9);
+    transform-origin: 50% 50% 0;
+    opacity: 1;
+  }
+}
+
+.enableVisibility {
+  animation-name: makeVisible;
+  animation-duration: 2s;
+  opacity: 1;
+}
+
+.enableInvisibility {
+  animation-name: makeInvisible;
+  animation-duration: 1s;
+  opacity: 0;
+}
+
+.scale {
+  animation-name: scaling;
+  animation-duration: 500ms;
+}
