@@ -1,6 +1,7 @@
 import { GlobalStateContext } from "../../context/GlobalContextProvider";
 import React, { useEffect, useContext } from "react";
 // import { Link } from "gatsby";
+import Link from "next/link";
 import Threejsrender from "./Threejs/ThreejsRender";
 import Aos from "aos";
 import "aos/dist/aos.css";
@@ -65,14 +66,14 @@ const Hero = () => {
                 </p>
               </div>
 
-              {/* <Link
-                to="/contact"
+              <Link
+                href="/contact"
                 data-aos={`${navanimation ? "fade" : ""}`}
                 data-aos-once="true"
                 data-aos-delay={`${navanimation ? "1000" : "0"}`}
               >
                 <div className="btn">GET IN TOUCH</div>
-              </Link> */}
+              </Link>
             </div>
           </article>
           <div

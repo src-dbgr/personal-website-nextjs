@@ -45,8 +45,8 @@ const About = ({ infomain }) => {
                 blurDataURL="/assets/images/about/var_5.png"
                 quality={90}
                 layout="fixed"
-                width={470}
-                height={450}
+                width={500}
+                height={427}
               />
               <Image
                 src='/assets/images/about/var_1.png'
@@ -54,8 +54,8 @@ const About = ({ infomain }) => {
                 className="about-hover-img"
                 quality={90}
                 layout="fixed"
-                width={470}
-                height={450}
+                width={500}
+                height={427}
               />
             </div>
           </article>

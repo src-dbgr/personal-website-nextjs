@@ -18,7 +18,7 @@ const Project = ({ image, title, description, github, stack, url, index }) => {
       <div className={index % 2 === 0 ? "project" : "project even"}>
         <div
           className={
-            active ? "project-img-wrapper project-z-index" : "project-img-wrapper"
+            active ? "project-img-wrapper project-z-index project-img-wrapper-active" : "project-img-wrapper"
           }
           onClick={flipActivation}
           onKeyDown={flipActivation}
@@ -29,8 +29,8 @@ const Project = ({ image, title, description, github, stack, url, index }) => {
               src={image.url} // Pfad zur Bildquelle, eventuell anpassen
               className={active ? "project-img-active shadow-box-dark" : "project-img shadow-box-dark"}
               alt={title}
-              width={500} // Passende Breite setzen
-              height={300} // Passende Höhe setzen
+              width={772} // Passende Breite setzen
+              height={471} // Passende Höhe setzen
               layout="responsive" // Optional, abhängig von Ihrem Layout
             />
           )}
