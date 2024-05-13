@@ -1727,7 +1727,7 @@ About Component
   background: transparent;
   transition: var(--transition);
   justify-content: center;
-  align-items: start;
+  align-items: flex-start;
   display: flex;
   /* border-radius: 50%!important; */
   padding: 0;
@@ -2146,7 +2146,7 @@ Projects
 
 .project-img-wrapper-active {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   max-height: 30rem;
   margin-left: 0rem;
   margin-right: 0rem;
