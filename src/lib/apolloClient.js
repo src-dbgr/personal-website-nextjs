@@ -20,10 +20,9 @@ const httpLink = createHttpLink({
     };
   });
 
-// Instantiiere Apollo Client
-const apolloClient = new ApolloClient({
-  link: from([httpLink]),
-  cache: new InMemoryCache(),
-});
+  const apolloClient = new ApolloClient({
+    link: from([authLink, httpLink]),
+    cache: new InMemoryCache(),
+  });
 
-export default apolloClient;
+  export default apolloClient;

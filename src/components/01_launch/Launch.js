@@ -423,7 +423,7 @@ const Launch = (props) => {
 
   return (
     <>
-      <Seo title="Launch" />
+      <Seo title="Launch" description={"test"} />
       <div className="imagewrapper">
         <svg
           id="logo"

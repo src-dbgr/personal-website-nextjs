@@ -10,7 +10,7 @@ import { gql } from '@apollo/client';
 import apolloClient from '../lib/apolloClient';
 // import { graphql } from "gatsby";
 const index = ({ customData }) => {
-  console.log("--------DATA", customData)
+  // console.log("--------DATA", customData)
   // console.log("--------DATA", blogs)
   const {
     about,
@@ -21,7 +21,7 @@ const index = ({ customData }) => {
 
   return (
     <Layout darkFooter={true}>
-      <Seo title="Home" />
+      <Seo title="Home" description={""}/>
       <Hero />
       <About  infomain={about} />
       <Experience jobs={jobs}/>

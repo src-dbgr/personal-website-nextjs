@@ -51,29 +51,6 @@ const TechTable = ({ caption, technologies }) => {
     });
   }
 
-  // function undoAnim() {
-  //   document.querySelectorAll(".skills-wrapper svg").forEach((item, i) => {
-  //     let circle = Array.from(item.children).filter(function (child) {
-  //       return child.classList.contains("cbar");
-  //     });
-  //     let r = circle[0].getAttribute("r");
-  //     let c = Math.PI * (r * 2);
-  //     let percent = circle[0].parentElement.parentElement.dataset.percent;
-  //     let cbar = ((100 - percent) / 100) * c;
-  //     circle[0].style.strokeDashoffset = 0;
-  //     circle[0].style.strokeDasharray = 0;
-
-  //     let smallC = Array.from(item.parentElement.children).filter(function (
-  //       child
-  //     ) {
-  //       if (child.tagName === "SMALL") {
-  //         return child;
-  //       }
-  //     });
-  //     smallC[0].innerHTML = 0 + "%";
-  //   });
-  // }
-
   function animate(obj, initVal, lastVal, duration) {
     let startTime = null;
     const step = () => {
