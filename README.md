@@ -42,3 +42,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 test queries:
 https://studio.apollographql.com/sandbox/explorer
+
+-> http://127.0.0.1:1337/graphql

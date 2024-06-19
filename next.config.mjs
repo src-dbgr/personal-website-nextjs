@@ -6,6 +6,10 @@ const nextConfig = {
       { hostname: 'res.cloudinary.com' },
     ],
   },
+  env: {
+    STRAPI_GRAPHQL_URL: process.env.STRAPI_GRAPHQL_URL,
+    STRAPI_TOKEN: process.env.STRAPI_TOKEN,
+  },
 };
 
 export default nextConfig;

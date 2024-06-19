@@ -1,8 +1,8 @@
 import React from "react";
-// import ProgrammingLangs from "./04_03_01_categories/ProgrammingLangs";
-// import LibsFrameworks from "./04_03_01_categories/LibsFrameworks";
+import ProgrammingLangs from "./04_03_01_categories/ProgrammingLangs";
+import LibsFrameworks from "./04_03_01_categories/LibsFrameworks";
 import ToolsPlatforms from "./04_03_01_categories/ToolsPlatforms";
-// import DataDesign from "./04_03_01_categories/DataDesign";
+import DataDesign from "./04_03_01_categories/DataDesign";
 
 const Technologies = () => {
   return (
@@ -11,10 +11,10 @@ const Technologies = () => {
         <div className="timeline-flex-header tech-caption">
           <h4>Technology Experience</h4>
         </div>
-        {/* <ProgrammingLangs /> */}
-        {/* <LibsFrameworks /> */}
+        <ProgrammingLangs />
+        <LibsFrameworks />
         <ToolsPlatforms />
-        {/* <DataDesign /> */}
+        <DataDesign />
       </div>
     </div>
   );

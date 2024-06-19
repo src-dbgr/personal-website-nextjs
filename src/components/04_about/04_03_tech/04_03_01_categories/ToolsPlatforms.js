@@ -2,21 +2,26 @@
 
 import React from "react";
 import TechTable from "./TechTable";
-import { gql } from '@apollo/client';
-import apolloClient from '../../../../lib/apolloClient';
+import { gql, useQuery } from '@apollo/client';
 
-const GET_TOOLS_PLATFORMS = gql`
-  query {
-    techstacks(filters: { active: { eq: true }, categorylabel: { eq: "C_ToolsPlatforms" } }) {
+const TECHSTACK_TOOLS_PLATFORM_QUERY = gql`
+  query Techstacks {
+    techstacks(
+      filters: {
+        active: { eq: true }
+        categorylabel: { eq: "C_ToolsPlatforms" }
+      }
+      sort: "skilllevel:desc"
+    ) {
       data {
         attributes {
           skilldescription
           skillleveltag
           skillcategory
           imgfilename
-          skilltype
-          skilllevel
           skilltitle
+          skilllevel
+          skilltype
           techurl
           imgurl
         }
@@ -25,7 +30,14 @@ const GET_TOOLS_PLATFORMS = gql`
   }
 `;
 
-const ToolsPlatforms = ({ toolsplats }) => {
+const ToolsPlatforms = () => {
+  const { data, loading, error } = useQuery(TECHSTACK_TOOLS_PLATFORM_QUERY);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  const toolsplats = data.techstacks.data.map(item => item.attributes);
+
   return (
     <TechTable
       caption="Tools / Platforms"
@@ -33,20 +45,5 @@ const ToolsPlatforms = ({ toolsplats }) => {
     />
   );
 };
-
-export async function getStaticProps() {
-  const { data } = await apolloClient.query({
-    query: GET_TOOLS_PLATFORMS
-  });
-
-  const toolsplats = data.techstacks.data.map(node => node.attributes);
-
-  return {
-    props: {
-      toolsplats
-    },
-    revalidate: 10 // optional, to enable ISR
-  };
-}
 
 export default ToolsPlatforms;

@@ -26,7 +26,7 @@ const Project = ({ image, title, description, github, stack, url, index }) => {
         >
           {image && (
             <Image
-              src={image.url} // Pfad zur Bildquelle, eventuell anpassen
+              src={image?.url ?? image?.data?.attributes?.url} // Pfad zur Bildquelle, eventuell anpassen
               className={active ? "project-img-active shadow-box-dark" : "project-img shadow-box-dark"}
               alt={title}
               width={772} // Passende Breite setzen
