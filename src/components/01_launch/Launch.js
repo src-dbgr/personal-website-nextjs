@@ -7,9 +7,6 @@ import { GlobalStateContext } from "../../context/GlobalContextProvider";
 let introAnimationDisabled = false;
 
 const Launch = (props) => {
-  console.log("---------start ---------------");
-  console.log(props);
-  console.log("---------end ---------------");
   const router = useRouter();
   const { pathname, query } = router;
   const theme = useContext(GlobalStateContext).theme;
