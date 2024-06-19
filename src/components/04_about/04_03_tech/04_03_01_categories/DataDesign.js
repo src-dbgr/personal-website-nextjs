@@ -1,34 +1,42 @@
-// import React from "react";
-// import { graphql, useStaticQuery } from "gatsby";
-// import TechTable from "./TechTable";
+import React from "react";
+import TechTable from "./TechTable";
+import { gql, useQuery } from '@apollo/client';
 
-// const query = graphql`
-//   {
-//     allStrapiTechstack(
-//       filter: { active: { eq: true }, categorylabel: { eq: "D_DataDesign" } }
-//       sort: { fields: skilllevel, order: DESC }
-//     ) {
-//       nodes {
-//         skilldescription
-//         skillleveltag
-//         skillcategory
-//         imgfilename
-//         skilltitle
-//         skilllevel
-//         skilltype
-//         techurl
-//         imgurl
-//       }
-//     }
-//   }
-// `;
+const TECHSTACK_DATA_DESIGN_QUERY = gql`
+  query Techstacks {
+    techstacks(
+      filters: {
+        active: { eq: true }
+        categorylabel: { eq: "D_DataDesign" }
+      }
+      sort: "skilllevel:desc"
+    ) {
+      data {
+        attributes {
+          skilldescription
+          skillleveltag
+          skillcategory
+          imgfilename
+          skilltitle
+          skilllevel
+          skilltype
+          techurl
+          imgurl
+        }
+      }
+    }
+  }
+`;
 
-// const DataDesign = () => {
-//   const data = useStaticQuery(query);
-//   const {
-//     allStrapiTechstack: { nodes: datades },
-//   } = data;
-//   return <TechTable caption="Data / Design" technologies={datades} />;
-// };
+const DataDesign = () => {
+  const { data, loading, error } = useQuery(TECHSTACK_DATA_DESIGN_QUERY);
 
-// export default DataDesign;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  const datades = data.techstacks.data.map(item => item.attributes);
+
+  return <TechTable caption="Data / Design" technologies={datades} />;
+};
+
+export default DataDesign;

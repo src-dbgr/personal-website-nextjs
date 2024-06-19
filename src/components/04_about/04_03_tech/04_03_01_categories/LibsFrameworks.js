@@ -1,39 +1,44 @@
-// import React from "react";
-// import { graphql, useStaticQuery } from "gatsby";
-// import TechTable from "./TechTable";
+import React from "react";
+import TechTable from "./TechTable";
+import { gql, useQuery } from '@apollo/client';
 
-// const query = graphql`
-//   {
-//     allStrapiTechstack(
-//       filter: {
-//         active: { eq: true }
-//         categorylabel: { eq: "B_LibsFrameworks" }
-//       }
-//       sort: { fields: skilllevel, order: DESC }
-//     ) {
-//       nodes {
-//         skilldescription
-//         skillleveltag
-//         skillcategory
-//         imgfilename
-//         skilltitle
-//         skilllevel
-//         skilltype
-//         techurl
-//         imgurl
-//       }
-//     }
-//   }
-// `;
+const TECHSTACK_LIB_QUERY = gql`
+  query Techstacks {
+    techstacks(
+      filters: {
+        active: { eq: true }
+        categorylabel: { eq: "B_LibsFrameworks" }
+      }
+      sort: "skilllevel:desc"
+    ) {
+      data {
+        attributes {
+          skilldescription
+          skillleveltag
+          skillcategory
+          imgfilename
+          skilltitle
+          skilllevel
+          skilltype
+          techurl
+          imgurl
+        }
+      }
+    }
+  }
+`;
 
-// const LibsFrameworks = () => {
-//   const data = useStaticQuery(query);
-//   const {
-//     allStrapiTechstack: { nodes: libsfames },
-//   } = data;
-//   return (
-//     <TechTable caption="Libraries / Frameworks" technologies={libsfames} />
-//   );
-// };
+const LibsFrameworks = () => {
+  const { data, loading, error } = useQuery(TECHSTACK_LIB_QUERY);
 
-// export default LibsFrameworks;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  const libsfames = data.techstacks.data.map(item => item.attributes);
+
+  return (
+    <TechTable caption="Libraries / Frameworks" technologies={libsfames} />
+  );
+};
+
+export default LibsFrameworks;

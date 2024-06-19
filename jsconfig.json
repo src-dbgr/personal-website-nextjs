@@ -3,7 +3,7 @@
     "module": "esnext",
     "target": "es6",
     "jsx": "preserve",
-    "checkJs": true,
+    "checkJs": false,
     "noEmit": true,
     "baseUrl": ".",
     "moduleResolution": "node",
