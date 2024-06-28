@@ -9,7 +9,7 @@ const TECHSTACK_PROG_LANGS_QUERY = gql`
         active: { eq: true }
         categorylabel: { eq: "A_ProgrammingLangs" }
       }
-      sort: "skilllevel"
+      sort: "skilllevel:desc"
     ) {
       data {
         attributes {

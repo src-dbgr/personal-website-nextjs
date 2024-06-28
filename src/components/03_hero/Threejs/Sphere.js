@@ -2,10 +2,10 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 
-const Sphere = React.memo((props) => {
+const Sphere = (props) => {
   const mesh = useRef();
+  const { mouse, clock } = useThree();
 
-  // Set up state for the hovered and active state
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
 
@@ -25,22 +25,16 @@ const Sphere = React.memo((props) => {
     setActive(prev => !prev);
   }, []);
 
-  // Rotate mesh every frame, this is outside of React without overhead
-  let sin = 0;
-  let elapsedTime = 0;
-  let scaleValue = 0;
-  useFrame(({ clock, mouse }) => {
-    elapsedTime = clock.elapsedTime;
-    sin = Math.sin(elapsedTime / 10);
-    scaleValue = (sin + 0.2) * (active ? 1.8 : 0.8);
-    mesh.current.rotation.x = mesh.current.rotation.y +=
-      0.003 + Math.pow(mouse.x, 2) / 80;
+  useFrame(() => {
+    const elapsedTime = clock.elapsedTime;
+    const sin = Math.sin(elapsedTime / 10);
+    const scaleValue = (sin + 0.2) * (active ? 1.8 : 0.8);
+    mesh.current.rotation.x += 0.003 + Math.pow(mouse.x, 2) / 80;
+    mesh.current.rotation.y += 0.003 + Math.pow(mouse.x, 2) / 80;
     mesh.current.position.y = 0.9 * Math.abs(Math.sin(elapsedTime / 5));
     mesh.current.material.emissiveIntensity = 0.9 * sin;
     mesh.current.material.opacity = 0.7 * Math.abs(Math.sin(elapsedTime / 3));
-    mesh.current.scale.x = scaleValue;
-    mesh.current.scale.y = scaleValue;
-    mesh.current.scale.z = scaleValue;
+    mesh.current.scale.set(scaleValue, scaleValue, scaleValue);
   });
 
   const textureMap = useLoader(TextureLoader, [
@@ -74,6 +68,6 @@ const Sphere = React.memo((props) => {
       />
     </mesh>
   );
-});
+};
 
 export default Sphere;
