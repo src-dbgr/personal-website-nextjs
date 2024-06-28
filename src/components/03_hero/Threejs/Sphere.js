@@ -1,9 +1,8 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 
-const Sphere = (props) => {
-  // This reference will give us direct access to the mesh so we can animate it
+const Sphere = React.memo((props) => {
   const mesh = useRef();
 
   // Set up state for the hovered and active state
@@ -14,11 +13,23 @@ const Sphere = (props) => {
     document.body.style.cursor = hovered ? "pointer" : "auto";
   }, [hovered]);
 
+  const handlePointerOver = useCallback(() => {
+    setHover(true);
+  }, []);
+
+  const handlePointerOut = useCallback(() => {
+    setHover(false);
+  }, []);
+
+  const handleClick = useCallback(() => {
+    setActive(prev => !prev);
+  }, []);
+
   // Rotate mesh every frame, this is outside of React without overhead
   let sin = 0;
   let elapsedTime = 0;
   let scaleValue = 0;
-  useFrame(() => {
+  useFrame(({ clock, mouse }) => {
     elapsedTime = clock.elapsedTime;
     sin = Math.sin(elapsedTime / 10);
     scaleValue = (sin + 0.2) * (active ? 1.8 : 0.8);
@@ -32,11 +43,6 @@ const Sphere = (props) => {
     mesh.current.scale.z = scaleValue;
   });
 
-  const {
-    mouse, // Current, centered, normalized 2D mouse coordinates
-    clock, // THREE.Clock (useful for useFrame deltas)
-  } = useThree();
-
   const textureMap = useLoader(TextureLoader, [
     "/assets/images/textures/nm.jpg",
     "/assets/images/textures/normal.jpg",
@@ -47,9 +53,9 @@ const Sphere = (props) => {
       {...props}
       ref={mesh}
       scale={active ? [0.65, 0.65, 0.65] : [1.5, 1.5, 1.5]}
-      onClick={(e) => setActive(!active)}
-      onPointerOver={(e) => setHover(true)}
-      onPointerOut={(e) => setHover(false)}
+      onClick={handleClick}
+      onPointerOver={handlePointerOver}
+      onPointerOut={handlePointerOut}
     >
       <sphereBufferGeometry attach="geometry" args={[0.8, 32, 32]} />
       <meshStandardMaterial
@@ -68,6 +74,6 @@ const Sphere = (props) => {
       />
     </mesh>
   );
-};
+});
 
 export default Sphere;

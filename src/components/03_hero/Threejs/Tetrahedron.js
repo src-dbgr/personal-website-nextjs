@@ -1,7 +1,7 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 
-const Tetrahedron = (props) => {
+const Tetrahedron = React.memo((props) => {
   const mesh = useRef();
 
   // Set up state for the hovered and active state
@@ -12,10 +12,22 @@ const Tetrahedron = (props) => {
     document.body.style.cursor = hovered ? "pointer" : "auto";
   }, [hovered]);
 
+  const handlePointerOver = useCallback(() => {
+    setHover(true);
+  }, []);
+
+  const handlePointerOut = useCallback(() => {
+    setHover(false);
+  }, []);
+
+  const handleClick = useCallback(() => {
+    setActive(prev => !prev);
+  }, []);
+
   // Rotate mesh every frame, this is outside of React without overhead
   let addValue = 0;
   let elapsedTime = 0;
-  useFrame(() => {
+  useFrame(({ clock, mouse }) => {
     elapsedTime = clock.elapsedTime;
     addValue = 0.0025 - (mouse.x * mouse.y) / 80;
     mesh.current.rotation.x = mesh.current.rotation.y += addValue
@@ -24,23 +36,14 @@ const Tetrahedron = (props) => {
     mesh.current.material.emissiveIntensity = 6 * Math.sin(elapsedTime);
   });
 
-  const {
-    mouse, // Current, centered, normalized 2D mouse coordinates
-    clock, // THREE.Clock (useful for useFrame deltas)
-  } = useThree();
-
   return (
     <mesh
       {...props}
       ref={mesh}
       scale={active ? [1, 1, 1] : [1.4, 1.4, 1.4]}
-      onClick={(e) => setActive(!active)}
-      onPointerOver={(e) => {
-        setHover(true);
-      }}
-      onPointerOut={(e) => {
-        setHover(false);
-      }}
+      onClick={handleClick}
+      onPointerOver={handlePointerOver}
+      onPointerOut={handlePointerOut}
     >
       <tetrahedronBufferGeometry attach="geometry" args={[1.2, 0]} />
       <meshStandardMaterial
@@ -56,6 +59,6 @@ const Tetrahedron = (props) => {
       />
     </mesh>
   );
-};
+});
 
 export default Tetrahedron;
