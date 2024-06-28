@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 
-const Plane = (props) => {
+const Plane = React.memo((props) => {
   const mesh = useRef();
   const { clock } = useThree();
   const [map, displacementMap, alphaMap] = useLoader(TextureLoader, [
@@ -39,6 +39,6 @@ const Plane = (props) => {
       />
     </mesh>
   );
-};
+});
 
 export default Plane;
