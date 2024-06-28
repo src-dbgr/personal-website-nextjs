@@ -138,7 +138,7 @@ export async function getStaticProps() {
         jobs: data.jobs.data.map(e => e.attributes)
       },
     },
-    revalidate: 10
+    //revalidate: 10
   };
 }
 

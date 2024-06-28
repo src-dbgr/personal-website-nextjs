@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { gql, useQuery } from '@apollo/client';
 import SwitchToggle from './SwitchToggle';
 import { initGoogleAnalytics } from '../../lib/initGoogleAnalytics'; // Import der GA-Initialisierungsfunktion
+import Link from "next/link";
 
 function isBrowser() {
   return typeof window !== 'undefined';
@@ -315,17 +316,15 @@ const CookieConsent = () => {
                 <div className='cookie-text'>
                   <span>
                     This website uses cookies and other tracking technologies.
-                    By accepting all cookies, you consent to this website's use
+                    By accepting all cookies, you consent to this website&apos;s use
                     of all cookies. You can also activate only specific cookies
                     or decline the entire usage of cookies. Declining stops all
                     tracking cookies but will use local window storage to not
                     show the banner again on revisit. Usage of cookies helps to
-                    analyze this website's traffic and understand where visitors
+                    analyze this website&apos;s traffic and understand where visitors
                     are coming from. Your Identity always remains
                     anonymous.&nbsp;
-                    <a className='link' href='/privacy'>
-                      Learn more
-                    </a>
+                    <Link href="/privacy" className="link">Learn more</Link>
                   </span>
                 </div>
               )}

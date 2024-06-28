@@ -41,4 +41,6 @@ const Plane = React.memo((props) => {
   );
 });
 
+Plane.displayName = "Plane";
+
 export default Plane;

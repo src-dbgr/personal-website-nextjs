@@ -225,7 +225,7 @@ export async function getStaticProps() {
         categories,
       },
     },
-    revalidate: 10,
+    //revalidate: 10,
   };
 }
 
