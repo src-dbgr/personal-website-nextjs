@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8" />
+  <title>SB - IE NOT SUPPORTED</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@300;400&display=swap");
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      width: 100%;
+    }
+    body {
+      background: rgb(181, 178, 166);
+      color: rgb(52, 69, 73);
+      font-family: "Oswald", sans-serif;
+      text-align: center;
+    }
+    .ie-wrapper {
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-pack: center;
+      height: 100%;
+      -webkit-justify-content: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .ie-icons {
+      margin-left: 3px;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .ie-icons div {
+      padding-top: 5px;
+      width: calc(100% / 3);
+      text-align: center;
+      margin-left: -3px;
+      border: 3px dashed rgb(52, 69, 73);
+      background: rgb(150, 149, 141);
+    }
+    img {
+      height: 80px;
+      width: 80px;
+    }
+  </style>
+</head>
+<html>
+  <body>
+    <main class="ie-wrapper">
+      <div>
+        <h1>This Browser is Not Supported</h1>
+        <h1>Use Chrome, Firefox, Edge, or Safari</h1>
+        <div class="ie-icons">
+          <div>
+            <a href="https://www.google.com/chrome/">
+              <img
+                src="https://www.google.com/chrome/static/images/chrome-logo.svg"
+              />
+            </a>
+          </div>
+          <div>
+            <a href="https://www.mozilla.org/en-US/firefox/download/thanks/">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg"
+              />
+            </a>
+          </div>
+          <div>
+            <a href="https://www.microsoft.com/de-de/edge">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg"
+              />
+            </a>
+          </div>
+          <div>
+            <a href="https://support.apple.com/downloads/safari">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/5/52/Safari_browser_logo.svg"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
