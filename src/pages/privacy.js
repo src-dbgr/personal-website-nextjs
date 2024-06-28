@@ -17,7 +17,7 @@ const privacy = () => {
                 <p>
                   Mit dieser Datenschutzerklärung möchten wir Sie über Art,
                   Umfang und Zweck der Verarbeitung von personenbezogenen Daten
-                  (im Folgenden auch nur als "Daten" bezeichnet) aufklären.
+                  (im Folgenden auch nur als &quot;Daten&quot; bezeichnet) aufklären.
                   Personenbezogene Daten sind alle Daten, die einen persönlichen
                   Bezug zu Ihnen aufweisen, z. B. Name, Adresse, E-Mail-Adresse
                   oder Ihr Nutzerverhalten. Die Datenschutzerklärung gilt für
@@ -414,7 +414,7 @@ const privacy = () => {
                     </strong>{" "}
                     Dies sind Cookies, die für Analysezwecke oder die
                     Reichweitenmessung eingesetzt werden. Über solche
-                    "Tracking"-Cookies können insbesondere Informationen zu
+                    &quot;Tracking&quot;-Cookies können insbesondere Informationen zu
                     eingegebenen Suchbegriffen oder die Häufigkeit von
                     Seitenaufrufen gespeichert sein. Daneben kann aber auch das
                     Surfverhalten eines einzelnen Nutzers (z. B. Betrachten
