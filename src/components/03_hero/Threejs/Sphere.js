@@ -1,8 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
-import { TextureLoader } from "three/src/loaders/TextureLoader";
-import nm from "./Textures/nm.jpg";
-import normal from "./Textures/normal.jpg";
+import { TextureLoader } from "three";
 
 const Sphere = (props) => {
   // This reference will give us direct access to the mesh so we can animate it
@@ -25,12 +23,11 @@ const Sphere = (props) => {
     sin = Math.sin(elapsedTime / 10);
     scaleValue = (sin + 0.2) * (active ? 1.8 : 0.8);
     mesh.current.rotation.x = mesh.current.rotation.y +=
-      0.003 + Math.pow(mouse.x,2) / 80;
+      0.003 + Math.pow(mouse.x, 2) / 80;
     mesh.current.position.y = 0.9 * Math.abs(Math.sin(elapsedTime / 5));
     mesh.current.material.emissiveIntensity = 0.9 * sin;
-    mesh.current.material.opacity =
-      0.7 * Math.abs(Math.sin(elapsedTime / 3));
-    mesh.current.scale.x = scaleValue
+    mesh.current.material.opacity = 0.7 * Math.abs(Math.sin(elapsedTime / 3));
+    mesh.current.scale.x = scaleValue;
     mesh.current.scale.y = scaleValue;
     mesh.current.scale.z = scaleValue;
   });
@@ -40,13 +37,10 @@ const Sphere = (props) => {
     clock, // THREE.Clock (useful for useFrame deltas)
   } = useThree();
 
-  // const texture = useTexture("textures/nm.jpg");      <-- alternative, using "@react-three/drei" lib, image ist placed in static folder
-  // const texture = useLoader(TextureLoader, nm);       <-- alternative by using an import of a locally stored image
-  // const textureMap = useLoader(TextureLoader, [nm]);    <-- alternative by using an array
-  console.log(nm)
-  console.log(normal)
-  const textureMap = useLoader(TextureLoader, [nm, normal]);
-  console.log(textureMap)
+  const textureMap = useLoader(TextureLoader, [
+    "/assets/images/textures/nm.jpg",
+    "/assets/images/textures/normal.jpg",
+  ]);
 
   return (
     <mesh
@@ -71,12 +65,6 @@ const Sphere = (props) => {
         color={0x35a169}
         alphaMap={textureMap[0]}
         roughnessMap={textureMap[1]}
-
-        // alphaMap={textureMap[0]} <-- use this way if import via array is done
-        // example:const textureMap = useLoader(TextureLoader, [textures/nm.jpg]);
-        // note, the image must be placed into the gatsby "static" folder.
-        // the folder static must of course contain itself a folder named "textures"
-        // the static folder itself must be placed in the root of you project, not src!
       />
     </mesh>
   );
