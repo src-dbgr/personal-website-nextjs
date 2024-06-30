@@ -3,9 +3,9 @@ import Layout from "../components/general/Layout";
 import Title from "../components/general/Title";
 import Seo from "../components/general/Seo";
 import FadeInSection from "../hooks/FadeInSection";
+import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 
-
-const Contact = () => {
+const Contact = ({ cookies }) => { 
     const [isMailValid, setMailValid] = useState(true);
     const [isNameValid, setNameValid] = useState(true);
     const [isMessageValid, setMessageValid] = useState(true);
@@ -60,7 +60,7 @@ const Contact = () => {
     }
   
     return (
-      <Layout darkFooter={true}>
+      <Layout darkFooter={true} cookies={cookies}>
         <Seo
           title="Contact"
           description="Samuel IT - Get in touch by sending a message."
@@ -131,5 +131,16 @@ const Contact = () => {
     );
   };
   
+  export async function getStaticProps() {
+    const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
+  
+    return {
+      props: {
+        cookies,
+      },
+      revalidate: 10, // Optional: Setzt die Revalidierungszeit für die statische Seite
+    };
+  }
+
   export default Contact;
   

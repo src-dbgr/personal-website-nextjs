@@ -1,13 +1,15 @@
 import React from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+import apolloClient from '../lib/apolloClient';
 import Layout from '../components/general/Layout';
 import Seo from '../components/general/Seo';
 import Title from '../components/general/Title';
 import Blog from '../components/06_blog/Blog';
+import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 
 const GET_BLOGS = gql`
-  query Techstacks {
-    blogs(sort: ["date:desc"]) {
+  query GetBlogs {
+    blogs(pagination: {pageSize: 1000},sort: ["date:desc"]) {
       data {
         id
         attributes {
@@ -30,20 +32,9 @@ const GET_BLOGS = gql`
   }
 `;
 
-const BlogPage = () => {
-  const { loading, error, data } = useQuery(GET_BLOGS);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  const blogs = data.blogs.data.map((blog) => ({
-    id: blog.id,
-    ...blog.attributes,
-    image: blog.attributes.image.data.attributes,
-  }));
-
+const BlogPage = ({ blogs, cookies }) => { // cookies als Prop hinzufügen
   return (
-    <Layout darkFooter={true}>
+    <Layout darkFooter={true} cookies={cookies}>
       <Seo
         title="Blog"
         description="Samuel IT - Discover the latest IT blog articles I have published."
@@ -59,5 +50,27 @@ const BlogPage = () => {
     </Layout>
   );
 };
+
+export async function getStaticProps() {
+  const { data } = await apolloClient.query({
+    query: GET_BLOGS,
+  });
+
+  const blogs = data.blogs.data.map((blog) => ({
+    id: blog.id,
+    ...blog.attributes,
+    image: blog.attributes.image.data.attributes,
+  }));
+
+  const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
+
+  return {
+    props: {
+      blogs,
+      cookies, // Cookies Daten übergeben
+    },
+    revalidate: 10, // Optional: Setzt die Revalidierungszeit für die statische Seite
+  };
+}
 
 export default BlogPage;

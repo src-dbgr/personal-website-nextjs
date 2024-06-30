@@ -11,7 +11,7 @@ const nextConfig = {
     STRAPI_GRAPHQL_URL: process.env.STRAPI_GRAPHQL_URL,
     STRAPI_TOKEN: process.env.STRAPI_TOKEN,
   },
-  output: 'export',
+  // output: 'export',
 };
 
 export default nextConfig;
