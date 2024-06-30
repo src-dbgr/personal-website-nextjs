@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import Seo from '../../components/general/Seo';
 import FadeInSection from '../../hooks/FadeInSection';
 import Link from 'next/link';
+import { fetchCookieStaticProps } from '../../lib/staticPropsHelpers';
 
 const GET_BLOG_BY_SLUG = gql`
   query GetBlogBySlug($slug: String!) {
@@ -35,11 +36,11 @@ const GET_ALL_BLOGS = gql`
   }
 `;
 
-const BlogTemplate = ({ blog }) => {
+const BlogTemplate = ({ blog, cookies }) => { 
   const { content, title, desc } = blog.attributes;
 
   return (
-    <Layout darkFooter={false}>
+    <Layout darkFooter={false} cookies={cookies}>
       <Seo title={title} description={desc} />
       <section className="blog-template">
         <Title title={title} />
@@ -72,7 +73,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-
   const { data } = await apolloClient.query({
     query: GET_BLOG_BY_SLUG,
     variables: { slug: params.slug },
@@ -80,8 +80,13 @@ export async function getStaticProps({ params }) {
 
   const blog = data.blogs.data[0];
 
+  const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
+
   return {
-    props: { blog },
+    props: { 
+      blog,
+      cookies, // Cookies Daten übergeben
+    },
   };
 }
 

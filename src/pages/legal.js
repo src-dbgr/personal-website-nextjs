@@ -2,10 +2,11 @@ import React from "react";
 import Title from "../components/general/Title";
 import Layout from "../components/general/Layout";
 import Seo from "../components/general/Seo";
+import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 
-const legal = () => {
+const legal  = ({ cookies }) => { // cookies als Prop hinzufügen
   return (
-    <Layout darkFooter={true}>
+    <Layout darkFooter={true} cookies={cookies}>
       <Seo title="Legal Notice | Impressum" />
       <section className="legal-page">
         <Title title="Legal Notice / Impressum" />
@@ -97,5 +98,16 @@ const legal = () => {
     </Layout>
   );
 };
+
+export async function getStaticProps() {
+  const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
+
+  return {
+    props: {
+      cookies,
+    },
+    revalidate: 10, // Optional: Setzt die Revalidierungszeit für die statische Seite
+  };
+}
 
 export default legal;

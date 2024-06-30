@@ -13,8 +13,9 @@ import FadeInSection from "../hooks/FadeInSection";
 import Seo from "../components/general/Seo";
 import { gql } from '@apollo/client';
 import apolloClient from '../lib/apolloClient';
+import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 
-const AboutPage = ({ customData }) => {
+const AboutPage = ({ customData, cookies }) => {
   const [isDefault, setDefault] = useState(true);
 
   function flipRadioButton() {
@@ -24,7 +25,7 @@ const AboutPage = ({ customData }) => {
   const { about, stations, categories, techstacks } = customData;
 
   return (
-    <Layout darkFooter={false}>
+    <Layout darkFooter={false} cookies={cookies}> 
       <Seo title="About" description={""}/>
       <section className="about-page">
         <Title title={about.title} />
@@ -208,6 +209,8 @@ export async function getStaticProps() {
 
   const techstacks = data.techstacks.data.map((techstack) => techstack.attributes);
 
+  const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
+
   return {
     props: {
       customData: {
@@ -216,8 +219,9 @@ export async function getStaticProps() {
         categories,
         techstacks,
       },
+      cookies, // Cookies Daten übergeben
     },
-    //revalidate: 10,
+    revalidate: 10,
   };
 }
 

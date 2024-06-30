@@ -157,3 +157,54 @@ Füge deine Umgebungsvariablen (STRAPI_GRAPHQL_URL und STRAPI_TOKEN) in den Verc
 Deploy:
 
 Klicke auf "Deploy" und Vercel wird deine Anwendung automatisch bauen und bereitstellen.
+
+
+
+# ACHTUNG - useQuery vs getStaticProps
+
+Wenn man auf GraphQl Queries nach dem Deployment verzichten will, weil keine GraphQl Schnittstelle zur verfügung steht, darf man nicht useQuery verwenden, sondern muss mit getStaticProps() Arbeiten, das nachfolgende beispiel zeigt wie es NICHT gemacht werden soll.
+
+*WICHTIG* getStaticProps() darf aber nur aus pages heraus getriggert werden! man kann das nicht in Komponenten selbst verwenden, sondern muss es in der page aufrufen und an die Komponente mittels props weitergeben!
+
+
+```
+const GET_PROJECTS = gql`
+    query Techstacks {
+        projects(sort: ["orderid:asc"]) {
+        data {
+            attributes {
+            github
+            orderid
+            description
+            title
+            url
+            image {
+                data {
+                attributes {
+                    url
+                }
+                }
+            }
+            stack {
+                id
+                title
+            }
+            }
+        }
+        }
+    }
+`;
+
+const ProjectsPage = () => {
+  const { loading, error, data } = useQuery(GET_PROJECTS, {
+    variables: { sort: 'orderid:asc' },
+  });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  const projects = data.projects.data.map(project => ({
+    ...project.attributes,
+  }));
+
+```

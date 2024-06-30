@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import { gql, useQuery } from '@apollo/client';
 import SwitchToggle from './SwitchToggle';
-import { initGoogleAnalytics } from '../../lib/initGoogleAnalytics'; // Import der GA-Initialisierungsfunktion
+import { initGoogleAnalytics } from '../../lib/initGoogleAnalytics';
 import Link from "next/link";
 
 function isBrowser() {
@@ -31,36 +30,14 @@ function useStickyState(defaultValue, key) {
   return [value, setter];
 }
 
-const COOKIE_QUERY = gql`
-  query Query {
-    cookies(filters: { active: { eq: true } }, sort: "identifier:desc") {
-      data {
-        attributes {
-          name
-          purpose
-          selectable
-          title
-          type
-          url
-          vendor
-          description
-          expiration
-          enablealltoggle
-          category {
-            category
-          }
-          identifier
-        }
-      }
-    }
-  }
-`;
-
-const CookieConsent = () => {
-  const { data, loading, error } = useQuery(COOKIE_QUERY);
+const CookieConsent = ({ cookies }) => {
   const router = useRouter();
 
-  const cookies = data ? data.cookies.data.map(item => item.attributes) : [];
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const [bannerHidden, setBannerHidden] = useStickyState(
     false,
@@ -74,79 +51,94 @@ const CookieConsent = () => {
     tiktokpixel: 'sb-tiktok-pixel',
     hotjar: 'sb-hotjarCheckboxState',
   });
-  const onMount = useRef(false);
-  const [initialInvisible, setInitialInvisible] = useState(true);
+
   const [toggleAllState, setToggleAllState] = useState(false);
   const [customize, setCustomize] = useState(false);
-  const [gglAnalyticsCheckboxState, setGglAnalyticsCheckboxState] =
-    useState(false);
+  const [gglAnalyticsCheckboxState, setGglAnalyticsCheckboxState] = useState(false);
   const [gglTagmgrCheckboxState, setGglTagmgrCheckboxState] = useState(false);
   const [fbPixelCheckboxState, setFbCheckboxPixelState] = useState(false);
-  const [tiktokPixelCheckboxState, setTiktokCheckboxPixelState] =
-    useState(false);
+  const [tiktokPixelCheckboxState, setTiktokCheckboxPixelState] = useState(false);
   const [hotjarCheckboxState, setHotjarCheckboxState] = useState(false);
 
+  useEffect(() => {
+    if (!isClient) return;
+
+    // Retrieve the cookie states from localStorage
+    setGglAnalyticsCheckboxState(getValue('gglAnalyticsCheckboxState', false));
+    setGglTagmgrCheckboxState(getValue('gglTagmgrCheckboxState', false));
+    setFbCheckboxPixelState(getValue('fbPixelCheckboxState', false));
+    setTiktokCheckboxPixelState(getValue('tiktokPixelCheckboxState', false));
+    setHotjarCheckboxState(getValue('hotjarCheckboxState', false));
+    setBannerHidden(getValue('CONSENTRXCSQECJWXXK', false));
+  }, [isClient]);
+
   const toggleGglAnalytics = () => {
-    setGglAnalyticsCheckboxState(
-      (gglAnalyticsCheckboxState) => !gglAnalyticsCheckboxState
-    );
+    setGglAnalyticsCheckboxState((prevState) => {
+      const newState = !prevState;
+      setValue('gglAnalyticsCheckboxState', newState);
+      return newState;
+    });
   };
+
   const toggleGglTagMgr = () => {
-    setGglTagmgrCheckboxState(
-      (gglTagmgrCheckboxState) => !gglTagmgrCheckboxState
-    );
+    setGglTagmgrCheckboxState((prevState) => {
+      const newState = !prevState;
+      setValue('gglTagmgrCheckboxState', newState);
+      return newState;
+    });
   };
+
   const toggleFbPixel = () => {
-    setFbCheckboxPixelState((fbPixelCheckboxState) => !fbPixelCheckboxState);
+    setFbCheckboxPixelState((prevState) => {
+      const newState = !prevState;
+      setValue('fbPixelCheckboxState', newState);
+      return newState;
+    });
   };
+
   const toggleTiktokPixel = () => {
-    setTiktokCheckboxPixelState(
-      (tiktokPixelCheckboxState) => !tiktokPixelCheckboxState
-    );
+    setTiktokCheckboxPixelState((prevState) => {
+      const newState = !prevState;
+      setValue('tiktokPixelCheckboxState', newState);
+      return newState;
+    });
   };
+
   const toggleHotjar = () => {
-    setHotjarCheckboxState((hotjarCheckboxState) => !hotjarCheckboxState);
+    setHotjarCheckboxState((prevState) => {
+      const newState = !prevState;
+      setValue('hotjarCheckboxState', newState);
+      return newState;
+    });
   };
 
   const setAll = (val) => {
-    setGglAnalyticsCheckboxState((gglAnalyticsCheckboxState) => val);
-    setGglTagmgrCheckboxState((gglTagmgrCheckboxState) => val);
-    setFbCheckboxPixelState((fbPixelCheckboxState) => val);
-    setTiktokCheckboxPixelState((tiktokPixelCheckboxState) => val);
-    setHotjarCheckboxState((hotjarCheckboxState) => val);
+    setGglAnalyticsCheckboxState(val);
+    setGglTagmgrCheckboxState(val);
+    setFbCheckboxPixelState(val);
+    setTiktokCheckboxPixelState(val);
+    setHotjarCheckboxState(val);
   };
 
   useEffect(() => {
-    let active = true;
-    if (!onMount.current) {
-      setInitialInvisible(false);
-      onMount.current = true;
-    } else {
-      if (active) {
-        setAll(toggleAllState);
-      }
-    }
-    return () => {
-      active = false;
-    };
+    setAll(toggleAllState);
   }, [toggleAllState]);
 
   useEffect(() => {
-    if (isBrowser()) {
-      // Initialize and track based on user consent
-      if (gglAnalyticsCheckboxState) {
-        initGoogleAnalytics('G-ET703HRR3G'); // Deine Google Analytics Tracking-ID
-      }
-      // Füge hier die Initialisierung weiterer Tracking-Dienste hinzu
+    if (!isClient) return;
+
+    if (gglAnalyticsCheckboxState) {
+      initGoogleAnalytics('G-ET703HRR3G'); // Deine Google Analytics Tracking-ID
     }
-  }, [gglAnalyticsCheckboxState, gglTagmgrCheckboxState, fbPixelCheckboxState, tiktokPixelCheckboxState, hotjarCheckboxState]);
+    // Füge hier die Initialisierung weiterer Tracking-Dienste hinzu
+  }, [isClient, gglAnalyticsCheckboxState, gglTagmgrCheckboxState, fbPixelCheckboxState, tiktokPixelCheckboxState, hotjarCheckboxState]);
 
   const toggleAll = () => {
-    setToggleAllState((toggleAllState) => !toggleAllState);
+    setToggleAllState((prevState) => !prevState);
   };
 
   const toggleCustomization = () => {
-    setCustomize((customize) => !customize);
+    setCustomize((prevState) => !prevState);
   };
 
   const EnableAllAnalytics = () => {
@@ -156,6 +148,7 @@ const CookieConsent = () => {
       }
     });
     setBannerHidden(true);
+    setValue('CONSENTRXCSQECJWXXK', true);
   };
 
   const EnableAnalytics = () => {
@@ -175,6 +168,7 @@ const CookieConsent = () => {
       setCookie(cookieNames.current.hotjar, true, 365);
     }
     setBannerHidden(true);
+    setValue('CONSENTRXCSQECJWXXK', true);
   };
 
   function setCookie(cName, cValue, expDays) {
@@ -237,6 +231,7 @@ const CookieConsent = () => {
       console.error(err);
     }
     setBannerHidden(true);
+    setValue('CONSENTRXCSQECJWXXK', true);
   };
 
   const toggleHandler = [
@@ -259,12 +254,13 @@ const CookieConsent = () => {
     gglAnalyticsCheckboxState,
   ];
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <>
-      <div className={`${initialInvisible ? 'empty' : '_'}`}>
+      <div>
         {!bannerHidden && (
           <>
             <div className={`${customize ? 'cookie-consent no-opacity' : 'cookie-consent'}`}>
