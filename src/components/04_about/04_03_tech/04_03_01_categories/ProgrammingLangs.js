@@ -1,37 +1,10 @@
-// import React from "react";
-// import { graphql, useStaticQuery } from "gatsby";
-// import TechTable from "./TechTable";
+// components/04_about/04_03_tech/04_03_01_categories/ProgrammingLangs.js
 
-// const query = graphql`
-//   {
-//     allStrapiTechstack(
-//       filter: {
-//         active: { eq: true }
-//         categorylabel: { eq: "A_ProgrammingLangs" }
-//       }
-//       sort: { fields: skilllevel, order: DESC }
-//     ) {
-//       nodes {
-//         skilldescription
-//         skillleveltag
-//         skillcategory
-//         imgfilename
-//         skilltitle
-//         skilllevel
-//         skilltype
-//         techurl
-//         imgurl
-//       }
-//     }
-//   }
-// `;
+import React from "react";
+import TechTable from "./TechTable";
 
-// const ProgrammingLangs = () => {
-//   const data = useStaticQuery(query);
-//   const {
-//     allStrapiTechstack: { nodes: proglangs },
-//   } = data;
-//   return <TechTable caption="Programming Languages" technologies={proglangs} />;
-// };
+const ProgrammingLangs = ({ techstacks }) => {
+  return <TechTable caption="Programming Languages" technologies={techstacks} />;
+};
 
-// export default ProgrammingLangs;
+export default ProgrammingLangs;

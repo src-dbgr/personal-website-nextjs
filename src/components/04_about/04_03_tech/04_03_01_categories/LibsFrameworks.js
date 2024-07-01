@@ -1,39 +1,10 @@
-// import React from "react";
-// import { graphql, useStaticQuery } from "gatsby";
-// import TechTable from "./TechTable";
+// components/04_about/04_03_tech/04_03_01_categories/LibsFrameworks.js
 
-// const query = graphql`
-//   {
-//     allStrapiTechstack(
-//       filter: {
-//         active: { eq: true }
-//         categorylabel: { eq: "B_LibsFrameworks" }
-//       }
-//       sort: { fields: skilllevel, order: DESC }
-//     ) {
-//       nodes {
-//         skilldescription
-//         skillleveltag
-//         skillcategory
-//         imgfilename
-//         skilltitle
-//         skilllevel
-//         skilltype
-//         techurl
-//         imgurl
-//       }
-//     }
-//   }
-// `;
+import React from "react";
+import TechTable from "./TechTable";
 
-// const LibsFrameworks = () => {
-//   const data = useStaticQuery(query);
-//   const {
-//     allStrapiTechstack: { nodes: libsfames },
-//   } = data;
-//   return (
-//     <TechTable caption="Libraries / Frameworks" technologies={libsfames} />
-//   );
-// };
+const LibsFrameworks = ({ techstacks }) => {
+  return <TechTable caption="Libraries / Frameworks" technologies={techstacks} />;
+};
 
-// export default LibsFrameworks;
+export default LibsFrameworks;

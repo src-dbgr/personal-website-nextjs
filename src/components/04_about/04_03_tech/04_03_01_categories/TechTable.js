@@ -3,6 +3,7 @@ import {
   HiOutlineChevronDoubleDown,
   HiOutlineChevronDoubleUp,
 } from "react-icons/hi";
+import Image from 'next/image';
 
 const TechTable = ({ caption, technologies }) => {
   const [tableCollapsed, setTableCollapsed] = useState(true);
@@ -140,9 +141,11 @@ const TechTable = ({ caption, technologies }) => {
                         // src={`assets/img/tech/${technology.imgfilename}`}
                         alt={technology.skilltitle}
                       /> */}
-                      <img
+                      <Image
                         src={technology.imgurl}
                         alt={technology.skilltitle}
+                        width="40"
+                        height="40"
                       />
                     </a>
                     <br />

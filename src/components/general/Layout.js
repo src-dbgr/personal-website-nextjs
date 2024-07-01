@@ -10,7 +10,7 @@ import {
   GlobalStateContext,
 } from "../../context/GlobalContextProvider";
 
-const Layout = ({ children, darkFooter }) => {
+const Layout = ({ children, darkFooter, cookies }) => {
   const isIndexPage = true; // TODO ==> Change, compare to location pathname or slug!
 
   const theme = useContext(GlobalStateContext).theme;
@@ -62,8 +62,6 @@ const Layout = ({ children, darkFooter }) => {
   function navigateToHash(isActive) {
     const isBrowser = () => typeof window !== "undefined";
     let hash = isBrowser() && window.location.hash;
-    // !!"" === false // empty string is falsy
-    // !!"foo" === true  // non-empty string is truthy
     if (!!hash) {
       let id = hash.replace("#", "");
       try {
@@ -82,7 +80,6 @@ const Layout = ({ children, darkFooter }) => {
   useEffect(() => {
     let isActive = true;
     checkCookieState(); // on mount check
-    // skip if animation has not yet finished
     if (!state.animation) {
       navigateToHash(isActive);
     }
@@ -91,7 +88,7 @@ const Layout = ({ children, darkFooter }) => {
     }; // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.animation]);
 
-  // disable in production
+    // disable in production
   // disabling on first render
   // useEffect(() => {
   //   const noop = () => { };
@@ -127,7 +124,7 @@ const Layout = ({ children, darkFooter }) => {
 
   return (
     <>
-      {state.cookieconsentopen && <CookieConsent />}
+      {state.cookieconsentopen && <CookieConsent cookies={cookies} />}
       {isIndexPage && state.animation ? (
         <Launch
           finishLaunching={() => {

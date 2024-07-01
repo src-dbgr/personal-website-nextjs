@@ -8,10 +8,9 @@ import BlogsSection from "../components/06_blog/BlogSection";
 import Seo from "../components/general/Seo";
 import { gql } from '@apollo/client';
 import apolloClient from '../lib/apolloClient';
-// import { graphql } from "gatsby";
-const index = ({ customData }) => {
-  // console.log("--------DATA", customData)
-  // console.log("--------DATA", blogs)
+import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
+
+const index = ({ customData, cookies }) => { // cookies als Prop hinzufügen
   const {
     about,
     blogs,
@@ -20,7 +19,7 @@ const index = ({ customData }) => {
   } = customData;
 
   return (
-    <Layout darkFooter={true}>
+    <Layout darkFooter={true} cookies={cookies}>
       <Seo title="Home" description={""}/>
       <Hero />
       <About  infomain={about} />
@@ -109,23 +108,17 @@ export async function getStaticProps() {
     `
   });
 
+  const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
+
   const projects = data.projects.data.map(project => {
-    // Erstellt eine tiefe Kopie von attributes
     const attributes = JSON.parse(JSON.stringify(project.attributes));
-
-    // Setzt das image-Objekt auf den Inhalt von attributes.image.data.attributes
     attributes.image = attributes.image.data.attributes;
-
     return attributes;
   });
 
   const blogs = data.blogs.data.map(blog => {
-    // Erstellt eine tiefe Kopie von attributes
     const attributes = JSON.parse(JSON.stringify(blog.attributes));
-
-    // Setzt das image-Objekt auf den Inhalt von attributes.image.data.attributes
     attributes.image = attributes.image.data.attributes;
-    
     return {id: blog.id, ...attributes};
   });
 
@@ -137,10 +130,10 @@ export async function getStaticProps() {
         projects,
         jobs: data.jobs.data.map(e => e.attributes)
       },
+      cookies, // Cookies Daten hinzufügen
     },
     revalidate: 10
   };
 }
-
 
 export default index;
