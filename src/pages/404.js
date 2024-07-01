@@ -3,10 +3,11 @@ import Layout from "../components/general/Layout";
 import Title from "../components/general/Title";
 import Seo from "../components/general/Seo";
 import Link from "next/link";
+import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 
-const Error = () => {
+const Error = ({ cookies }) => { // cookies als Prop hinzufügen
   return (
-    <Layout darkFooter={true}>
+    <Layout darkFooter={true} cookies={cookies}>
       <Seo
         title="404"
         description="The requested content could not be found. Check if the entered URL is correct."
@@ -2193,5 +2194,16 @@ const Error = () => {
     </Layout>
   );
 };
+
+export async function getStaticProps() {
+  const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
+
+  return {
+    props: {
+      cookies,
+    },
+    revalidate: 10, // Optional: Setzt die Revalidierungszeit für die statische Seite
+  };
+}
 
 export default Error;

@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
 import FadeInSection from "../../hooks/FadeInSection";
+import Image from 'next/image';
 
 const Blog = ({ id, title, desc, slug, date, category, image }) => {
   return (
@@ -10,7 +11,7 @@ const Blog = ({ id, title, desc, slug, date, category, image }) => {
         <a className="blog shadow-box-dark" key={id}>
           <article className="blog-img-parent">
             <div className="rounded-img-child">
-              <img className="blog-img" src={image.url} alt={title} />
+              <Image className="blog-img" src={image.url} alt={title} width="100" height="100"/>
             </div>
             <div className="blog-card">
               <h4>{title}</h4>

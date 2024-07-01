@@ -1,34 +1,10 @@
-// import React from "react";
-// import { graphql, useStaticQuery } from "gatsby";
-// import TechTable from "./TechTable";
+// components/04_about/04_03_tech/04_03_01_categories/DataDesign.js
 
-// const query = graphql`
-//   {
-//     allStrapiTechstack(
-//       filter: { active: { eq: true }, categorylabel: { eq: "D_DataDesign" } }
-//       sort: { fields: skilllevel, order: DESC }
-//     ) {
-//       nodes {
-//         skilldescription
-//         skillleveltag
-//         skillcategory
-//         imgfilename
-//         skilltitle
-//         skilllevel
-//         skilltype
-//         techurl
-//         imgurl
-//       }
-//     }
-//   }
-// `;
+import React from "react";
+import TechTable from "./TechTable";
 
-// const DataDesign = () => {
-//   const data = useStaticQuery(query);
-//   const {
-//     allStrapiTechstack: { nodes: datades },
-//   } = data;
-//   return <TechTable caption="Data / Design" technologies={datades} />;
-// };
+const DataDesign = ({ techstacks }) => {
+  return <TechTable caption="Data / Design" technologies={techstacks} />;
+};
 
-// export default DataDesign;
+export default DataDesign;
