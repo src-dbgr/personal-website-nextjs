@@ -4,6 +4,9 @@ import SwitchToggle from './SwitchToggle';
 import { initGoogleAnalytics } from '../../lib/initGoogleAnalytics';
 import Link from "next/link";
 
+// Importieren der Umgebungsvariablen
+const GOOGLE_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+
 function isBrowser() {
   return typeof window !== 'undefined';
 }
@@ -70,7 +73,7 @@ const CookieConsent = ({ cookies }) => {
     setTiktokCheckboxPixelState(getValue('tiktokPixelCheckboxState', false));
     setHotjarCheckboxState(getValue('hotjarCheckboxState', false));
     setBannerHidden(getValue('CONSENTRXCSQECJWXXK', false));
-  }, [isClient]);
+  }, [isClient, setBannerHidden]);
 
   const toggleGglAnalytics = () => {
     setGglAnalyticsCheckboxState((prevState) => {
@@ -128,7 +131,7 @@ const CookieConsent = ({ cookies }) => {
     if (!isClient) return;
 
     if (gglAnalyticsCheckboxState) {
-      initGoogleAnalytics('G-ET703HRR3G'); // Deine Google Analytics Tracking-ID
+      initGoogleAnalytics(GOOGLE_ANALYTICS_ID); // Verwendung der Umgebungsvariablen
     }
     // Füge hier die Initialisierung weiterer Tracking-Dienste hinzu
   }, [isClient, gglAnalyticsCheckboxState, gglTagmgrCheckboxState, fbPixelCheckboxState, tiktokPixelCheckboxState, hotjarCheckboxState]);
@@ -207,7 +210,7 @@ const CookieConsent = ({ cookies }) => {
 
   function gaOptout() {
     try {
-      let gaProperty = 'G-ET703HRR3G';
+      let gaProperty = GOOGLE_ANALYTICS_ID;
       let disableStr = 'ga-disable-' + gaProperty;
       if (document.cookie.indexOf(disableStr + '=true') > -1) {
         window[disableStr] = true;
