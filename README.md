@@ -49,8 +49,7 @@ Schritte zum Starten der statischen Website mit serve
 npm install -g serve
 serve out
 
-
-
+---
 
 Wenn du keinen statischen Export machen möchtest und stattdessen den vollständigen Next.js-Server mit dynamischen Funktionen verwenden willst, musst du die output: 'export'-Konfiguration aus deiner next.config.mjs entfernen. Dadurch kannst du die Vorteile der serverseitigen Funktionen von Next.js nutzen, wie z.B. SSR (Server-Side Rendering) und ISR (Incremental Static Regeneration).
 
@@ -208,3 +207,71 @@ const ProjectsPage = () => {
   }));
 
 ```
+---
+
+# Deployment von Next.js auf Netlify
+
+Diese Anleitung beschreibt, wie du deine Next.js-App auf Netlify deployen kannst.
+
+## Schritte zum Deployment
+
+### 1. Verbinde dein Repository mit Netlify
+
+- Gehe zu deinem Netlify-Dashboard.
+- Klicke auf "New site from Git".
+- Wähle das Repository deiner Next.js-App aus.
+
+### 2. Setze die Build- und Veröffentlichungs-Einstellungen
+
+- **Build Command**: `npm run build`
+- **Publish Directory**: `.next`
+
+### 3. Umgebungsvariablen hinzufügen
+
+Füge die notwendigen Umgebungsvariablen zu deinem Netlify-Projekt hinzu:
+
+1. Gehe zu "Site settings" > "Build & deploy" > "Environment" > "Environment variables".
+2. Füge die folgenden Variablen hinzu:
+
+    - **NEXT_PUBLIC_STRAPI_API_URL**: Die Basis-URL deines Strapi-Servers.
+    - **STRAPI_GRAPHQL_URL**: Die vollständige URL zu deinem GraphQL-Endpunkt (z.B. `https://<your-strapi-service-name>.onrender.com/graphql`).
+    - **STRAPI_TOKEN**: Dein Strapi-API-Token.
+
+Beispiel:
+
+- **NEXT_PUBLIC_STRAPI_API_URL** = `https://<your-strapi-service-name>.onrender.com`
+- **STRAPI_GRAPHQL_URL** = `https://<your-strapi-service-name>.onrender.com/graphql`
+- **STRAPI_TOKEN** = `your-strapi-api-token`
+
+FS_API_URL=<>
+STRAPI_GRAPHQL_URL=https://portfolio-api-5o00.onrender.com/graphql  <- kann auch eine andere sein, wenn strapi erneut deplyed wurde, muss man anpassen.
+STRAPI_API_URL=https://portfolio-api-5o00.onrender.com/api  <- kann auch eine andere sein, wenn strapi erneut deplyed wurde, muss man anpassen.
+STRAPI_TOKEN=<strapi token>
+NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=<google analytics id>
+
+### 4. Branch für das Deployment festlegen
+
+Wenn du von einem bestimmten Branch deployen möchtest:
+
+- Gehe zu deinem Netlify-Dashboard.
+- Wähle dein Projekt aus.
+- Gehe zu "Site settings" > "Build & deploy" > "Build settings" > "Branch to deploy".
+- Gib den Namen des Branches ein, den du deployen möchtest (z.B. `main`, `development`).
+
+### 5. Fehlerbehebung
+
+Falls der Build fehlschlägt, überprüfe die Build-Logs auf Netlify, um die genaue Ursache zu identifizieren:
+
+1. Gehe zu deinem Netlify-Dashboard.
+2. Wähle dein Projekt aus.
+3. Gehe zu "Deploys".
+4. Klicke auf den letzten fehlgeschlagenen Build.
+5. Überprüfe die Logs für Fehler.
+
+## Zusammenfassung
+
+1. **Verbinde dein Repository mit Netlify**.
+2. **Setze die Build- und Veröffentlichungs-Einstellungen**.
+3. **Füge notwendige Umgebungsvariablen hinzu**.
+4. **Lege den Branch für das Deployment fest**.
+5. **Überprüfe die Logs bei Fehlern**.
