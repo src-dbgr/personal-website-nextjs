@@ -209,7 +209,7 @@ const ProjectsPage = () => {
 ```
 ---
 
-# Deployment von Next.js auf Netlify
+# Deployment von Next.js auf Netlify -> https://sblm.netlify.app/
 
 Diese Anleitung beschreibt, wie du deine Next.js-App auf Netlify deployen kannst.
 
