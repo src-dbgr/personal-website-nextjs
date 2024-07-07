@@ -76,6 +76,12 @@ const ThreejsRender = () => {
             camera={{ fov: 75, near: 0.1, far: 500, position: [-2, 2, 3] }}
             className="trianglecanvas"
             resize={{ polyfill: ResizeObserver }}
+            onCreated={({ gl }) => {
+              gl.getContext().canvas.addEventListener('webglcontextlost', (event) => {
+                event.preventDefault();
+                setKey(prevKey => prevKey + 1); // Force re-render on context loss
+              });
+            }}
           >
             <ambientLight />
             <pointLight position={[-3, 3, -2]} intensity={20} color={0x767081} />
