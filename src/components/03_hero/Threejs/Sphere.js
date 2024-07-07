@@ -22,9 +22,9 @@ const Sphere = (props) => {
   useFrame(() => {
     elapsedTime = clock.elapsedTime;
     sin = Math.sin(elapsedTime / 10);
-    scaleValue = (sin + 0.2) * (active ? 1.8 : 0.8);
+    scaleValue = (Math.abs(sin) + 0.2) * (active ? 1.8 : 0.8);
     mesh.current.rotation.x = mesh.current.rotation.y +=
-      0.003 + Math.pow(mouse.x,2) / 80;
+      0.0035;
     mesh.current.position.y = 0.9 * Math.abs(Math.sin(elapsedTime / 5));
     mesh.current.material.emissiveIntensity = 0.9 * sin;
     mesh.current.material.opacity =

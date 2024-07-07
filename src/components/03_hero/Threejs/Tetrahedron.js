@@ -17,7 +17,7 @@ const Tetrahedron = (props) => {
   let elapsedTime = 0;
   useFrame(() => {
     elapsedTime = clock.elapsedTime;
-    addValue = 0.0025 - (mouse.x * mouse.y) / 80;
+    addValue = 0.0035;
     mesh.current.rotation.x = mesh.current.rotation.y += addValue
     mesh.current.rotation.y = mesh.current.rotation.x += addValue
     mesh.current.position.y = 0.9 * Math.abs(Math.sin(elapsedTime / 5));
@@ -33,7 +33,7 @@ const Tetrahedron = (props) => {
     <mesh
       {...props}
       ref={mesh}
-      scale={active ? [1, 1, 1] : [1.4, 1.4, 1.4]}
+      scale={active ? [1.4, 1.4, 1.4] : [1, 1, 1]}
       onClick={(e) => setActive(!active)}
       onPointerOver={(e) => {
         setHover(true);
@@ -49,7 +49,7 @@ const Tetrahedron = (props) => {
         metalness={0.2}
         transparent={true}
         opacity={0.5}
-        wireframe={active ? true : false}
+        wireframe={active ? false : true}
         emissive={0x35a169}
         emissiveIntensity={0}
         color={0x35a169}

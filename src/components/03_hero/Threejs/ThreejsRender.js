@@ -21,7 +21,6 @@ const ThreejsRender = () => {
         onClick={(e) => { toggleAnimation(!animation) }} 
         onKeyDown={(e) => { toggleAnimation(!animation) }}>
           {animation ? (<h5 className="stopAnim">STOP ANIMATION</h5>) : (<h5 className="startAnim">START ANIMATION</h5>)}
-          <h6>COMPUTATION HEAVY</h6>
         </div>
         <svg className="arrows">
           <path d="M0 0l30 32L60 0" className="a1"></path>
@@ -49,7 +48,7 @@ const ThreejsRender = () => {
             <pointLight position={[2, 1, 4]} intensity={5} color={0x8f76be} />
             <Sphere position={[1, 0.5, 0]} />
             <Tetrahedron position={[1, 0.5, 0]} />
-            <Plane position={[1, 0, 0]} />
+            {/* <Plane position={[1, 0, 0]} /> */}
           </Canvas>
         </Suspense>
       ) : (<>
