@@ -1,7 +1,7 @@
 import {
   GlobalStateContext,
 } from "../../../context/GlobalContextProvider";
-import React, { Suspense, useState, useContext, useCallback } from "react";
+import React, { Suspense, useState, useContext } from "react";
 import Sphere from "./Sphere";
 import Tetrahedron from "./Tetrahedron";
 import Plane from "./Plane";
@@ -9,28 +9,18 @@ import { Canvas } from "@react-three/fiber";
 import { ResizeObserver } from "@juggle/resize-observer";
 
 const ThreejsRender = () => {
-  const [animation, setAnimation] = useState(false);
+  const [animation, toggleAnimation] = useState(false);
   const theme = useContext(GlobalStateContext).theme;
-
-  const toggleAnimation = useCallback(() => {
-    setAnimation(prev => !prev);
-  }, []);
-
   return (
     <div className="animationWrapper">
       <div className="animationToggleWrapper">
         <div 
-          className="animationToggle" 
-          role="button" 
-          tabIndex="0" 
-          onClick={toggleAnimation} 
-          onKeyDown={(e) => { if(e.key === 'Enter') toggleAnimation(); }}
-        >
-          {animation ? (
-            <h5 className="stopAnim">STOP ANIMATION</h5>
-          ) : (
-            <h5 className="startAnim">START ANIMATION</h5>
-          )}
+        className="animationToggle" 
+        role="button" 
+        tabIndex="0" 
+        onClick={(e) => { toggleAnimation(!animation) }} 
+        onKeyDown={(e) => { toggleAnimation(!animation) }}>
+          {animation ? (<h5 className="stopAnim">STOP ANIMATION</h5>) : (<h5 className="startAnim">START ANIMATION</h5>)}
           <h6>COMPUTATION HEAVY</h6>
         </div>
         <svg className="arrows">
@@ -62,7 +52,7 @@ const ThreejsRender = () => {
             <Plane position={[1, 0, 0]} />
           </Canvas>
         </Suspense>
-      ) : (
+      ) : (<>
         <svg xmlns="http://www.w3.org/2000/svg" width={250} height={250} id="logo_2">
           <defs>
             <linearGradient
@@ -81,7 +71,8 @@ const ThreejsRender = () => {
           </defs>
           <path data-name="triangle nav" d="m0 0 124.3 250L250 0Z" fill="url(#rad_grad_a)" />
         </svg>
-      )}
+      </>)
+      }
     </div>
   );
 };
