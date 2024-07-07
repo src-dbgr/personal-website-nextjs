@@ -1,7 +1,7 @@
 import {
   GlobalStateContext,
 } from "../../../context/GlobalContextProvider";
-import React, { Suspense, useState, useContext } from "react";
+import React, { Suspense, useState, useContext, useEffect, useRef } from "react";
 import Sphere from "./Sphere";
 import Tetrahedron from "./Tetrahedron";
 import Plane from "./Plane";
@@ -9,17 +9,51 @@ import { Canvas } from "@react-three/fiber";
 import { ResizeObserver } from "@juggle/resize-observer";
 
 const ThreejsRender = () => {
-  const [animation, toggleAnimation] = useState(false);
+  const [animation, setAnimation] = useState(false);
   const theme = useContext(GlobalStateContext).theme;
+  const canvasRef = useRef(null);
+  const [key, setKey] = useState(0); // Key to force re-render
+
+  useEffect(() => {
+    const handleContextLost = (event) => {
+      event.preventDefault();
+      console.error("WebGL context lost");
+      // Optionally reinitialize the scene or reset the key to force re-render
+      setKey(prevKey => prevKey + 1);
+    };
+
+    const handleContextRestored = () => {
+      console.log("WebGL context restored");
+    };
+
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.addEventListener("webglcontextlost", handleContextLost, false);
+      canvas.addEventListener("webglcontextrestored", handleContextRestored, false);
+    }
+
+    return () => {
+      if (canvas) {
+        canvas.removeEventListener("webglcontextlost", handleContextLost);
+        canvas.removeEventListener("webglcontextrestored", handleContextRestored);
+      }
+    };
+  }, []);
+
+  const toggleAnimation = () => {
+    setAnimation(!animation);
+  };
+
   return (
     <div className="animationWrapper">
       <div className="animationToggleWrapper">
         <div 
-        className="animationToggle" 
-        role="button" 
-        tabIndex="0" 
-        onClick={(e) => { toggleAnimation(!animation) }} 
-        onKeyDown={(e) => { toggleAnimation(!animation) }}>
+          className="animationToggle" 
+          role="button" 
+          tabIndex="0" 
+          onClick={toggleAnimation} 
+          onKeyDown={(e) => { if (e.key === 'Enter') toggleAnimation(); }}
+        >
           {animation ? (<h5 className="stopAnim">STOP ANIMATION</h5>) : (<h5 className="startAnim">START ANIMATION</h5>)}
         </div>
         <svg className="arrows">
@@ -37,6 +71,8 @@ const ThreejsRender = () => {
           </div>
         </div>}>
           <Canvas
+            key={key} // Force re-render on context loss
+            ref={canvasRef}
             camera={{ fov: 75, near: 0.1, far: 500, position: [-2, 2, 3] }}
             className="trianglecanvas"
             resize={{ polyfill: ResizeObserver }}
@@ -51,7 +87,7 @@ const ThreejsRender = () => {
             {/* <Plane position={[1, 0, 0]} /> */}
           </Canvas>
         </Suspense>
-      ) : (<>
+      ) : (
         <svg xmlns="http://www.w3.org/2000/svg" width={250} height={250} id="logo_2">
           <defs>
             <linearGradient
@@ -70,8 +106,7 @@ const ThreejsRender = () => {
           </defs>
           <path data-name="triangle nav" d="m0 0 124.3 250L250 0Z" fill="url(#rad_grad_a)" />
         </svg>
-      </>)
-      }
+      )}
     </div>
   );
 };
