@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
 import anime from "animejs";
 import Seo from "../general/Seo";
@@ -12,13 +12,15 @@ const Launch = (props) => {
   const theme = useContext(GlobalStateContext).theme;
 
   useEffect(() => {
-    if (
-      query.n ||
-      query.a ||
-      query.sk
-    ) {
-      introAnimationDisabled = true;
-    }
+
+    const skipParams = ['n', 'a', 'sk'];
+    
+    introAnimationDisabled = Object.keys(query).some(key => {
+      return skipParams.some(param => 
+        key.toLowerCase().includes(param.toLowerCase())
+      );
+    });
+
     function isIE() {
       const ua = window.navigator.userAgent;
       const msie = ua.indexOf("MSIE "); // IE 10 or older

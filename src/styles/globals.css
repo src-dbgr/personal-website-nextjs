@@ -940,7 +940,7 @@ Launch
   position: relative;
   /* CHANGE BACKGROUND to background: var(--clr-launch-body-background-radial-gradient); when using light mode */
   /* background: var(--clr-launch-body-background-radial-gradient); */
-  background: rgb(46, 46, 46);
+  background: var(--clr-background-major) !important;
   margin-top: var(--neg-page-top-space);
   /* to compensate window height difference */
   overflow: hidden !important;
