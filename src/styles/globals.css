@@ -576,13 +576,8 @@ Section Triangle Transitions
 }
 
 .triangle-gradient-two {
-  /* stop-color: var(--clr-background-major); */
   stop-color: var(--clr-topbar-font-hover);
-  animation-name: mountain_anim_colors;
-  animation-duration: 10s;
-  animation-iteration-count: infinite;
-  animation-timing-function: ease-in-out;
-  animation-direction: alternate;
+  animation: mountain_anim_colors 10s infinite alternate ease-in-out;
 }
 
 .triangle-three path {
@@ -605,43 +600,33 @@ Section Triangle Transitions
   margin-bottom: -5.01rem;
 }
 
-.g-stroke {
-  stroke: var(--clr-passive);
-  animation-name: mountain_anim;
-  animation-duration: 5s;
-  animation-iteration-count: infinite;
-  animation-timing-function: ease-in-out;
-  animation-direction: alternate;
-  opacity: 0.7;
-}
-
-/* The animation code */
 @keyframes mountain_anim_colors {
   0% {
     stop-color: var(--clr-topbar-font-hover);
   }
-
   100% {
     stop-color: grey;
   }
 }
 
-/* The animation code */
+.g-stroke {
+  stroke: var(--clr-passive);
+  animation: mountain_anim 5s infinite alternate ease-in-out;
+  opacity: 0.7;
+}
+
 @keyframes mountain_anim {
   0% {
     fill: var(--clr-background-major);
     stroke-width: 0;
   }
-
   50% {
     stroke-width: 0;
   }
-
   80% {
     stroke: var(--clr-mountain-stroke);
     stroke-width: 0.3;
   }
-
   100% {
     fill: var(--clr-background-minor);
     stroke: var(--clr-topbar-font-hover);
