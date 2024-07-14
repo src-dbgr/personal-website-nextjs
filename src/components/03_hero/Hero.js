@@ -1,17 +1,22 @@
 import { GlobalStateContext } from "../../context/GlobalContextProvider";
-import React, { useEffect, useContext } from "react";
-// import { Link } from "gatsby";
+import React, { useEffect, useContext, useState } from "react";
 import Link from "next/link";
 import Threejsrender from "./Threejs/ThreejsRender";
 import Aos from "aos";
 import "aos/dist/aos.css";
 
 const Hero = () => {
+  const [isMounted, setIsMounted] = useState(false);
+  const { theme, navanimation } = useContext(GlobalStateContext);
+
   useEffect(() => {
-    Aos.init({ duration: 1000});
+    setIsMounted(true);
+    Aos.init({ duration: 1000 });
   }, []);
 
-  const navanimation = useContext(GlobalStateContext).navanimation;
+  if (!isMounted) {
+    return null; // oder ein Loading-Indikator
+  }
 
   return (
     <header className="hero">
