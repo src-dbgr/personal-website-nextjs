@@ -78,8 +78,8 @@ const GlobalContextProvider = ({ children }) => {
     if (savedTheme && savedTheme !== state.theme) {
       dispatch({ type: "TOGGLE_THEME" });
     }
-  }, []);
-
+  }, [dispatch, state.theme]);
+  
   useEffect(() => {
     if (typeof window !== 'undefined') {
       document.body.classList.toggle("dark-theme", state.theme === "dark");
