@@ -70,6 +70,10 @@
   --clr-dark-four-o-four: rgb(52, 69, 73);
   --clr-lighthouse: rgb(150, 149, 141);
   --clr-sunmoon-topbar: rgb(231, 230, 213);
+  --clr-animation-toggle-wrapper: rgb(86, 95, 97);
+  --clr-stop-animation: rgb(198 102 102);
+  --clr-stop-animation: rgb(237, 118, 118);
+  --clr-start-animation: rgb(74, 200, 130);
   --clr-about-img-background: linear-gradient(rgb(150, 149, 141),
       rgb(181, 178, 166));
   --clr-about-img-background-hover: linear-gradient(rgb(181, 178, 166),
@@ -101,7 +105,7 @@
   --transition-medium: all 0.8s ease;
   --transition-fast: all 0.2s ease;
   --transition-very-fast: all 0.15s ease;
-  --spacing: 0.07rem;
+  --spacing: 0.05rem;
   --spacing-big: 0.135rem;
   --navbar-height: 4.5rem;
   --neg-page-top-space: -4.5rem;
@@ -143,6 +147,9 @@
   --clr-sunmoon-topbar: rgb(137, 163, 149);
   --default-box-shadow: 1px 1px 3px var(--clr-dark-shadow);
   --clr-navbar-background: rgba(69, 69, 69, 0.4);
+  --clr-animation-toggle-wrapper: rgb(51, 51, 51);
+  --clr-stop-animation: rgb(198 102 102);
+  --clr-start-animation: rgb(74, 177, 130);
   --clr-about-img-background-hover: linear-gradient(rgb(46, 46, 46),
       rgb(51, 51, 51));
   --clr-green-minor: rgb(137, 163, 149);
@@ -150,6 +157,7 @@
       var(--clr-background-minor),
       var(--clr-light-dark));
   --clr-prisma-background-gradient: rgb(46, 46, 46, 0);
+
   /* --clr-prisma-background-gradient: linear-gradient(270deg,
       rgba(73, 73, 73, 0.8),
       rgb(46, 46, 46, 0.8)); */
@@ -556,6 +564,7 @@ Cookie Consent
 Section Triangle Transitions
 ===============
 */
+
 .triangle-one,
 .triangle-two,
 .triangle-three {
@@ -834,7 +843,7 @@ p {
 .btn {
   text-transform: uppercase;
   background: var(--clr-dark);
-  color: var(--clr-background-minor);
+  color: var(--clr-background-major);
   /* padding: 0.375rem 0.75rem; */
   letter-spacing: var(--spacing);
   display: inline-block;
@@ -844,7 +853,8 @@ p {
   /* font-size: 0.7rem; */
   border: 2px solid transparent;
   cursor: pointer;
-  box-shadow: var(--default-btn-shadow);
+  box-shadow: var(-default-btn-shadow);
+  border-radius: 50px;
 }
 
 .btn:hover {
@@ -1748,7 +1758,7 @@ About Component
   bottom: 0;
   left: 0;
   position: relative;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   opacity: 0.8;
   z-index: 98;
 }
@@ -2224,7 +2234,7 @@ Projects
 }
 
 .project-desc {
-  word-spacing: 15px;
+  /* word-spacing: 15px; */
   text-align: justify;
   color: var(--clr-grey-3);
   background: var(--clr-background-minor);
@@ -3485,6 +3495,7 @@ textarea:focus {
 
 .submit-btn {
   display: block;
+  border-radius: unset!important;
   width: 100%;
   padding: 1rem;
 }
@@ -3609,7 +3620,7 @@ Privacy Policy
 }
 
 .animationToggle {
-  background: rgb(65, 65, 65);
+  background: var(--clr-animation-toggle-wrapper);
   padding: 5px;
   position: absolute;
   text-align: center;
@@ -3624,11 +3635,11 @@ Privacy Policy
 }
 
 .stopAnim {
-  color: rgb(198 102 102);
+  color: var(--clr-stop-animation)
 }
 
 .startAnim {
-  color: rgb(74, 177, 130);
+  color: var(--clr-start-animation)
 }
 
 .animationToggle h6 {
