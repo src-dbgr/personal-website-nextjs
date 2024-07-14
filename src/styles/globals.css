@@ -1736,16 +1736,32 @@ About Component
   overflow: hidden;
   background: var(--clr-about-img-background);
   padding-top: 3rem;
-  width: 90%;
+  /* width: 90%; */
   border: 1rem;
   border-style: solid;
   border-color: var(--clr-about-img-border);
   position: relative;
   transition: var(--transition);
-  /* border-radius: 50% !important; */
+  border-radius: 50% !important;
   box-shadow: 1px 1px 2px var(--clr-dark-shadow);
   z-index: 100;
+
+  width: 95%;
+  height: 0;
+  padding-bottom: 80%;
+  overflow: hidden;
+  position: relative;
 }
+
+.about-img img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 
 /* .about-img img {
   width: 100%;
@@ -1767,7 +1783,7 @@ About Component
   display: inline-block;
   text-align: center;
   overflow: hidden;
-  margin-top: 3rem;
+  
   border-left: 0;
   border-right: 0;
   border-bottom: 0;
