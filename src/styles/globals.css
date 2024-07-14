@@ -1742,7 +1742,7 @@ About Component
   border-color: var(--clr-about-img-border);
   position: relative;
   transition: var(--transition);
-  border-radius: 50% !important;
+  /* border-radius: 50% !important; */
   box-shadow: 1px 1px 2px var(--clr-dark-shadow);
   z-index: 100;
 }
