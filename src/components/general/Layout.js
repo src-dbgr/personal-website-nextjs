@@ -18,22 +18,22 @@ const Layout = ({ children, darkFooter, cookies }) => {
   const state = useContext(GlobalStateContext);
   const dispatch = useContext(GlobalDispatchContext);
 
-  function disableCookieConsent() {
+  const disableCookieConsent = React.useCallback(() => {
     dispatch({ type: "COOKIE_CONSENT" });
-  }
+  }, [dispatch]);
 
-  function checkCookieState() {
+  const checkCookieState = React.useCallback(() => {
     if (
       typeof window !== "undefined" &&
       localStorage.getItem("CONSENTRXCSQECJWXXK") === "true"
     ) {
       disableCookieConsent();
     }
-  }
+  }, [disableCookieConsent]);
 
   useEffect(() => {
     checkCookieState();
-  }, []);
+  }, [checkCookieState]);
 
   function navigateToHash(isActive) {
     const isBrowser = () => typeof window !== "undefined";

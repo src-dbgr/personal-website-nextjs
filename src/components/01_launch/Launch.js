@@ -4,22 +4,25 @@ import anime from "animejs";
 import Seo from "../general/Seo";
 import { GlobalStateContext } from "../../context/GlobalContextProvider";
 
-let introAnimationDisabled = false;
-
 const Launch = (props) => {
   const router = useRouter();
   const { pathname, query } = router;
   const theme = useContext(GlobalStateContext).theme;
+  const [shouldSkipAnimation, setShouldSkipAnimation] = useState(false);
 
   useEffect(() => {
-
-    const skipParams = ['n', 'a', 'sk'];
+    const skipParams = ['n', 'a', 'sk', 'skip'];
     
-    introAnimationDisabled = Object.keys(query).some(key => {
+    const skipAnimation = Object.keys(query).some(key => {
       return skipParams.some(param => 
         key.toLowerCase().includes(param.toLowerCase())
       );
     });
+
+    setShouldSkipAnimation(skipAnimation);
+  }, [query]);
+
+  useEffect(() => {
 
     function isIE() {
       const ua = window.navigator.userAgent;
@@ -27,6 +30,7 @@ const Launch = (props) => {
       const trident = ua.indexOf("Trident/"); //IE 11
       return msie > 0 || trident > 0;
     }
+
     function clickIE(e) {
       try {
         document
@@ -59,7 +63,7 @@ const Launch = (props) => {
         console.log("issue occured selecting document elements");
         console.error(err);
       }
-    } else if (introAnimationDisabled) {
+    } else if (shouldSkipAnimation) {
       skipAnimation();
     } else {
       let launchAnimation = function () {
@@ -421,7 +425,7 @@ const Launch = (props) => {
 
       descriptionAnimation();
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [shouldSkipAnimation]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
