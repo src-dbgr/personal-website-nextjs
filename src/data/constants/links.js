@@ -82,12 +82,16 @@ const Links = function (props) {
   }, []);
 
   const dispatch = useContext(GlobalDispatchContext);
-  const { navanimation, theme } = useContext(GlobalStateContext);
+  const { navanimation, theme, nvaopen } = useContext(GlobalStateContext);
 
   const handleThemeToggle = () => {
-    dispatch({ type: "TOGGLE_THEME" });
-    dispatch({ type: "NAV_TOGGLE_LOGO" });
-    dispatch({ type: "NAV_CIRC" });
+    if (nvaopen || window.innerWidth < 768) {
+      dispatch({ type: "TOGGLE_THEME" });
+      dispatch({ type: "NAV_TOGGLE_LOGO" });
+      dispatch({ type: "NAV_CIRC" });
+    } else {
+      dispatch({ type: "TOGGLE_THEME" });
+    }
   };
 
   return (
