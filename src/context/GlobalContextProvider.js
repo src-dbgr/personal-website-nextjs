@@ -42,7 +42,7 @@ function reducer(state, action) {
     case "NAV_TOGGLE_LOGO": {
       return {
         ...state,
-        navopen: state.navopen ? false : true,
+        navopen: !state.navopen,
       };
     }
     case "NAV_ANIMATION": {
