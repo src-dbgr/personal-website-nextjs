@@ -564,6 +564,9 @@ Cookie Consent
 Section Triangle Transitions
 ===============
 */
+.gradient-path {
+  fill: var(--clr-background-minor);
+}
 
 .triangle-one,
 .triangle-two,
@@ -627,19 +630,21 @@ Section Triangle Transitions
 @keyframes mountain_anim {
   0% {
     fill: var(--clr-background-major);
-    stroke-width: 0;
+    stroke: var(--clr-topbar-font-hover);
+    stroke-width: 1;
   }
   50% {
-    stroke-width: 0;
+    stroke: var(--clr-topbar-font-hover);
+    stroke-width: 2;
   }
   80% {
     stroke: var(--clr-mountain-stroke);
-    stroke-width: 0.3;
+    stroke-width: 3;
   }
   100% {
     fill: var(--clr-background-minor);
     stroke: var(--clr-topbar-font-hover);
-    stroke-width: 3;
+    stroke-width: 4;
   }
 }
 
