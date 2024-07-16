@@ -126,6 +126,11 @@ const Navbar = (props) => {
   const theme = useContext(GlobalStateContext).theme;
   const navanimation = useContext(GlobalStateContext).navanimation;
 
+  const handleToggle = () => {
+    setTimeout(() => dispatch({ type: "NAV_TOGGLE_LOGO" }));
+    setTimeout(() => dispatch({ type: "NAV_CIRC" }));
+  };
+
   return (
     <nav
       className={`${navopen
@@ -548,13 +553,10 @@ const Navbar = (props) => {
             </svg>
           </div>
           <button
-            type="button"
-            className="toggle-btn"
-            onClick={() => {
-              setTimeout(() => dispatch({ type: "NAV_TOGGLE_LOGO" }));
-              setTimeout(() => dispatch({ type: "NAV_CIRC" }));
-            }}
-          >
+        type="button"
+        className="toggle-btn"
+        onClick={handleToggle}
+      >
             <svg
               id="toggle"
               xmlns="http://www.w3.org/2000/svg"
