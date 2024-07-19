@@ -243,6 +243,7 @@ Cookie Consent
 .cookie-consent,
 .cookie-consent .btn {
   font-family: Arial, Helvetica, sans-serif;
+  border-radius: unset!important;
 }
 
 .enabled-text-required,
