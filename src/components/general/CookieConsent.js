@@ -117,24 +117,15 @@ const CookieConsent = ({ cookies }) => {
 
   const setAll = (val) => {
     setGglAnalyticsCheckboxState(val);
-    setGglTagmgrCheckboxState(val);
-    setFbCheckboxPixelState(val);
-    setTiktokCheckboxPixelState(val);
-    setHotjarCheckboxState(val);
+    // setGglTagmgrCheckboxState(val);
+    // setFbCheckboxPixelState(val);
+    // setTiktokCheckboxPixelState(val);
+    // setHotjarCheckboxState(val);
   };
 
   useEffect(() => {
     setAll(toggleAllState);
   }, [toggleAllState]);
-
-  useEffect(() => {
-    if (!isClient) return;
-
-    if (gglAnalyticsCheckboxState) {
-      initGoogleAnalytics(GOOGLE_ANALYTICS_ID); // Verwendung der Umgebungsvariablen
-    }
-    // Füge hier die Initialisierung weiterer Tracking-Dienste hinzu
-  }, [isClient, gglAnalyticsCheckboxState, gglTagmgrCheckboxState, fbPixelCheckboxState, tiktokPixelCheckboxState, hotjarCheckboxState]);
 
   const toggleAll = () => {
     setToggleAllState((prevState) => !prevState);
@@ -150,25 +141,49 @@ const CookieConsent = ({ cookies }) => {
         setCookie(cookie.name, true, 365);
       }
     });
+    
+    // Aktualisiere alle Checkbox-States
+    setGglAnalyticsCheckboxState(true);
+    // setGglTagmgrCheckboxState(true);
+    // setFbCheckboxPixelState(true);
+    // setTiktokCheckboxPixelState(true);
+    // setHotjarCheckboxState(true);
+    
+    // Aktualisiere localStorage
+    setValue('gglAnalyticsCheckboxState', true);
+    // setValue('gglTagmgrCheckboxState', true);
+    // setValue('fbPixelCheckboxState', true);
+    // setValue('tiktokPixelCheckboxState', true);
+    // setValue('hotjarCheckboxState', true);
+    
     setBannerHidden(true);
     setValue('CONSENTRXCSQECJWXXK', true);
+  
+    // Initialisiere Google Analytics
+    initGoogleAnalytics(GOOGLE_ANALYTICS_ID);
   };
 
   const EnableAnalytics = () => {
     if (gglAnalyticsCheckboxState) {
       setCookie(cookieNames.current.gglanalytics, true, 365);
+      setValue('gglAnalyticsCheckboxState', true);
+      initGoogleAnalytics(GOOGLE_ANALYTICS_ID);
     }
     if (gglTagmgrCheckboxState) {
       setCookie(cookieNames.current.ggltagmgr, true, 365);
+      setValue('gglTagmgrCheckboxState', true);
     }
     if (fbPixelCheckboxState) {
       setCookie(cookieNames.current.fbpixel, true, 365);
+      setValue('fbPixelCheckboxState', true);
     }
     if (tiktokPixelCheckboxState) {
       setCookie(cookieNames.current.tiktokpixel, true, 365);
+      setValue('tiktokPixelCheckboxState', true);
     }
     if (hotjarCheckboxState) {
       setCookie(cookieNames.current.hotjar, true, 365);
+      setValue('hotjarCheckboxState', true);
     }
     setBannerHidden(true);
     setValue('CONSENTRXCSQECJWXXK', true);
