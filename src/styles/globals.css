@@ -1154,10 +1154,30 @@ NAVBAR
   transition: var(--transition);
 }
 
-#triangle_nav:hover {
+#toggle, .toggle-btn, #triangle_nav {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+}
+
+#toggle:focus, .toggle-btn:focus, #triangle_nav:focus {
+  outline: none;
+}
+
+#toggle:active, .toggle-btn:active, #triangle_nav:active {
+  outline: none;
+  background: transparent;
+}
+
+/* #triangle_nav:hover {
   stroke: var(--clr-triangle-nav-stroke);
   stroke-width: 0.3rem;
-}
+} */
 
 .nav-links {
   font-size: 1rem;
@@ -1453,7 +1473,7 @@ Hero
 
 .hero {
   margin-top: var(--neg-page-top-space);
-  height: 100vh;
+  height: 100dvh;
   background: var(--clr-background-major);
   position: relative !important;
   overflow-x: hidden !important;
