@@ -3,6 +3,7 @@ import {
   GlobalStateContext,
 } from "../../context/GlobalContextProvider";
 import React, { useEffect, useContext } from "react";
+import { useRouter } from 'next/router';
 import Link from "next/link";
 import Aos from "aos";
 import "aos/dist/aos.css";
@@ -47,23 +48,61 @@ import "aos/dist/aos.css";
 //   );
 // });
 
+const CustomLink = ({ href, children }) => {
+  const router = useRouter();
+  const dispatch = useContext(GlobalDispatchContext);
+  const { navopen } = useContext(GlobalStateContext);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (navopen) {
+      dispatch({ type: "NAV_TOGGLE_LOGO" });
+      dispatch({ type: "NAV_CIRC" });
+
+      // Verzögert die navigation um das link menü nicht abrupt zu schliessen
+      setTimeout(() => {
+        router.push(href);
+      }, 450); // css trantisition zeit ->   --transition: all 0.5s ease;
+    } else {
+      router.push(href);
+    }
+
+  };
+
+  return (
+    <a href={href} onClick={handleClick}>
+      {children}
+    </a>
+  );
+};
+
 const Links = function (props) {
   useEffect(() => {
     Aos.init({ duration: 400 });
   }, []);
 
   const dispatch = useContext(GlobalDispatchContext);
-  const navanimation = useContext(GlobalStateContext).navanimation;
+  const { navanimation, theme, nvaopen } = useContext(GlobalStateContext);
+
+  const handleThemeToggle = () => {
+    if (nvaopen || window.innerWidth < 768) {
+      dispatch({ type: "TOGGLE_THEME" });
+      dispatch({ type: "NAV_TOGGLE_LOGO" });
+      dispatch({ type: "NAV_CIRC" });
+    } else {
+      dispatch({ type: "TOGGLE_THEME" });
+    }
+  };
+
   return (
     <ul className={`page-links ${props.styleClass ? props.styleClass : ""}`}>
-      {/* {tempLinks} */}
       <li
         key="1"
         data-aos={`${navanimation ? "fade-down" : ""}`}
         data-aos-once="true"
         data-aos-delay="0"
       >
-        <Link href="/" legacyBehavior><a>home</a></Link>
+        <CustomLink href="/">home</CustomLink>
       </li>
       <li
         key="2"
@@ -71,7 +110,7 @@ const Links = function (props) {
         data-aos-once="true"
         data-aos-delay={`${navanimation ? "150" : "0"}`}
       >
-        <Link href="/about" legacyBehavior><a>about</a></Link>
+        <CustomLink href="/about">about</CustomLink>
       </li>
       <li
         key="3"
@@ -79,7 +118,7 @@ const Links = function (props) {
         data-aos-once="true"
         data-aos-delay={`${navanimation ? "300" : "0"}`}
       >
-        <Link href="/projects" legacyBehavior><a>projects</a></Link>
+        <CustomLink href="/projects">projects</CustomLink>
       </li>
       <li
         key="4"
@@ -87,7 +126,7 @@ const Links = function (props) {
         data-aos-once="true"
         data-aos-delay={`${navanimation ? "450" : "0"}`}
       >
-        <Link href="/blog" legacyBehavior><a>blog</a></Link>
+        <CustomLink href="/blog">blog</CustomLink>
       </li>
       <li
         key="5"
@@ -95,19 +134,15 @@ const Links = function (props) {
         data-aos-once="true"
         data-aos-delay={`${navanimation ? "600" : "0"}`}
       >
-        <Link href="/contact" legacyBehavior><a>contact</a></Link>
+        <CustomLink href="/contact">contact</CustomLink>
       </li>
 
       <div
         id="themeiconwrapper"
-        onClick={() => {
-          dispatch({ type: "TOGGLE_THEME" });
-        }}
-        onKeyDown={() => {
-          dispatch({ type: "TOGGLE_THEME" });
-        }}
+        onClick={handleThemeToggle}
+        onKeyDown={(e) => e.key === 'Enter' && handleThemeToggle()}
         role="button"
-        tabIndex={-1}
+        tabIndex={0}
         data-aos={`${navanimation ? "fade-down" : ""}`}
         data-aos-once="true"
         data-aos-delay={`${navanimation ? "1500" : "0"}`}

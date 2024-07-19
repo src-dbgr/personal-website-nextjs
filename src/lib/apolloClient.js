@@ -35,6 +35,7 @@ const apolloClient = new ApolloClient({
             }
         }
     }),
+    connectToDevTools: process.env.NODE_ENV === 'development',// Diese Zeile unterdrückt die DevTools-Meldung in der browser konsole im prod mode
 });
 
 export default apolloClient;

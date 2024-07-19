@@ -1,8 +1,8 @@
 import React, { useEffect, useContext } from "react";
 import { motion } from "framer-motion";
+import dynamic from 'next/dynamic';
 import Navbar from "../02_navigation/Navbar";
 import Topbar from "../02_navigation/Topbar";
-import Launch from "../01_launch/Launch";
 import Footer from "../07_footer/Footer";
 import CookieConsent from "./CookieConsent";
 import {
@@ -10,54 +10,30 @@ import {
   GlobalStateContext,
 } from "../../context/GlobalContextProvider";
 
+const Launch = dynamic(() => import('../01_launch/Launch'), { ssr: false });
+
 const Layout = ({ children, darkFooter, cookies }) => {
   const isIndexPage = true; // TODO ==> Change, compare to location pathname or slug!
 
-  const theme = useContext(GlobalStateContext).theme;
+  const state = useContext(GlobalStateContext);
+  const dispatch = useContext(GlobalDispatchContext);
 
-  function disableCookieConsent() {
+  const disableCookieConsent = React.useCallback(() => {
     dispatch({ type: "COOKIE_CONSENT" });
-  }
+  }, [dispatch]);
 
-  function checkCookieState() {
-    let myStorage = window.localStorage;
-
+  const checkCookieState = React.useCallback(() => {
     if (
-      state.cookieconsentopen &&
       typeof window !== "undefined" &&
-      myStorage.getItem("CONSENTRXCSQECJWXXK")
+      localStorage.getItem("CONSENTRXCSQECJWXXK") === "true"
     ) {
-      if (JSON.parse(myStorage.getItem("CONSENTRXCSQECJWXXK"))) {
-        disableCookieConsent();
-      }
+      disableCookieConsent();
     }
-  }
+  }, [disableCookieConsent]);
 
   useEffect(() => {
-    try {
-      if (document.body.classList.contains("dark-theme")) {
-        if (theme === "light") {
-          toggleDarkTheme();
-        }
-      } else {
-        if (theme === "dark") {
-          toggleDarkTheme();
-        }
-      }
-    } catch (err) {
-      console.log("issue occured assigning theme");
-      console.error(err);
-    }
-    return () => {};
-  }, [theme]);
-
-  function toggleDarkTheme() {
-    document.body.classList.toggle("dark-theme");
-    document.documentElement.classList.toggle("htmlScrollbarDarkMode");
-  }
-
-  const dispatch = useContext(GlobalDispatchContext);
-  const state = useContext(GlobalStateContext);
+    checkCookieState();
+  }, [checkCookieState]);
 
   function navigateToHash(isActive) {
     const isBrowser = () => typeof window !== "undefined";
@@ -79,16 +55,19 @@ const Layout = ({ children, darkFooter, cookies }) => {
 
   useEffect(() => {
     let isActive = true;
-    checkCookieState(); // on mount check
     if (!state.animation) {
       navigateToHash(isActive);
     }
     return () => {
       isActive = false;
-    }; // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
   }, [state.animation]);
 
-    // disable in production
+  if (typeof window === 'undefined') {
+    return null; // or a loading placeholder
+  }
+  
+  // disable in production
   // disabling on first render
   // useEffect(() => {
   //   const noop = () => { };
@@ -121,7 +100,6 @@ const Layout = ({ children, darkFooter, cookies }) => {
   //     window.console[method] = noop;
   //   });
   // }, []);
-
   return (
     <>
       {state.cookieconsentopen && <CookieConsent cookies={cookies} />}

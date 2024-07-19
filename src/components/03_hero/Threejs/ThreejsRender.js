@@ -1,7 +1,7 @@
 import {
   GlobalStateContext,
 } from "../../../context/GlobalContextProvider";
-import React, { Suspense, useState, useContext, useCallback } from "react";
+import React, { Suspense, useState, useContext, useEffect, useRef } from "react";
 import Sphere from "./Sphere";
 import Tetrahedron from "./Tetrahedron";
 import Plane from "./Plane";
@@ -11,10 +11,38 @@ import { ResizeObserver } from "@juggle/resize-observer";
 const ThreejsRender = () => {
   const [animation, setAnimation] = useState(false);
   const theme = useContext(GlobalStateContext).theme;
+  const canvasRef = useRef(null);
+  const [key, setKey] = useState(0); // Key to force re-render
 
-  const toggleAnimation = useCallback(() => {
-    setAnimation(prev => !prev);
+  useEffect(() => {
+    const handleContextLost = (event) => {
+      event.preventDefault();
+      console.error("WebGL context lost");
+      // Optionally reinitialize the scene or reset the key to force re-render
+      setKey(prevKey => prevKey + 1);
+    };
+
+    const handleContextRestored = () => {
+      console.log("WebGL context restored");
+    };
+
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.addEventListener("webglcontextlost", handleContextLost, false);
+      canvas.addEventListener("webglcontextrestored", handleContextRestored, false);
+    }
+
+    return () => {
+      if (canvas) {
+        canvas.removeEventListener("webglcontextlost", handleContextLost);
+        canvas.removeEventListener("webglcontextrestored", handleContextRestored);
+      }
+    };
   }, []);
+
+  const toggleAnimation = () => {
+    setAnimation(!animation);
+  };
 
   return (
     <div className="animationWrapper">
@@ -24,14 +52,9 @@ const ThreejsRender = () => {
           role="button" 
           tabIndex="0" 
           onClick={toggleAnimation} 
-          onKeyDown={(e) => { if(e.key === 'Enter') toggleAnimation(); }}
+          onKeyDown={(e) => { if (e.key === 'Enter') toggleAnimation(); }}
         >
-          {animation ? (
-            <h5 className="stopAnim">STOP ANIMATION</h5>
-          ) : (
-            <h5 className="startAnim">START ANIMATION</h5>
-          )}
-          <h6>COMPUTATION HEAVY</h6>
+          {animation ? (<h5 className="stopAnim">STOP ANIMATION</h5>) : (<h5 className="startAnim">START ANIMATION</h5>)}
         </div>
         <svg className="arrows">
           <path d="M0 0l30 32L60 0" className="a1"></path>
@@ -48,9 +71,17 @@ const ThreejsRender = () => {
           </div>
         </div>}>
           <Canvas
+            key={key} // Force re-render on context loss
+            ref={canvasRef}
             camera={{ fov: 75, near: 0.1, far: 500, position: [-2, 2, 3] }}
             className="trianglecanvas"
             resize={{ polyfill: ResizeObserver }}
+            onCreated={({ gl }) => {
+              gl.getContext().canvas.addEventListener('webglcontextlost', (event) => {
+                event.preventDefault();
+                setKey(prevKey => prevKey + 1); // Force re-render on context loss
+              });
+            }}
           >
             <ambientLight />
             <pointLight position={[-3, 3, -2]} intensity={20} color={0x767081} />
@@ -59,7 +90,7 @@ const ThreejsRender = () => {
             <pointLight position={[2, 1, 4]} intensity={5} color={0x8f76be} />
             <Sphere position={[1, 0.5, 0]} />
             <Tetrahedron position={[1, 0.5, 0]} />
-            <Plane position={[1, 0, 0]} />
+            {/* <Plane position={[1, 0, 0]} /> */}
           </Canvas>
         </Suspense>
       ) : (

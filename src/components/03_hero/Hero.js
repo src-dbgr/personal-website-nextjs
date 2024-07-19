@@ -1,17 +1,24 @@
 import { GlobalStateContext } from "../../context/GlobalContextProvider";
-import React, { useEffect, useContext } from "react";
-// import { Link } from "gatsby";
+import React, { useEffect, useContext, useState, useRef } from "react";
 import Link from "next/link";
 import Threejsrender from "./Threejs/ThreejsRender";
 import Aos from "aos";
 import "aos/dist/aos.css";
 
 const Hero = () => {
+  const svgRef = useRef(null);
+
+  const [isMounted, setIsMounted] = useState(false);
+  const { theme, navanimation } = useContext(GlobalStateContext);
+
   useEffect(() => {
-    Aos.init({ duration: 1000});
+    setIsMounted(true);
+    Aos.init({ duration: 1000 });
   }, []);
 
-  const navanimation = useContext(GlobalStateContext).navanimation;
+  if (!isMounted) {
+    return null; // oder ein Loading-Indikator
+  }
 
   return (
     <header className="hero">
@@ -87,6 +94,7 @@ const Hero = () => {
         </div>
       </div>
       <svg
+        ref={svgRef}
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
         width="4323.9"
@@ -144,7 +152,7 @@ const Hero = () => {
           </linearGradient>
         </defs>
         <path
-          fill="url(#c)"
+          className="gradient-path"
           d="M2214.8 250.7L2218.5 250.7 2304.5 250.7 2571.4 250.7 2598.3 250.7 2744.3 250.7 2762.8 250.7 2781 250.7 2867.3 250.7 2927.4 250.7 3015.9 250.7 3089.1 250.7 3269.6 250.7 3389.2 250.7 3520.7 250.7 3550.5 250.7 3569.7 250.7 3706.2 250.7 3712.8 250.7 3982.3 250.7 4040.8 250.7 4171 250.7 4240.3 250.7 4323.6 250.7 4323.6 176.4 4293.5 186.3 4238.3 160.4 4175 168.4 4122.5 133 4082.2 162.2 3949.2 61.7 3862 120.5 3806.9 105.5 3734.6 148.5 3672 149.4 3615.1 196.9 3614.8 196.7 3594.4 200.1 3534.1 142.3 3495.5 156.1 3446.2 121 3429.4 122.3 3394.4 90 3383.7 99.6 3312.6 59.2 3260.6 1.4 3159.4 111.5 3130.6 83.6 3093.7 51.4 3068.6 79 3040.6 84.5 2981 135.9 2919.7 142.3 2890.8 171.4 2887.4 168.9 2842.1 183.9 2793.6 161.1 2737.9 168.1 2691.6 136.9 2656.2 162.6 2539.2 74.2 2462.5 125.9 2413.9 112.8 2350.4 150.5 2295.3 151.4 2197.4 233 2098.5 150.7 2043.5 149.8 1979.9 112 1931.3 125.2 1854.6 73.4 1737.6 161.8 1702.2 136.2 1656 167.3 1600.2 160.3 1551.7 183.1 1506.5 168.2 1503 170.7 1474.1 141.6 1412.8 135.1 1353.2 83.7 1325.2 78.2 1300.1 50.7 1263.2 82.8 1234.4 110.7 1133.3 0.7 1081.2 58.5 1010.1 98.9 999.5 89.2 964.4 121.6 947.6 120.2 898.3 155.3 859.8 141.6 799.4 199.4 779 195.9 778.7 196.1 721.8 148.7 659.2 147.7 587 104.8 531.8 119.8 444.6 60.9 311.6 161.4 271.4 132.2 218.8 167.6 155.5 159.7 100.3 185.6 48.9 168.7 0.6 203.6 0.6 250.7"
         ></path>
         <g
