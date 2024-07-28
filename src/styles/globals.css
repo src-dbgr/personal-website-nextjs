@@ -884,7 +884,7 @@ p {
   font-size: 0.9rem;
   font-family: var(--ff-primary);
   text-align: center;
-  letter-spacing: var(--spacing-big);
+  letter-spacing: var(--spacing);
   border: none;
 }
 
@@ -2593,10 +2593,15 @@ Blog
   font-size: 0.85rem;
 }
 
+.blogs-center .fade-in-section:last-child {
+  padding-bottom: 1px;
+}
+
 @media screen and (min-width: 576px) {
   .blogs-center {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(368px, 1fr));
+    padding-bottom: 0;
     column-gap: 2rem;
   }
 }
