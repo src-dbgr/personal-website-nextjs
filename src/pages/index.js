@@ -25,7 +25,7 @@ const index = ({ customData, cookies }) => { // cookies als Prop hinzufügen
       <About  infomain={about} />
       <Experience jobs={jobs}/>
       <Projects projects={projects} title="Featured Projects" showLink />
-      <BlogsSection blogs={blogs} title="Latest Blog Articles" />
+      <BlogsSection blogs={blogs} title="Latest Blog Articles" showLink />
     </Layout>
   );
 };
