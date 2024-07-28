@@ -1478,6 +1478,7 @@ Hero
 
 .hero {
   margin-top: var(--neg-page-top-space);
+  height: 100vh; /* fallback */
   height: 100dvh;
   background: var(--clr-background-major);
   position: relative !important;
