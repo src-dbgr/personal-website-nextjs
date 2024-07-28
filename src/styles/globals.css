@@ -863,7 +863,7 @@ p {
   /* font-size: 0.7rem; */
   border: 2px solid transparent;
   cursor: pointer;
-  box-shadow: var(-default-btn-shadow);
+  box-shadow: var(--default-btn-shadow);
   border-radius: 50px;
 }
 
@@ -2015,8 +2015,21 @@ Jobs
   flex-direction: row;
   justify-content: center;
   margin: 0;
-  margin-bottom: var(--button-space);
+  margin-bottom: 3rem;
 }
+
+.btn-container button:first-child {
+ margin-right: 0.1rem;
+}
+
+.btn-container button:last-child {
+  margin-left: 0.1rem;
+ }
+
+.btn-container button:not(:first-child):not(:last-child) {
+  margin-left: 0.1rem;
+  margin-right: 0.1rem;
+} 
 
 .job-btn {
   background: transparent;
@@ -2030,7 +2043,6 @@ Jobs
   color: var(--clr-passive);
   font-size: 1rem;
   letter-spacing: var(--spacing);
-  margin: 0 0.1rem;
   transition: var(--transition-fast);
   cursor: pointer;
   padding: 0.25rem 0;
@@ -2171,7 +2183,8 @@ Projects
 
 
 .project-img-wrapper {
-  border: 0.25rem solid var(--clr-background-major-opaque) !important;
+  border: 0.25rem solid var(--clr-background-major-opaque);
+  border-bottom-style: unset;
   box-shadow: 1px -1px 2px var(--clr-dark-shadow) !important;
   max-height: 5rem;
   transition: var(--transition-fast);
