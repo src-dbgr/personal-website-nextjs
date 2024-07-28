@@ -16,7 +16,7 @@ import apolloClient from '../lib/apolloClient';
 import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 
 const AboutPage = ({ customData, cookies }) => {
-  const [isDefault, setDefault] = useState(true);
+  const [isDefault, setDefault] = useState(false);
 
   function flipRadioButton() {
     setDefault((isDefault) => !isDefault);
@@ -66,14 +66,14 @@ const AboutPage = ({ customData, cookies }) => {
               <div className="about-download-radio-wrapper">
                 <p>RÉSUMÉ BACKGROUND:</p>
                 <label>
-                  <input type="radio" value="Default" name="resume" checked={isDefault} onChange={flipRadioButton}/>
-                  <span className="overlay"></span>
-                  <span className="text-radio">DEFAULT</span>
-                </label>
-                <label>
                   <input type="radio" value="White" name="resume" checked={!isDefault} onChange={flipRadioButton}/>
                   <span className="overlay"></span>
                   <span className="text-radio">WHITE</span>
+                </label>                
+                <label>
+                  <input type="radio" value="Default" name="resume" checked={isDefault} onChange={flipRadioButton}/>
+                  <span className="overlay"></span>
+                  <span className="text-radio">DEFAULT</span>
                 </label>
               </div>
             </div>
