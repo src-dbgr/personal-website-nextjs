@@ -1478,9 +1478,8 @@ Hero
 
 .hero {
   margin-top: var(--neg-page-top-space);
-  /* height: 100vh;
-  height: 100dvh; */
-  height: calc(100vh - env(safe-area-inset-bottom));
+  /* height: 100vh; */
+  height: 100svh;
   background: var(--clr-background-major);
   position: relative !important;
   overflow-x: hidden !important;
