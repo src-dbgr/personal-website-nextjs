@@ -2046,7 +2046,7 @@ Jobs
 
 .job-btn:hover {
   background: var(--clr-background-minor-opaque);
-  color: var(--clr-passive);
+  /* color: var(--clr-passive); */
   box-shadow: 0 3px var(--clr-green-minor);
 }
 
