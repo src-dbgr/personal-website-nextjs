@@ -674,16 +674,16 @@ html {
 
 .dark-launch-style {
   overflow: hidden !important;
-  width: 100vw;
-  height: 100vh;
+  width: 100vw!important;
+  height: 100vh!important;
   background: radial-gradient(rgb(46, 46, 46) rgb(51, 51, 51)) !important;
   background-color: radial-gradient(rgb(46, 46, 46) rgb(51, 51, 51)) !important;
 }
 
 .light-launch-style {
   overflow: hidden !important;
-  width: 100vw;
-  height: 100vh;
+  width: 100vw!important;
+  height: 100vh!important;
   background: radial-gradient(rgb(181, 178, 166) rgb(150, 149, 141)) !important;
   background-color: radial-gradient(rgb(181, 178, 166) rgb(150, 149, 141)) !important;
 }
@@ -1479,7 +1479,7 @@ Hero
 .hero {
   margin-top: var(--neg-page-top-space);
   /* height: 100vh; */
-  height: 100vh;
+  height: 100svh!important;
   background: var(--clr-background-major);
   position: relative !important;
   overflow-x: hidden !important;
