@@ -17,6 +17,11 @@ import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 
 const AboutPage = ({ customData, cookies }) => {
   const [isDefault, setDefault] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
 
   function flipRadioButton() {
     setDefault((isDefault) => !isDefault);
@@ -25,20 +30,25 @@ const AboutPage = ({ customData, cookies }) => {
   const { about, stations, categories, techstacks } = customData;
 
   return (
-    <Layout darkFooter={false} cookies={cookies}> 
-      <Seo title="About" description={""}/>
+    <Layout darkFooter={false} cookies={cookies}>
+      <Seo title="About" description={""} />
       <section className="about-page">
         <Title title={about.title} />
         <div className="section section-center about-component-center">
           <FadeInSection>
             <article key="1" className="about-component shadow-box">
               <div className="ball-icon-wrapper">
-                <BsCircleFill id="bs-circle-fill" className="about-component-icon"/>
-                <IoTriangleSharp id="io-triangle-sharp" className="about-component-icon"/>
+                <BsCircleFill id="bs-circle-fill" className="about-component-icon" />
+                <IoTriangleSharp id="io-triangle-sharp" className="about-component-icon" />
               </div>
               <h4>Who am I?</h4>
               <div className="underline"></div>
-              <p>{about.info}</p>
+              <div className={`about-text ${isExpanded ? 'expanded' : 'colappsed'}`}>
+                <p>{about.info}</p>
+              </div>
+              <button className="about-btn-toggle" onClick={toggleExpand}>
+                {isExpanded ? 'SHOW LESS' : 'SHOW MORE'}
+              </button>
               <div className="about-stack">
                 {about.stack.map((item) => (
                   <span key={item.id}>{item.title}</span>
@@ -49,7 +59,7 @@ const AboutPage = ({ customData, cookies }) => {
           <FadeInSection>
             <article key="2" className="about-component about-img-container">
               <div className="about-img" id="paimg">
-                <Image src={about.image.url} width={500} height={427} className="about-default-img" alt={about.title}/>
+                <Image src={about.image.url} width={500} height={427} className="about-default-img" alt={about.title} />
               </div>
             </article>
           </FadeInSection>
@@ -59,19 +69,19 @@ const AboutPage = ({ customData, cookies }) => {
             <div className="resume-wrapper">
               <a href={isDefault ? "/resume_sb_df.pdf" : "/resume_sb_wh.pdf"} className="btn center-btn">
                 <span className="btn">
-                  <MdFileDownload className="icon-margin"/>
+                  <MdFileDownload className="icon-margin" />
                   RÉSUMÉ
                 </span>
               </a>
               <div className="about-download-radio-wrapper">
                 <p>RÉSUMÉ BACKGROUND:</p>
                 <label>
-                  <input type="radio" value="White" name="resume" checked={!isDefault} onChange={flipRadioButton}/>
+                  <input type="radio" value="White" name="resume" checked={!isDefault} onChange={flipRadioButton} />
                   <span className="overlay"></span>
                   <span className="text-radio">WHITE</span>
-                </label>                
+                </label>
                 <label>
-                  <input type="radio" value="Default" name="resume" checked={isDefault} onChange={flipRadioButton}/>
+                  <input type="radio" value="Default" name="resume" checked={isDefault} onChange={flipRadioButton} />
                   <span className="overlay"></span>
                   <span className="text-radio">DEFAULT</span>
                 </label>
@@ -80,10 +90,10 @@ const AboutPage = ({ customData, cookies }) => {
           </div>
         </FadeInSection>
         <FadeInSection>
-          <Technologies techstacks={techstacks}/>
+          <Technologies techstacks={techstacks} />
         </FadeInSection>
         <FadeInSection>
-          <Stations stations={stations} categories={categories}/>
+          <Stations stations={stations} categories={categories} />
         </FadeInSection>
       </section>
     </Layout>
