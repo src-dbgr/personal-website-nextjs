@@ -1676,11 +1676,14 @@ About Component
   /* width: 100%; */
 }
 
-.about-component {
+.about-component, .about-info-main-wrapper {
+  /* display: flex;
+  flex-direction: column; */
   background: var(--clr-background-major);
   color: var(--clr-dark);
   padding: var(--border-thickness) var(--border-thickness);
-  margin-bottom: 2rem;
+  /* margin-bottom: 2rem; */
+  margin-bottom: auto;
   text-align: center;
   -webkit-transition: var(--transition);
   transition: var(--transition);
@@ -1778,8 +1781,8 @@ About Component
   border-radius: 50% !important;
   box-shadow: 1px 1px 2px var(--clr-dark-shadow);
   z-index: 100;
-  width: 90%;
-  height: 90%;
+  width: 80%;
+  height: 80%;
   overflow: hidden;
   position: relative;
 }
@@ -1844,7 +1847,6 @@ About Component
 .skill-set {
   display: grid;
   grid-template-columns: repeat(3, minmax(100px, 200px));
-  padding: 0;
   margin: 20px 0 0 0;
   overflow: hidden;
   list-style: none;
@@ -1929,7 +1931,7 @@ About Page
 }
 
 .about-text.colappsed {
-  max-height: 275px;
+  max-height: 300px;
   transition: var(--transition-fast);
 }
 
@@ -2178,7 +2180,6 @@ Jobs
     grid-template-columns: 200px 1fr;
     column-gap: var(--button-space);
     padding-left: 26px;
-    /* background: yellow; */
   }
 
   .btn-container {
