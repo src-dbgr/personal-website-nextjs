@@ -1936,7 +1936,7 @@ About Page
 }
 
 .about-text.expanded {
-  max-height: 1500px;
+  max-height: 2000px;
   filter: none;
   transition: var(--transition-fast);
 }
