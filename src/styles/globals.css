@@ -939,16 +939,25 @@ Launch
 ==========
 */
 
-.imagewrapper {
+  /* CHANGE BACKGROUND to background: var(--clr-launch-body-background-radial-gradient); when using light mode */
+  /* background: var(--clr-launch-body-background-radial-gradient); */
+/* .imagewrapper {
   height: 100vh;
   width: 100vw !important;
   position: relative;
-  /* CHANGE BACKGROUND to background: var(--clr-launch-body-background-radial-gradient); when using light mode */
-  /* background: var(--clr-launch-body-background-radial-gradient); */
   background: var(--clr-background-major) !important;
   margin-top: var(--neg-page-top-space);
-  /* to compensate window height difference */
   overflow: hidden !important;
+} */
+
+.imagewrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--clr-background-major);
+  overflow: hidden;
 }
 
 #logo,
