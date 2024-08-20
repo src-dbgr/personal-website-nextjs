@@ -697,8 +697,8 @@ html {
 }
 
 body {
+  background: rgb(46, 46, 46); /*fallback color for initial render*/
   font-family: var(--ff-secondary);
-  background: var(--clr-background-major);
   /* margin-top: 0; */
   color: var(--clr-dark);
   line-height: 1.5;
@@ -706,6 +706,7 @@ body {
   margin-top: var(--navbar-height);
   letter-spacing: var(--spacing);
   -webkit-font-smoothing: antialiased;
+  background: var(--clr-background-major);
   /* overflow-x: hidden; */
 }
 
