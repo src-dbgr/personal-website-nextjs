@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import anime from "animejs";
 import Seo from "../general/Seo";
@@ -6,7 +6,7 @@ import { GlobalStateContext } from "../../context/GlobalContextProvider";
 
 /**
  * Launch Component
- * 
+ *
  * This component handles the initial launch animation for the application.
  * It includes SVG animations and interactive elements that respond to user input.
  *
@@ -19,14 +19,20 @@ const Launch = ({ finishLaunching }) => {
   const theme = useContext(GlobalStateContext).theme;
   const [shouldSkipAnimation, setShouldSkipAnimation] = useState(false);
 
+  // Memoized function to check if animation should be skipped
+  const checkSkipAnimation = useCallback((query) => {
+    const skipParams = ["n", "a", "sk", "skip"];
+    return Object.keys(query).some((key) =>
+      skipParams.some((param) =>
+        key.toLowerCase().includes(param.toLowerCase())
+      )
+    );
+  }, []);
+
   // Check if animation should be skipped based on URL parameters
   useEffect(() => {
-    const skipParams = ['n', 'a', 'sk', 'skip'];
-    const skipAnimation = Object.keys(query).some(key => 
-      skipParams.some(param => key.toLowerCase().includes(param.toLowerCase()))
-    );
-    setShouldSkipAnimation(skipAnimation);
-  }, [query]);
+    setShouldSkipAnimation(checkSkipAnimation(query));
+  }, [query, checkSkipAnimation]);
 
   // Initialize animation or skip based on shouldSkipAnimation state
   useEffect(() => {
@@ -35,71 +41,89 @@ const Launch = ({ finishLaunching }) => {
 
   /**
    * Skips the animation and proceeds to the main application
+   * 
+   * @useCallback is used here to memoize this function. This is beneficial because:
+   * 1. It prevents unnecessary re-creation of this function on every render.
+   * 2. It ensures that the same function instance is used across re-renders,
+   *    which can be important if this function is passed as a prop to child components.
+   * 3. It helps to optimize performance
    */
-  const skipAnimation = () => {
+  const skipAnimation = useCallback(() => {
+    document.documentElement.classList.remove(
+      theme === "dark" ? "dark-launch-style" : "light-launch-style"
+    );
     finishLaunching();
-  };
+  }, [theme, finishLaunching]); // only changes is theme or finishLaunching changes
 
   /**
    * Initializes the animation based on browser type
    */
-  const initializeAnimation = () => {
+  const initializeAnimation = useCallback(() => {
     isIE() ? handleIEAnimation() : setupMainAnimation();
-  };
+  }, []);
 
   /**
    * Checks if the current browser is Internet Explorer
    * @returns {boolean} True if the browser is IE, false otherwise
    */
   const isIE = () => {
-    const ua = window.navigator.userAgent;
-    const msie = ua.indexOf("MSIE ");
-    const trident = ua.indexOf("Trident/");
-    return msie > 0 || trident > 0;
+    if (typeof window !== "undefined") {
+      const ua = window.navigator.userAgent;
+      const msie = ua.indexOf("MSIE ");
+      const trident = ua.indexOf("Trident/");
+      return msie > 0 || trident > 0;
+    }
+    return false;
   };
 
   /**
    * Handles animation setup for Internet Explorer
    */
-  const handleIEAnimation = () => {
+  const handleIEAnimation = useCallback(() => {
     try {
-      document.querySelector("#logo").style.opacity = 1;
-      document.getElementById("triangle").onclick = clickIE;
+      const logo = document.querySelector("#logo");
+      if (logo) logo.style.opacity = 1;
+      const triangle = document.getElementById("triangle");
+      if (triangle) triangle.onclick = clickIE;
     } catch (err) {
       console.error("Error setting up IE animation:", err);
     }
-  };
+  }, []);
 
   /**
    * Handles click event for IE animation
    */
-  const clickIE = () => {
+  const clickIE = useCallback(() => {
     try {
-      document.querySelector("#triangle").removeEventListener("click", clickIE);
-      document.body.removeChild(document.getElementsByClassName("imagewrapper")[0]);
+      const triangle = document.querySelector("#triangle");
+      if (triangle) triangle.removeEventListener("click", clickIE);
+      const imageWrapper = document.getElementsByClassName("imagewrapper")[0];
+      if (imageWrapper) document.body.removeChild(imageWrapper);
       console.log("Removing Image Wrapper!");
     } catch (err) {
       console.error("Error in clickIE function:", err);
     }
-  };
+  }, []);
 
   /**
    * Sets up the main animation for non-IE browsers
    */
-  const setupMainAnimation = () => {
+  const setupMainAnimation = useCallback(() => {
     const { tl_stop, animations, introAnimation } = createLaunchAnimation();
     setupInitialAnimation(animations, introAnimation);
     setupEventListeners(tl_stop, animations, introAnimation);
     setupDescriptionAnimation();
-  };
+  }, []);
 
   /**
    * Creates the main launch animation
    * @returns {Object} Object containing timeline, animations, and intro animation
    */
-  const createLaunchAnimation = () => {
+  const createLaunchAnimation = useCallback(() => {
     try {
       const logoEl = document.querySelector("#logo");
+      if (!logoEl) throw new Error("Logo element not found");
+
       const trianglePathEls = logoEl.querySelectorAll(
         "#triangle polygon:not(#_12triangleback)"
       );
@@ -112,32 +136,36 @@ const Launch = ({ finishLaunching }) => {
       console.error("Error in launch animation setup:", err);
       return { tl_stop: null, animations: null, introAnimation: null };
     }
-  };
+  }, []);
 
   /**
    * Creates the breathing animation for the triangle elements
    * @param {NodeList} trianglePathEls - The triangle path elements
    * @returns {Object} Object containing breath animation and individual animations
    */
-  const createBreathAnimation = (trianglePathEls) => {
-    const animations = [];
-    const breathAnimation = anime({
-      begin: () => {
-        trianglePathEls.forEach((el, i) => {
-          animations.push(createTriangleAnimation(el, i, theme));
-        });
-      },
-      update: (ins) => {
-        animations.forEach((animation, i) => {
-          const percent = (1 - Math.sin(i * 0.35 + 0.0022 * ins.currentTime)) / 2;
-          animation.seek(animation.duration * percent);
-        });
-      },
-      duration: Infinity,
-      autoplay: false,
-    });
-    return { breathAnimation, animations };
-  };
+  const createBreathAnimation = useCallback(
+    (trianglePathEls) => {
+      const animations = [];
+      const breathAnimation = anime({
+        begin: () => {
+          trianglePathEls.forEach((el, i) => {
+            animations.push(createTriangleAnimation(el, i, theme));
+          });
+        },
+        update: (ins) => {
+          animations.forEach((animation, i) => {
+            const percent =
+              (1 - Math.sin(i * 0.35 + 0.0022 * ins.currentTime)) / 2;
+            animation.seek(animation.duration * percent);
+          });
+        },
+        duration: Infinity,
+        autoplay: false,
+      });
+      return { breathAnimation, animations };
+    },
+    [theme]
+  );
 
   /**
    * Creates animation for a single triangle element
@@ -146,11 +174,12 @@ const Launch = ({ finishLaunching }) => {
    * @param {string} theme - Current theme ('dark' or 'light')
    * @returns {Object} Anime.js animation object
    */
-  const createTriangleAnimation = (el, i, theme) => {
+  const createTriangleAnimation = useCallback((el, i, theme) => {
     return anime({
       targets: el,
       stroke: {
-        value: theme === "dark" ? "rgb(61, 139, 104)" : "rgba(150, 149, 141, 0.8)",
+        value:
+          theme === "dark" ? "rgb(61, 139, 104)" : "rgba(150, 149, 141, 0.8)",
         duration: 1000,
       },
       strokeWidth: [0, 1.5],
@@ -160,122 +189,132 @@ const Launch = ({ finishLaunching }) => {
       easing: "easeOutQuad",
       autoplay: false,
     });
-  };
+  }, []);
 
   /**
    * Creates the intro animation
    * @param {NodeList} trianglePathEls - The triangle path elements
    * @returns {Object} Anime.js timeline object
    */
-  const createIntroAnimation = (trianglePathEls) => {
-    return anime.timeline({ autoplay: false })
-      .add({
-        targets: trianglePathEls,
-        strokeDashoffset: {
-          value: [anime.setDashoffset, 0],
-          duration: 3900,
-          easing: "easeInOutCirc",
-          delay: anime.stagger(190, { direction: "reverse" }),
-        },
-        duration: 2000,
-        delay: anime.stagger(60, { direction: "reverse" }),
-        easing: "linear",
-      });
-  };
+  const createIntroAnimation = useCallback((trianglePathEls) => {
+    return anime.timeline({ autoplay: false }).add({
+      targets: trianglePathEls,
+      strokeDashoffset: {
+        value: [anime.setDashoffset, 0],
+        duration: 3900,
+        easing: "easeInOutCirc",
+        delay: anime.stagger(190, { direction: "reverse" }),
+      },
+      duration: 2000,
+      delay: anime.stagger(60, { direction: "reverse" }),
+      easing: "linear",
+    });
+  }, []);
 
   /**
    * Creates the stop animation
    * @returns {Object} Anime.js timeline object
    */
-  const createStopAnimation = () => {
-    return anime.timeline({
-      easing: "easeOutExpo",
-      duration: 500,
-      autoplay: false,
-    }).add({
-      targets: "#description, #outercircle",
-      rotate: [0, 360],
-      transformOrigin: ["50% 50% 0", "50% 60% 0"],
-      scale: 0.5,
-      opacity: 0,
-    }).add({
-      targets: "#innercircle",
-      opacity: 0,
-      scale: 1.4,
-      transformOrigin: ["50% 50% 0", "50% 50% 0"],
-    }).add({
-      targets: "#triangle polygon",
-      translateX: anime.stagger(10, {
-        grid: [1, -150],
-        from: "center",
-        axis: "x",
-      }),
-      translateY: anime.stagger(10, {
-        grid: [1, -150],
-        from: "center",
-        axis: "y",
-      }),
-      rotateZ: anime.stagger([0, 90], {
-        grid: [14, 5],
-        from: "center",
-        axis: "x",
-      }),
-      delay: (el, i) => i * 100,
-      easing: "easeInOutSine",
-    });
-  };
+  const createStopAnimation = useCallback(() => {
+    return anime
+      .timeline({
+        easing: "easeOutExpo",
+        duration: 500,
+        autoplay: false,
+      })
+      .add({
+        targets: "#description, #outercircle",
+        rotate: [0, 360],
+        transformOrigin: ["50% 50% 0", "50% 60% 0"],
+        scale: 0.5,
+        opacity: 0,
+      })
+      .add({
+        targets: "#innercircle",
+        opacity: 0,
+        scale: 1.4,
+        transformOrigin: ["50% 50% 0", "50% 50% 0"],
+      })
+      .add({
+        targets: "#triangle polygon",
+        translateX: anime.stagger(10, {
+          grid: [1, -150],
+          from: "center",
+          axis: "x",
+        }),
+        translateY: anime.stagger(10, {
+          grid: [1, -150],
+          from: "center",
+          axis: "y",
+        }),
+        rotateZ: anime.stagger([0, 90], {
+          grid: [14, 5],
+          from: "center",
+          axis: "x",
+        }),
+        delay: (el, i) => i * 100,
+        easing: "easeInOutSine",
+      });
+  }, []);
 
   /**
    * Sets up the initial animation
    * @param {Object} animations - The animations object
    * @param {Object} introAnimation - The intro animation object
    */
-  const setupInitialAnimation = (animations, introAnimation) => {
+  const setupInitialAnimation = useCallback((animations, introAnimation) => {
     const nodes = document.querySelectorAll(
       "#description,#outercircle,#innercircle,#triangle,#_12triangleback"
     );
-    document.querySelector("#_12triangleback").style.opacity = 0;
+    const triangleBack = document.querySelector("#_12triangleback");
+    if (triangleBack) triangleBack.style.opacity = 0;
     nodes.forEach((item) => {
       item.style.opacity = 0;
     });
 
-    document.querySelector("#logo").style.opacity = 1;
+    const logo = document.querySelector("#logo");
+    if (logo) logo.style.opacity = 1;
     const startAnim = createStartAnimation();
     startAnim.play();
     setTimeout(() => {
       introAnimation.play();
       animations.breathAnimation.play();
     }, 3000);
-  };
+  }, []);
 
   /**
    * Creates the start animation
    * @returns {Object} Anime.js timeline object
    */
-  const createStartAnimation = () => {
-    return anime.timeline({
-      easing: "easeOutExpo",
-      duration: 1000,
-    }).add({
-      targets: "#outercircle",
-      opacity: 1,
-      transformOrigin: ["50% 50% 0", "50% 50% 0"],
-      scale: [0, 0.5, 1],
-    }).add({
-      targets: "#triangle,#innercircle",
-      transformOrigin: ["50% 50% 0", "50% 50% 0"],
-      opacity: [0, 0.2, 0.5, 0.95],
-      rotate: [0, 1080],
-      scale: [0, 0.2, 1.1, 1],
-    }).add({
-      targets: "#description",
-      opacity: [0, 1],
-    }).add({
-      targets: "#triangle",
-      transformOrigin: ["50% 55% 0", "50% 55% 0"],
-      rotate: [0, 720],
-    });
-  };
+  const createStartAnimation = useCallback(() => {
+    return anime
+      .timeline({
+        easing: "easeOutExpo",
+        duration: 1000,
+      })
+      .add({
+        targets: "#outercircle",
+        opacity: 1,
+        transformOrigin: ["50% 50% 0", "50% 50% 0"],
+        scale: [0, 0.5, 1],
+      })
+      .add({
+        targets: "#triangle,#innercircle",
+        transformOrigin: ["50% 50% 0", "50% 50% 0"],
+        opacity: [0, 0.2, 0.5, 0.95],
+        rotate: [0, 1080],
+        scale: [0, 0.2, 1.1, 1],
+      })
+      .add({
+        targets: "#description",
+        opacity: [0, 1],
+      })
+      .add({
+        targets: "#triangle",
+        transformOrigin: ["50% 55% 0", "50% 55% 0"],
+        rotate: [0, 720],
+      });
+  }, []);
 
   /**
    * Sets up event listeners for animation control
@@ -283,11 +322,21 @@ const Launch = ({ finishLaunching }) => {
    * @param {Object} animations - The animations object
    * @param {Object} introAnimation - The intro animation object
    */
-  const setupEventListeners = (tl_stop, animations, introAnimation) => {
-    const triangleElement = document.querySelector("#triangle");
-    triangleElement.onclick = (event) => killAnimation(event, tl_stop, animations, introAnimation);
-    document.body.addEventListener("keydown", (event) => handleKeyDown(event, tl_stop, animations, introAnimation), true);
-  };
+  const setupEventListeners = useCallback(
+    (tl_stop, animations, introAnimation) => {
+      const triangleElement = document.querySelector("#triangle");
+      if (triangleElement) {
+        triangleElement.onclick = (event) =>
+          killAnimation(event, tl_stop, animations, introAnimation);
+      }
+      document.body.addEventListener(
+        "keydown",
+        (event) => handleKeyDown(event, tl_stop, animations, introAnimation),
+        true
+      );
+    },
+    []
+  );
 
   /**
    * Handles keydown events
@@ -296,13 +345,16 @@ const Launch = ({ finishLaunching }) => {
    * @param {Object} animations - The animations object
    * @param {Object} introAnimation - The intro animation object
    */
-  const handleKeyDown = (event, tl_stop, animations, introAnimation) => {
-    if (event.defaultPrevented) return;
-    if (event.key === "Enter") {
-      killAnimation(event, tl_stop, animations, introAnimation);
-      event.preventDefault();
-    }
-  };
+  const handleKeyDown = useCallback(
+    (event, tl_stop, animations, introAnimation) => {
+      if (event.defaultPrevented) return;
+      if (event.key === "Enter") {
+        killAnimation(event, tl_stop, animations, introAnimation);
+        event.preventDefault();
+      }
+    },
+    []
+  );
 
   /**
    * Stops the animation and transitions to the main application
@@ -311,47 +363,63 @@ const Launch = ({ finishLaunching }) => {
    * @param {Object} animations - The animations object
    * @param {Object} introAnimation - The intro animation object
    */
-  const killAnimation = (event, tl_stop, animations, introAnimation) => {
-    const triangle = document.querySelector("#triangle #_12triangleback");
-    if (triangle) {
-      triangle.style.opacity = 0;
-      if (tl_stop && typeof tl_stop.play === 'function') {
-        tl_stop.play();
-      }
-      if (introAnimation && typeof introAnimation.pause === 'function') {
-        introAnimation.pause();
-      }
-      if (animations && animations.breathAnimation && typeof animations.breathAnimation.pause === 'function') {
-        animations.breathAnimation.pause();
-      }
-      document.querySelector("#triangle").removeEventListener("click", killAnimation);
-      document.body.removeEventListener("keydown", handleKeyDown, true);
+  const killAnimation = useCallback(
+    (event, tl_stop, animations, introAnimation) => {
+      document.documentElement.classList.remove(
+        theme === "dark" ? "dark-launch-style" : "light-launch-style"
+      );
+      const triangle = document.querySelector("#triangle #_12triangleback");
+      if (triangle) {
+        triangle.style.opacity = 0;
+        if (tl_stop && typeof tl_stop.play === "function") {
+          tl_stop.play();
+        }
+        if (introAnimation && typeof introAnimation.pause === "function") {
+          introAnimation.pause();
+        }
+        if (
+          animations &&
+          animations.breathAnimation &&
+          typeof animations.breathAnimation.pause === "function"
+        ) {
+          animations.breathAnimation.pause();
+        }
+        const triangleElement = document.querySelector("#triangle");
+        if (triangleElement) {
+          triangleElement.removeEventListener("click", killAnimation);
+        }
+        document.body.removeEventListener("keydown", handleKeyDown, true);
 
-      if (event instanceof Event && event.code !== "customIdentifier") {
-        finishLaunching();
-      } else {
-        finishLaunchWrapper(0);
+        if (event instanceof Event && event.code !== "customIdentifier") {
+          finishLaunching();
+        } else {
+          finishLaunchWrapper(0);
+        }
       }
-    }
-  };
+    },
+    [theme, finishLaunching]
+  );
 
   /**
    * Wrapper function to finish the launch process
    * @param {number} counter - The current iteration count
    */
-  const finishLaunchWrapper = (counter) => {
-    counter = counter + 1;
-    if (counter === 3) {
-      setTimeout(finishLaunching, 1000);
-    } else {
-      setTimeout(() => finishLaunchWrapper(counter), 1000);
-    }
-  };
+  const finishLaunchWrapper = useCallback(
+    (counter) => {
+      counter = counter + 1;
+      if (counter === 3) {
+        setTimeout(finishLaunching, 1000);
+      } else {
+        setTimeout(() => finishLaunchWrapper(counter), 1000);
+      }
+    },
+    [finishLaunching]
+  );
 
   /**
    * Sets up the description animation
    */
-  const setupDescriptionAnimation = () => {
+  const setupDescriptionAnimation = useCallback(() => {
     const letters = document.querySelectorAll("#description path");
     const printSpeed = 100;
     const startDelay = 2000;
@@ -386,15 +454,15 @@ const Launch = ({ finishLaunching }) => {
                 })
               );
             });
-          }, startDelay += delay);
+          }, (startDelay += delay));
         } else {
-          setTimeout(() => callback(letter), startDelay += delay);
+          setTimeout(() => callback(letter), (startDelay += delay));
         }
       });
     };
 
     makeDescriptionVisible(enableDescriptionLetters, printSpeed, startDelay);
-  };
+  }, []);
 
   return (
     <>
@@ -432,7 +500,7 @@ const Launch = ({ finishLaunching }) => {
               gradientTransform="translate(-62.8 -82.7) scale(1.12 1.12)"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset={0.70} stopColor="rgba(53, 53, 53, 0.7)" />
+              <stop offset={0.7} stopColor="rgba(53, 53, 53, 0.7)" />
               <stop offset={0.71} stopColor="rgba(61, 139, 104, 0.7)" />
               <stop offset={0.76} stopColor="rgba(61, 139, 104, 0.7)" />
               <stop offset={0.77} stopColor="rgba(53, 53, 53, 0.7)" />
@@ -591,7 +659,11 @@ const Launch = ({ finishLaunching }) => {
               cy={148.4}
               rx={111.6}
               ry={111.6}
-              fill={`${theme === "dark" ? "url(#Unbenannter_Verlauf_999)" : "url(#Unbenannter_Verlauf_249)"}`}
+              fill={`${
+                theme === "dark"
+                  ? "url(#Unbenannter_Verlauf_999)"
+                  : "url(#Unbenannter_Verlauf_249)"
+              }`}
             />
           </g>
           <g
@@ -609,7 +681,11 @@ const Launch = ({ finishLaunching }) => {
               cy={148.4}
               rx={78.4}
               ry={78.4}
-              fill={`${theme === "dark" ? "rgba(62, 62, 62, 0.7)" : "url(#Unbenannter_Verlauf_1075)"}`}
+              fill={`${
+                theme === "dark"
+                  ? "rgba(62, 62, 62, 0.7)"
+                  : "url(#Unbenannter_Verlauf_1075)"
+              }`}
             />
           </g>
           <g id="triangle">
