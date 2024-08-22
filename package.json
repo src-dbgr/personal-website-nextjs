@@ -7,7 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next export"
+    "export": "next export",
+    "update-check": "npx npm-check-updates",
+    "update": "npx npm-check-updates -u && npm install",
+    "clean": "rm -rf .next",
+    "clean-cache": "npx cache clean --force",
+    "clean-install": "rm -rf .next && rm -rf node_modules && rm -f package-lock.json && npm cache clean --force && npm install && echo 'Clean install completed. Remember to restart your dev server!'"
   },
   "dependencies": {
     "@apollo/client": "^3.10.3",
@@ -17,13 +22,13 @@
     "animejs": "^3.2.2",
     "aos": "^2.3.4",
     "framer-motion": "^6.5.1",
-    "graphql": "^16.8.1",
+    "graphql": "^16.9.0",
     "js-cookie": "^3.0.5",
     "next": "^14.2.4",
     "patch-package": "^6.4.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-icons": "^4.12.0",
+    "react-icons": "^5.3.0",
     "react-markdown": "^8.0.7",
     "three": "^0.142.0"
   },
@@ -35,6 +40,7 @@
   "devDependencies": {
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
+    "npm-check-updates": "^17.1.0",
     "serve": "^14.2.3"
   }
 }
