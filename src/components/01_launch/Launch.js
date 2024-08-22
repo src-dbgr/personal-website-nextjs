@@ -6,426 +6,319 @@ import { GlobalStateContext } from "../../context/GlobalContextProvider";
 
 const Launch = (props) => {
   const router = useRouter();
-  const { pathname, query } = router;
+  const { query } = router;
   const theme = useContext(GlobalStateContext).theme;
   const [shouldSkipAnimation, setShouldSkipAnimation] = useState(false);
 
   useEffect(() => {
     const skipParams = ['n', 'a', 'sk', 'skip'];
-    
-    const skipAnimation = Object.keys(query).some(key => {
-      return skipParams.some(param => 
-        key.toLowerCase().includes(param.toLowerCase())
-      );
-    });
-
+    const skipAnimation = Object.keys(query).some(key => 
+      skipParams.some(param => key.toLowerCase().includes(param.toLowerCase()))
+    );
     setShouldSkipAnimation(skipAnimation);
   }, [query]);
 
   useEffect(() => {
-
-    function isIE() {
-      const ua = window.navigator.userAgent;
-      const msie = ua.indexOf("MSIE "); // IE 10 or older
-      const trident = ua.indexOf("Trident/"); //IE 11
-      return msie > 0 || trident > 0;
-    }
-
-    function clickIE(e) {
-      try {
-        document
-          .querySelector("#triangle")
-          .removeEventListener("click", clickIE);
-        document.body.removeChild(
-          document.getElementsByClassName("imagewrapper")
-        );
-        console.log("Removing Image Wrapper!");
-      } catch (err) {
-        console.log("issue occured checking for internet explorer");
-        console.error(err);
-      }
-    }
-
-    function skipAnimation() {
-      if (theme === 'dark') {
-        document.documentElement.classList.remove("dark-launch-style");
-      } else {
-        document.documentElement.classList.remove("light-launch-style");
-      }
-      props.finishLaunching();
-    }
-
-    if (isIE()) {
-      try {
-        document.querySelector("#logo").style.opacity = 1;
-        document.getElementById("triangle").onclick = clickIE; //onclick event
-      } catch (err) {
-        console.log("issue occured selecting document elements");
-        console.error(err);
-      }
-    } else if (shouldSkipAnimation) {
+    if (shouldSkipAnimation) {
       skipAnimation();
     } else {
-      let launchAnimation = function () {
-        try {
-          let logoEl = document.querySelector("#logo");
-          let trianglePathEls = logoEl.querySelectorAll(
-            "#triangle polygon:not(#_12triangleback)"
-          );
-          let pathLength = trianglePathEls.length;
-          let aimations = [];
-
-          let breathAnimation = anime({
-            begin: function () {
-              for (let i = 0; i < pathLength; i++) {
-                aimations.push(
-                  anime({
-                    targets: trianglePathEls[i],
-                    stroke: {
-                      value: [`${theme === "dark" ? "rgb(61, 139, 104)" : "rgba(150, 149, 141, 0.8)"}`],
-                      duration: 1000,
-                    },
-                    strokeWidth: [0, 1.5],
-                    translateX: [2, -4],
-                    translateY: [2, -4],
-                    opacity: [0.3, 1],
-                    easing: "easeOutQuad",
-                    autoplay: false,
-                  })
-                );
-              }
-            },
-            update: function (ins) {
-              aimations.forEach(function (animation, i) {
-                let percent =
-                  (1 - Math.sin(i * 0.35 + 0.0022 * ins.currentTime)) / 2;
-                animation.seek(animation.duration * percent);
-              });
-            },
-            duration: Infinity,
-            autoplay: false,
-          });
-
-          let introAnimation = anime
-            .timeline({
-              autoplay: false,
-            })
-            .add({
-              targets: trianglePathEls,
-              strokeDashoffset: {
-                value: [anime.setDashoffset, 0],
-                duration: 3900,
-                easing: "easeInOutCirc",
-                delay: anime.stagger(190, { direction: "reverse" }),
-              },
-
-              duration: 2000,
-              delay: anime.stagger(60, { direction: "reverse" }),
-              easing: "linear",
-              complete: function (anim) {
-                introAnimation.remove();
-              },
-            });
-
-          function startElementMotion() {
-            introAnimation.play();
-            breathAnimation.play();
-          }
-
-          function pauseElementMotion() {
-            introAnimation.pause();
-            breathAnimation.pause();
-          }
-
-          let tl_stop = anime.timeline({
-            easing: "easeOutExpo",
-            duration: 500,
-            autoplay: false,
-          });
-
-          tl_stop
-            .add({
-              targets: "#description, #outercircle",
-              rotate: [0, 360],
-              transformOrigin: ["50% 50% 0", "50% 60% 0"],
-              scale: 0.5,
-              opacity: 0,
-            })
-            .add({
-              targets: "#innercircle",
-              opacity: 0,
-              scale: 1.4,
-              transformOrigin: ["50% 50% 0", "50% 50% 0"],
-            })
-            .add({
-              targets: "#triangle polygon",
-              translateX: anime.stagger(10, {
-                grid: [1, -150],
-                from: "center",
-                axis: "x",
-              }),
-              translateY: anime.stagger(10, {
-                grid: [1, -150],
-                from: "center",
-                axis: "y",
-              }),
-              rotateZ: anime.stagger([0, 90], {
-                grid: [14, 5],
-                from: "center",
-                axis: "x",
-              }),
-              delay: function (el, i) {
-                return i * 100;
-              },
-              easing: "easeInOutSine",
-              complete: function (anim) {
-                tl_stop.remove();
-              },
-            });
-
-          let animTimeout = 1000;
-          let killAnimationTriggered = false;
-          let iteration = 1; // set to 0 if you want to enable customization of the intro animation duration
-          function killAnimation(e) {
-
-            if (theme === 'dark') {
-              document.documentElement.classList.remove("dark-launch-style");
-            } else {
-              document.documentElement.classList.remove("light-launch-style");
-            }
-            if (!killAnimationTriggered) {
-              if (iteration < 1) {
-                ++iteration;
-                if (e.code === 'customIdentifier') {
-                  console.log("Automatically")
-                  setTimeout(killAnimation, 2000, e); // timeout determines the duration of the intro animation before it decays
-                  return
-                }
-              }
-              const triangle = document.querySelector(
-                "#triangle #_12triangleback"
-              );
-              if (triangle) {
-                triangle.style.opacity = 0;
-                tl_stop.play();
-                pauseElementMotion();
-                document
-                  .querySelector("#triangle")
-                  .removeEventListener("click", killAnimation);
-                document.body.removeEventListener(
-                  "keydown",
-                  keyDownEnterEvent,
-                  true
-                );
-                // document.body.removeEventListener("keydown", killAnimation, true);
-                if (e instanceof Event && e.code !== "customIdentifier") {
-                  // this section stops the animation immediately since
-                  // the user killed the animation
-                  props.finishLaunching();
-                } else {
-                  // this section ends the animation smoothly with polygon decay
-                  // applies when everything runs without user interruption
-
-                  finishLaunchWrapper(0);
-                }
-                killAnimationTriggered = !killAnimationTriggered;
-              }
-            }
-          }
-
-          // Wrap Exit Function in order to avoid timout browser violation
-          function finishLaunchWrapper(counter) {
-            counter = counter + 1;
-            if (counter === 3) {
-              // has the effect that the timout is divided by
-              setTimeout(props.finishLaunching, animTimeout);
-            } else {
-              setTimeout(finishLaunchWrapper, animTimeout, counter);
-            }
-          }
-
-          function startAnimation() {
-            let tl_start = anime.timeline({
-              easing: "easeOutExpo",
-              duration: animTimeout,
-            });
-
-            tl_start
-              .add({
-                targets: "#outercircle",
-                opacity: 1,
-                transformOrigin: ["50% 50% 0", "50% 50% 0"],
-                scale: [0, 0.5, 1],
-              })
-              .add({
-                targets: "#triangle,#innercircle",
-                transformOrigin: ["50% 50% 0", "50% 50% 0"],
-                opacity: [0, 0.2, 0.5, 0.95],
-                rotate: [0, 1080],
-                scale: [0, 0.2, 1.1, 1],
-              })
-              .add({
-                targets: "#description",
-                opacity: [0, 1],
-              })
-              .add({
-                targets: "#triangle",
-                transformOrigin: ["50% 55% 0", "50% 55% 0"],
-                rotate: [0, 720],
-                complete: function (anim) {
-                  tl_start.remove();
-                },
-              });
-
-            return tl_start;
-          }
-
-          // kick off animation
-          function initialAnimation() {
-            // make background layer invisible
-            let nodes = document.querySelectorAll(
-              "#description,#outercircle,#innercircle,#triangle,#_12triangleback"
-            );
-
-            document.querySelector("#_12triangleback").style.opacity = 0;
-            Array.from(nodes).forEach(function (item) {
-              item.style.opacity = 0;
-            });
-
-            // in order to not render on load up make logo visible later
-            document.querySelector("#logo").style.opacity = 1;
-            let startAnim = startAnimation();
-            startAnim.play();
-            // delayed start of polygon motion
-            setTimeout(startElementMotion, animTimeout * 3);
-          }
-
-          let triangleElement = document.querySelector("#triangle");
-          triangleElement.onclick = killAnimation;
-          function keyDownEnterEvent(event) {
-            if (event.defaultPrevented) {
-              return;
-            }
-            var handled = false;
-            // if (event.keyCode === 13) {
-            //   killAnimation();
-            // }
-
-            if (event.key !== undefined) {
-              // Handle the event with KeyboardEvent.key and set handled true.
-              if (event.key === "Enter") {
-                killAnimation(event);
-                handled = true;
-              }
-            } else if (event.keyIdentifier !== undefined) {
-              // Handle the event with KeyboardEvent.keyIdentifier and set handled true.
-              if (event.key === "Enter") {
-                killAnimation(event);
-                handled = true;
-              }
-            } else if (event.keyCode !== undefined) {
-              if (event.key === "Enter") {
-                killAnimation(event);
-                handled = true;
-              }
-              // Handle the event with KeyboardEvent.keyCode and set handled true.
-            }
-
-            if (handled) {
-              event.preventDefault();
-            }
-          }
-          document.body.addEventListener("keydown", keyDownEnterEvent, true);
-
-          return initialAnimation;
-        } catch (err) {
-          console.log("issue occured during launch animation setup");
-          console.error(err);
-        }
-      };
-      launchAnimation()();
-
-      function descriptionAnimation() {
-        try {
-          let letters = document.querySelectorAll("#description path");
-          let printSpeed = 100; // ms
-          let startDelay = 2000; // ms
-          Array.from(letters).forEach(function (letter) {
-            letter.style.opacity = "0";
-          });
-
-          function enableDescriptionLetters(letter, callback) {
-            letter.style.opacity = "1";
-            if (callback && typeof callback === "function") {
-              setTimeout(callback, printSpeed * 5); // set little timeout to print final letter.
-            }
-          }
-
-          // function colorizeDescriptionLetters(letter, color) {
-          //   letter.style.fill = color;
-          // }
-
-          function makeDescriptionVisible(
-            callback,
-            execDelay,
-            execStartDelay,
-            color
-          ) {
-            let delay = execDelay;
-            let startDelay = execStartDelay;
-            Array.from(letters).forEach(function (letter, index) {
-              // delay typing at the following letter indizes
-              startDelay +=
-                index === 3 || index === 13 || index === 12 ? delay * 5 : 0;
-              // return setTimeout(callback, (startDelay += delay), letter, color);
-              if (index === letters.length - 1) {
-                return setTimeout(
-                  callback,
-                  (startDelay += delay),
-                  letter,
-                  () => {
-                    // anonymous inner callback, simulates a key down event to stop animation and launch page
-                    document.body.dispatchEvent(
-                      new KeyboardEvent("keydown", {
-                        key: "Enter",
-                        keyCode: 13, // Enter keyCode
-                        code: "customIdentifier", // identify that this keystroke is triggered automatically
-                        which: 13,
-                        shiftKey: false,
-                        ctrlKey: false,
-                        metaKey: false,
-                      })
-                    );
-                  }
-                );
-              } else {
-                return setTimeout(callback, (startDelay += delay), letter);
-              }
-            });
-          }
-
-          makeDescriptionVisible(
-            enableDescriptionLetters,
-            printSpeed,
-            startDelay
-          );
-
-          // colorization also possible, turn off css keyframe animation beforehand
-          // makeDescriptionVisible(
-          //   colorizeDescriptionLetters,
-          //   printSpeed,
-          //   startDelay + 100,
-          //   "rgb(181, 178, 166)"
-          // );
-        } catch (err) {
-          console.log("issue occured during animation description launch");
-          console.error(err);
-        }
-      }
-
-      descriptionAnimation();
+      initializeAnimation();
     }
   }, [shouldSkipAnimation]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const skipAnimation = () => {
+    document.documentElement.classList.remove(
+      theme === 'dark' ? "dark-launch-style" : "light-launch-style"
+    );
+    props.finishLaunching();
+  };
+
+  const initializeAnimation = () => {
+    if (isIE()) {
+      handleIEAnimation();
+    } else {
+      setupMainAnimation();
+    }
+  };
+
+  const isIE = () => {
+    const ua = window.navigator.userAgent;
+    const msie = ua.indexOf("MSIE "); // IE 10 or older
+    const trident = ua.indexOf("Trident/"); //IE 11
+    return msie > 0 || trident > 0;
+  };
+
+  const handleIEAnimation = () => {
+    try {
+      document.querySelector("#logo").style.opacity = 1;
+      document.getElementById("triangle").onclick = clickIE;
+    } catch (err) {
+      console.error("Error setting up IE animation:", err);
+    }
+  };
+
+  const clickIE = () => {
+    try {
+      document.querySelector("#triangle").removeEventListener("click", clickIE);
+      document.body.removeChild(document.getElementsByClassName("imagewrapper")[0]);
+      console.log("Removing Image Wrapper!");
+    } catch (err) {
+      console.error("Error in clickIE function:", err);
+    }
+  };
+
+  const setupMainAnimation = () => {
+    const { tl_stop, animations, introAnimation } = createLaunchAnimation();
+    setupInitialAnimation(animations, introAnimation);
+    setupEventListeners(tl_stop, animations, introAnimation);
+    setupDescriptionAnimation();
+  };
+
+  const createLaunchAnimation = () => {
+    try {
+      const logoEl = document.querySelector("#logo");
+      const trianglePathEls = logoEl.querySelectorAll(
+        "#triangle polygon:not(#_12triangleback)"
+      );
+      const animations = createBreathAnimation(trianglePathEls);
+      const introAnimation = createIntroAnimation(trianglePathEls);
+      const tl_stop = createStopAnimation();
+
+      return { tl_stop, animations, introAnimation };
+    } catch (err) {
+      console.error("Error in launch animation setup:", err);
+      return { tl_stop: null, animations: null, introAnimation: null };
+    }
+  };
+
+  const createBreathAnimation = (trianglePathEls) => {
+    const animations = [];
+    const breathAnimation = anime({
+      begin: () => {
+        trianglePathEls.forEach((el, i) => {
+          animations.push(createTriangleAnimation(el, i, theme));
+        });
+      },
+      update: (ins) => {
+        animations.forEach((animation, i) => {
+          const percent = (1 - Math.sin(i * 0.35 + 0.0022 * ins.currentTime)) / 2;
+          animation.seek(animation.duration * percent);
+        });
+      },
+      duration: Infinity,
+      autoplay: false,
+    });
+    return { breathAnimation, animations };
+  };
+
+  const createTriangleAnimation = (el, i, theme) => {
+    return anime({
+      targets: el,
+      stroke: {
+        value: theme === "dark" ? "rgb(61, 139, 104)" : "rgba(150, 149, 141, 0.8)",
+        duration: 1000,
+      },
+      strokeWidth: [0, 1.5],
+      translateX: [2, -4],
+      translateY: [2, -4],
+      opacity: [0.3, 1],
+      easing: "easeOutQuad",
+      autoplay: false,
+    });
+  };
+
+  const createIntroAnimation = (trianglePathEls) => {
+    return anime.timeline({ autoplay: false })
+      .add({
+        targets: trianglePathEls,
+        strokeDashoffset: {
+          value: [anime.setDashoffset, 0],
+          duration: 3900,
+          easing: "easeInOutCirc",
+          delay: anime.stagger(190, { direction: "reverse" }),
+        },
+        duration: 2000,
+        delay: anime.stagger(60, { direction: "reverse" }),
+        easing: "linear",
+      });
+  };
+
+  const createStopAnimation = () => {
+    return anime.timeline({
+      easing: "easeOutExpo",
+      duration: 500,
+      autoplay: false,
+    }).add({
+      targets: "#description, #outercircle",
+      rotate: [0, 360],
+      transformOrigin: ["50% 50% 0", "50% 60% 0"],
+      scale: 0.5,
+      opacity: 0,
+    }).add({
+      targets: "#innercircle",
+      opacity: 0,
+      scale: 1.4,
+      transformOrigin: ["50% 50% 0", "50% 50% 0"],
+    }).add({
+      targets: "#triangle polygon",
+      translateX: anime.stagger(10, {
+        grid: [1, -150],
+        from: "center",
+        axis: "x",
+      }),
+      translateY: anime.stagger(10, {
+        grid: [1, -150],
+        from: "center",
+        axis: "y",
+      }),
+      rotateZ: anime.stagger([0, 90], {
+        grid: [14, 5],
+        from: "center",
+        axis: "x",
+      }),
+      delay: (el, i) => i * 100,
+      easing: "easeInOutSine",
+    });
+  };
+
+  const setupInitialAnimation = (animations, introAnimation) => {
+    const nodes = document.querySelectorAll(
+      "#description,#outercircle,#innercircle,#triangle,#_12triangleback"
+    );
+    document.querySelector("#_12triangleback").style.opacity = 0;
+    nodes.forEach((item) => {
+      item.style.opacity = 0;
+    });
+
+    document.querySelector("#logo").style.opacity = 1;
+    const startAnim = createStartAnimation();
+    startAnim.play();
+    setTimeout(() => {
+      introAnimation.play();
+      animations.breathAnimation.play();
+    }, 3000);
+  };
+
+  const createStartAnimation = () => {
+    return anime.timeline({
+      easing: "easeOutExpo",
+      duration: 1000,
+    }).add({
+      targets: "#outercircle",
+      opacity: 1,
+      transformOrigin: ["50% 50% 0", "50% 50% 0"],
+      scale: [0, 0.5, 1],
+    }).add({
+      targets: "#triangle,#innercircle",
+      transformOrigin: ["50% 50% 0", "50% 50% 0"],
+      opacity: [0, 0.2, 0.5, 0.95],
+      rotate: [0, 1080],
+      scale: [0, 0.2, 1.1, 1],
+    }).add({
+      targets: "#description",
+      opacity: [0, 1],
+    }).add({
+      targets: "#triangle",
+      transformOrigin: ["50% 55% 0", "50% 55% 0"],
+      rotate: [0, 720],
+    });
+  };
+
+  const setupEventListeners = (tl_stop, animations, introAnimation) => {
+    const triangleElement = document.querySelector("#triangle");
+    triangleElement.onclick = (event) => killAnimation(event, tl_stop, animations, introAnimation);
+    document.body.addEventListener("keydown", (event) => handleKeyDown(event, tl_stop, animations, introAnimation), true);
+  };
+
+  const handleKeyDown = (event, tl_stop, animations, introAnimation) => {
+    if (event.defaultPrevented) return;
+    if (event.key === "Enter") {
+      killAnimation(event, tl_stop, animations, introAnimation);
+      event.preventDefault();
+    }
+  };
+
+  const killAnimation = (event, tl_stop, animations, introAnimation) => {
+    document.documentElement.classList.remove(
+      theme === 'dark' ? "dark-launch-style" : "light-launch-style"
+    );
+    const triangle = document.querySelector("#triangle #_12triangleback");
+    if (triangle) {
+      triangle.style.opacity = 0;
+      if (tl_stop && typeof tl_stop.play === 'function') {
+        tl_stop.play();
+      }
+      if (introAnimation && typeof introAnimation.pause === 'function') {
+        introAnimation.pause();
+      }
+      if (animations && animations.breathAnimation && typeof animations.breathAnimation.pause === 'function') {
+        animations.breathAnimation.pause();
+      }
+      document.querySelector("#triangle").removeEventListener("click", killAnimation);
+      document.body.removeEventListener("keydown", handleKeyDown, true);
+
+      if (event instanceof Event && event.code !== "customIdentifier") {
+        props.finishLaunching();
+      } else {
+        finishLaunchWrapper(0);
+      }
+    }
+  };
+
+  const finishLaunchWrapper = (counter) => {
+    counter = counter + 1;
+    if (counter === 3) {
+      setTimeout(props.finishLaunching, 1000);
+    } else {
+      setTimeout(() => finishLaunchWrapper(counter), 1000);
+    }
+  };
+
+  const setupDescriptionAnimation = () => {
+    const letters = document.querySelectorAll("#description path");
+    const printSpeed = 100;
+    const startDelay = 2000;
+
+    letters.forEach((letter) => {
+      letter.style.opacity = "0";
+    });
+
+    const enableDescriptionLetters = (letter, callback) => {
+      letter.style.opacity = "1";
+      if (callback && typeof callback === "function") {
+        setTimeout(callback, printSpeed * 5);
+      }
+    };
+
+    const makeDescriptionVisible = (callback, delay, startDelay) => {
+      letters.forEach((letter, index) => {
+        // delay typing at the following letter indizes
+        startDelay += [3, 13, 12].includes(index) ? delay * 5 : 0;
+        if (index === letters.length - 1) {
+          setTimeout(() => {
+            callback(letter, () => {
+              // anonymous inner callback, simulates a key down event to stop animation and launch page
+              document.body.dispatchEvent(
+                new KeyboardEvent("keydown", {
+                  key: "Enter",
+                  keyCode: 13, // Enter keyCode
+                  code: "customIdentifier", // identify that this keystroke is triggered automatically
+                  which: 13,
+                  shiftKey: false,
+                  ctrlKey: false,
+                  metaKey: false,
+                })
+              );
+            });
+          }, startDelay += delay);
+        } else {
+          setTimeout(() => callback(letter), startDelay += delay);
+        }
+      });
+    };
+
+    makeDescriptionVisible(enableDescriptionLetters, printSpeed, startDelay);
+  };
 
   return (
     <>
