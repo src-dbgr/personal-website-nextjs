@@ -29,9 +29,9 @@ const About = ({ infomain }) => {
               <li>Python</li>
               <li>Java</li>
               <li>K8s</li>
-              <li>TensorFlow</li>
-              <li>JS</li>
-              <li>Go</li>
+              <li>Kafka</li>
+              <li>Llama 3.1</li>
+              <li>TS</li>
             </ul>
           </article>
         </FadeInSection>
@@ -44,7 +44,7 @@ const About = ({ infomain }) => {
                 className="about-default-img"
                 blurDataURL="/assets/images/about/var_5.png"
                 quality={90}
-                
+
                 width={500}
                 height={427}
               />
@@ -53,7 +53,7 @@ const About = ({ infomain }) => {
                 alt="about-img"
                 className="about-hover-img"
                 quality={90}
-                
+
                 width={500}
                 height={427}
               />
