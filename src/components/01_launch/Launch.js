@@ -4,12 +4,22 @@ import anime from "animejs";
 import Seo from "../general/Seo";
 import { GlobalStateContext } from "../../context/GlobalContextProvider";
 
-const Launch = (props) => {
+/**
+ * Launch Component
+ * 
+ * This component handles the initial launch animation for the application.
+ * It includes SVG animations and interactive elements that respond to user input.
+ *
+ * @param {Object} props
+ * @param {Function} props.finishLaunching - Callback function to execute when launching is complete
+ */
+const Launch = ({ finishLaunching }) => {
   const router = useRouter();
   const { query } = router;
   const theme = useContext(GlobalStateContext).theme;
   const [shouldSkipAnimation, setShouldSkipAnimation] = useState(false);
 
+  // Check if animation should be skipped based on URL parameters
   useEffect(() => {
     const skipParams = ['n', 'a', 'sk', 'skip'];
     const skipAnimation = Object.keys(query).some(key => 
@@ -18,36 +28,39 @@ const Launch = (props) => {
     setShouldSkipAnimation(skipAnimation);
   }, [query]);
 
+  // Initialize animation or skip based on shouldSkipAnimation state
   useEffect(() => {
-    if (shouldSkipAnimation) {
-      skipAnimation();
-    } else {
-      initializeAnimation();
-    }
+    shouldSkipAnimation ? skipAnimation() : initializeAnimation();
   }, [shouldSkipAnimation]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  /**
+   * Skips the animation and proceeds to the main application
+   */
   const skipAnimation = () => {
-    document.documentElement.classList.remove(
-      theme === 'dark' ? "dark-launch-style" : "light-launch-style"
-    );
-    props.finishLaunching();
+    finishLaunching();
   };
 
+  /**
+   * Initializes the animation based on browser type
+   */
   const initializeAnimation = () => {
-    if (isIE()) {
-      handleIEAnimation();
-    } else {
-      setupMainAnimation();
-    }
+    isIE() ? handleIEAnimation() : setupMainAnimation();
   };
 
+  /**
+   * Checks if the current browser is Internet Explorer
+   * @returns {boolean} True if the browser is IE, false otherwise
+   */
   const isIE = () => {
     const ua = window.navigator.userAgent;
-    const msie = ua.indexOf("MSIE "); // IE 10 or older
-    const trident = ua.indexOf("Trident/"); //IE 11
+    const msie = ua.indexOf("MSIE ");
+    const trident = ua.indexOf("Trident/");
     return msie > 0 || trident > 0;
   };
 
+  /**
+   * Handles animation setup for Internet Explorer
+   */
   const handleIEAnimation = () => {
     try {
       document.querySelector("#logo").style.opacity = 1;
@@ -57,6 +70,9 @@ const Launch = (props) => {
     }
   };
 
+  /**
+   * Handles click event for IE animation
+   */
   const clickIE = () => {
     try {
       document.querySelector("#triangle").removeEventListener("click", clickIE);
@@ -67,6 +83,9 @@ const Launch = (props) => {
     }
   };
 
+  /**
+   * Sets up the main animation for non-IE browsers
+   */
   const setupMainAnimation = () => {
     const { tl_stop, animations, introAnimation } = createLaunchAnimation();
     setupInitialAnimation(animations, introAnimation);
@@ -74,6 +93,10 @@ const Launch = (props) => {
     setupDescriptionAnimation();
   };
 
+  /**
+   * Creates the main launch animation
+   * @returns {Object} Object containing timeline, animations, and intro animation
+   */
   const createLaunchAnimation = () => {
     try {
       const logoEl = document.querySelector("#logo");
@@ -91,6 +114,11 @@ const Launch = (props) => {
     }
   };
 
+  /**
+   * Creates the breathing animation for the triangle elements
+   * @param {NodeList} trianglePathEls - The triangle path elements
+   * @returns {Object} Object containing breath animation and individual animations
+   */
   const createBreathAnimation = (trianglePathEls) => {
     const animations = [];
     const breathAnimation = anime({
@@ -111,6 +139,13 @@ const Launch = (props) => {
     return { breathAnimation, animations };
   };
 
+  /**
+   * Creates animation for a single triangle element
+   * @param {Element} el - The triangle element
+   * @param {number} i - Index of the element
+   * @param {string} theme - Current theme ('dark' or 'light')
+   * @returns {Object} Anime.js animation object
+   */
   const createTriangleAnimation = (el, i, theme) => {
     return anime({
       targets: el,
@@ -127,6 +162,11 @@ const Launch = (props) => {
     });
   };
 
+  /**
+   * Creates the intro animation
+   * @param {NodeList} trianglePathEls - The triangle path elements
+   * @returns {Object} Anime.js timeline object
+   */
   const createIntroAnimation = (trianglePathEls) => {
     return anime.timeline({ autoplay: false })
       .add({
@@ -143,6 +183,10 @@ const Launch = (props) => {
       });
   };
 
+  /**
+   * Creates the stop animation
+   * @returns {Object} Anime.js timeline object
+   */
   const createStopAnimation = () => {
     return anime.timeline({
       easing: "easeOutExpo",
@@ -181,6 +225,11 @@ const Launch = (props) => {
     });
   };
 
+  /**
+   * Sets up the initial animation
+   * @param {Object} animations - The animations object
+   * @param {Object} introAnimation - The intro animation object
+   */
   const setupInitialAnimation = (animations, introAnimation) => {
     const nodes = document.querySelectorAll(
       "#description,#outercircle,#innercircle,#triangle,#_12triangleback"
@@ -199,6 +248,10 @@ const Launch = (props) => {
     }, 3000);
   };
 
+  /**
+   * Creates the start animation
+   * @returns {Object} Anime.js timeline object
+   */
   const createStartAnimation = () => {
     return anime.timeline({
       easing: "easeOutExpo",
@@ -224,12 +277,25 @@ const Launch = (props) => {
     });
   };
 
+  /**
+   * Sets up event listeners for animation control
+   * @param {Object} tl_stop - The stop animation timeline
+   * @param {Object} animations - The animations object
+   * @param {Object} introAnimation - The intro animation object
+   */
   const setupEventListeners = (tl_stop, animations, introAnimation) => {
     const triangleElement = document.querySelector("#triangle");
     triangleElement.onclick = (event) => killAnimation(event, tl_stop, animations, introAnimation);
     document.body.addEventListener("keydown", (event) => handleKeyDown(event, tl_stop, animations, introAnimation), true);
   };
 
+  /**
+   * Handles keydown events
+   * @param {Event} event - The keydown event
+   * @param {Object} tl_stop - The stop animation timeline
+   * @param {Object} animations - The animations object
+   * @param {Object} introAnimation - The intro animation object
+   */
   const handleKeyDown = (event, tl_stop, animations, introAnimation) => {
     if (event.defaultPrevented) return;
     if (event.key === "Enter") {
@@ -238,10 +304,14 @@ const Launch = (props) => {
     }
   };
 
+  /**
+   * Stops the animation and transitions to the main application
+   * @param {Event} event - The triggering event
+   * @param {Object} tl_stop - The stop animation timeline
+   * @param {Object} animations - The animations object
+   * @param {Object} introAnimation - The intro animation object
+   */
   const killAnimation = (event, tl_stop, animations, introAnimation) => {
-    document.documentElement.classList.remove(
-      theme === 'dark' ? "dark-launch-style" : "light-launch-style"
-    );
     const triangle = document.querySelector("#triangle #_12triangleback");
     if (triangle) {
       triangle.style.opacity = 0;
@@ -258,22 +328,29 @@ const Launch = (props) => {
       document.body.removeEventListener("keydown", handleKeyDown, true);
 
       if (event instanceof Event && event.code !== "customIdentifier") {
-        props.finishLaunching();
+        finishLaunching();
       } else {
         finishLaunchWrapper(0);
       }
     }
   };
 
+  /**
+   * Wrapper function to finish the launch process
+   * @param {number} counter - The current iteration count
+   */
   const finishLaunchWrapper = (counter) => {
     counter = counter + 1;
     if (counter === 3) {
-      setTimeout(props.finishLaunching, 1000);
+      setTimeout(finishLaunching, 1000);
     } else {
       setTimeout(() => finishLaunchWrapper(counter), 1000);
     }
   };
 
+  /**
+   * Sets up the description animation
+   */
   const setupDescriptionAnimation = () => {
     const letters = document.querySelectorAll("#description path");
     const printSpeed = 100;
@@ -292,17 +369,16 @@ const Launch = (props) => {
 
     const makeDescriptionVisible = (callback, delay, startDelay) => {
       letters.forEach((letter, index) => {
-        // delay typing at the following letter indizes
         startDelay += [3, 13, 12].includes(index) ? delay * 5 : 0;
         if (index === letters.length - 1) {
           setTimeout(() => {
             callback(letter, () => {
-              // anonymous inner callback, simulates a key down event to stop animation and launch page
+              // Simulate a keydown event to stop animation and launch page
               document.body.dispatchEvent(
                 new KeyboardEvent("keydown", {
                   key: "Enter",
-                  keyCode: 13, // Enter keyCode
-                  code: "customIdentifier", // identify that this keystroke is triggered automatically
+                  keyCode: 13,
+                  code: "customIdentifier",
                   which: 13,
                   shiftKey: false,
                   ctrlKey: false,
