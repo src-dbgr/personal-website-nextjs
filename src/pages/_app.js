@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <ApolloProviderWrapper>
       <GlobalContextProvider>
-        <AnimatePresence exitBeforeEnter>
+        <AnimatePresence  mode="wait">
           <Component {...pageProps}/>
         </AnimatePresence>
       </GlobalContextProvider>

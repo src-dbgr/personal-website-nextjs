@@ -2,30 +2,38 @@
   "name": "personal-website-nextjs",
   "version": "0.1.0",
   "private": true,
+  "_comments": {
+    "three": "Locked to version 0.142.0 due to different animation in newer versions"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next export"
+    "export": "next export",
+    "update-check": "npx npm-check-updates",
+    "update": "npx npm-check-updates -u && npm install",
+    "clean": "rm -rf .next",
+    "clean-cache": "npx cache clean --force",
+    "clean-install": "rm -rf .next && rm -rf node_modules && rm -f package-lock.json && npm cache clean --force && npm install && echo 'Clean install completed. Remember to restart your dev server!'"
   },
   "dependencies": {
-    "@apollo/client": "^3.10.3",
+    "@apollo/client": "^3.11.4",
     "@juggle/resize-observer": "^3.4.0",
     "@loadable/component": "^5.16.4",
-    "@react-three/fiber": "^7.0.0",
+    "@react-three/fiber": "^8.17.5",
     "animejs": "^3.2.2",
     "aos": "^2.3.4",
-    "framer-motion": "^6.5.1",
-    "graphql": "^16.8.1",
+    "framer-motion": "^11.3.29",
+    "graphql": "^16.9.0",
     "js-cookie": "^3.0.5",
-    "next": "^14.2.4",
-    "patch-package": "^6.4.7",
+    "next": "^14.2.6",
+    "patch-package": "^8.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-icons": "^4.12.0",
-    "react-markdown": "^8.0.7",
-    "three": "^0.142.0"
+    "react-icons": "^5.3.0",
+    "react-markdown": "^9.0.1",
+    "three": "0.142.0"
   },
   "overrides": {
     "patch-package": {
@@ -33,8 +41,9 @@
     }
   },
   "devDependencies": {
-    "eslint": "^8",
-    "eslint-config-next": "14.2.3",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.2.6",
+    "npm-check-updates": "^17.1.0",
     "serve": "^14.2.3"
   }
 }

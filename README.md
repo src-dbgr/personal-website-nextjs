@@ -246,6 +246,10 @@ Beispiel:
 FS_API_URL=<>
 STRAPI_GRAPHQL_URL=https://portfolio-api-5o00.onrender.com/graphql  <- kann auch eine andere sein, wenn strapi erneut deplyed wurde, muss man anpassen.
 STRAPI_API_URL=https://portfolio-api-5o00.onrender.com/api  <- kann auch eine andere sein, wenn strapi erneut deplyed wurde, muss man anpassen.
+Call:
+````
+https://portfolio-api-5o00.onrender.com
+```
 STRAPI_TOKEN=<strapi token>
 NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=<google analytics id>
 
