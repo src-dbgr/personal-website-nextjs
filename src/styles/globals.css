@@ -754,6 +754,17 @@ p {
   cursor: pointer;
   box-shadow: var(--default-btn-shadow);
   border-radius: 50px;
+  -webkit-tap-highlight-color: transparent!important;
+  user-select: none!important;
+  -webkit-user-select: none!important;
+  outline: none!important;  
+}
+
+.hero-description-wrapper .aos-animate {
+  -webkit-tap-highlight-color: transparent!important;
+  user-select: none!important;
+  -webkit-user-select: none!important;
+  outline: none!important;
 }
 
 .btn:hover {
