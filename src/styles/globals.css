@@ -6,6 +6,7 @@
     url("../assets/fonts/Oswald/oswald-v36-latin-300.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -16,6 +17,7 @@
     url("../assets/fonts/Oswald/oswald-v36-latin-regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -26,6 +28,7 @@
     url("../assets/fonts/Oswald/oswald-v36-latin-500.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -36,6 +39,7 @@
     url("../assets/fonts/Oswald/oswald-v36-latin-700.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
+  font-display: swap;
 }
 
 :root {
@@ -665,27 +669,12 @@ html {
   scrollbar-highlight-color: var(--clr-magenta); */
   background: rgb(46, 46, 46);
   background-color: rgb(46, 46, 46);
-  scrollbar-color: var(--clr-dark) var(--clr-background-minor);
+  /* scrollbar-color: rgb(52, 69, 73) rgb(51, 51, 51); */
+  /* scrollbar-color: var(--clr-dark) var(--clr-background-minor); */
   scrollbar-width: thin;
   overflow-y: scroll;
   overflow-x: hidden !important;
   font-size: 100%;
-}
-
-.dark-launch-style {
-  overflow: hidden !important;
-  width: 100vw!important;
-  height: 100vh!important;
-  background: radial-gradient(rgb(46, 46, 46) rgb(51, 51, 51)) !important;
-  background-color: radial-gradient(rgb(46, 46, 46) rgb(51, 51, 51)) !important;
-}
-
-.light-launch-style {
-  overflow: hidden !important;
-  width: 100vw!important;
-  height: 100vh!important;
-  background: radial-gradient(rgb(181, 178, 166) rgb(150, 149, 141)) !important;
-  background-color: radial-gradient(rgb(181, 178, 166) rgb(150, 149, 141)) !important;
 }
 
 *,
@@ -932,26 +921,13 @@ p {
   text-align: center;
 }
 
-/* page links */
-
 /*
 ==========
 Launch
 ==========
 */
 
-  /* CHANGE BACKGROUND to background: var(--clr-launch-body-background-radial-gradient); when using light mode */
-  /* background: var(--clr-launch-body-background-radial-gradient); */
 /* .imagewrapper {
-  height: 100vh;
-  width: 100vw !important;
-  position: relative;
-  background: var(--clr-background-major) !important;
-  margin-top: var(--neg-page-top-space);
-  overflow: hidden !important;
-} */
-
-.imagewrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -959,7 +935,7 @@ Launch
   height: 100%;
   background: var(--clr-background-major);
   overflow: hidden;
-}
+} */
 
 #logo,
 #logo_2 {
@@ -1488,7 +1464,6 @@ Hero
 
 .hero {
   margin-top: var(--neg-page-top-space);
-  /* height: 100vh; */
   height: 100svh!important;
   background: var(--clr-background-major);
   position: relative !important;
@@ -1500,7 +1475,7 @@ Hero
   height: 100%;
   display: grid;
   align-items: center;
-}
+} */
 
 .hero .underline {
   margin-bottom: 0.5rem;
