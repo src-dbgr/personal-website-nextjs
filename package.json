@@ -6,7 +6,7 @@
     "three": "Locked to version 0.142.0 due to different animation in newer versions"
   },
   "scripts": {
-    "dev": "next dev",
+    "develop": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
