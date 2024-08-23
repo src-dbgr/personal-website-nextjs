@@ -760,7 +760,7 @@ p {
   outline: none!important;  
 }
 
-.hero-description-wrapper .aos-animate {
+.hero-description-wrapper a {
   -webkit-tap-highlight-color: transparent!important;
   user-select: none!important;
   -webkit-user-select: none!important;
