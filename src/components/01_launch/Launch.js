@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import anime from "animejs";
 import Seo from "../general/Seo";
 import { GlobalStateContext } from "../../context/GlobalContextProvider";
+import styles from './Launch.module.css';
 
 /**
  * Launch Component
@@ -49,9 +50,6 @@ const Launch = ({ finishLaunching }) => {
    * 3. It helps to optimize performance
    */
   const skipAnimation = useCallback(() => {
-    document.documentElement.classList.remove(
-      theme === "dark" ? "dark-launch-style" : "light-launch-style"
-    );
     finishLaunching();
   }, [theme, finishLaunching]); // only changes is theme or finishLaunching changes
 
@@ -59,54 +57,11 @@ const Launch = ({ finishLaunching }) => {
    * Initializes the animation based on browser type
    */
   const initializeAnimation = useCallback(() => {
-    isIE() ? handleIEAnimation() : setupMainAnimation();
+    setupMainAnimation();
   }, []);
 
   /**
-   * Checks if the current browser is Internet Explorer
-   * @returns {boolean} True if the browser is IE, false otherwise
-   */
-  const isIE = () => {
-    if (typeof window !== "undefined") {
-      const ua = window.navigator.userAgent;
-      const msie = ua.indexOf("MSIE ");
-      const trident = ua.indexOf("Trident/");
-      return msie > 0 || trident > 0;
-    }
-    return false;
-  };
-
-  /**
-   * Handles animation setup for Internet Explorer
-   */
-  const handleIEAnimation = useCallback(() => {
-    try {
-      const logo = document.querySelector("#logo");
-      if (logo) logo.style.opacity = 1;
-      const triangle = document.getElementById("triangle");
-      if (triangle) triangle.onclick = clickIE;
-    } catch (err) {
-      console.error("Error setting up IE animation:", err);
-    }
-  }, []);
-
-  /**
-   * Handles click event for IE animation
-   */
-  const clickIE = useCallback(() => {
-    try {
-      const triangle = document.querySelector("#triangle");
-      if (triangle) triangle.removeEventListener("click", clickIE);
-      const imageWrapper = document.getElementsByClassName("imagewrapper")[0];
-      if (imageWrapper) document.body.removeChild(imageWrapper);
-      console.log("Removing Image Wrapper!");
-    } catch (err) {
-      console.error("Error in clickIE function:", err);
-    }
-  }, []);
-
-  /**
-   * Sets up the main animation for non-IE browsers
+   * Sets up the main animation
    */
   const setupMainAnimation = useCallback(() => {
     const { tl_stop, animations, introAnimation } = createLaunchAnimation();
@@ -365,9 +320,6 @@ const Launch = ({ finishLaunching }) => {
    */
   const killAnimation = useCallback(
     (event, tl_stop, animations, introAnimation) => {
-      document.documentElement.classList.remove(
-        theme === "dark" ? "dark-launch-style" : "light-launch-style"
-      );
       const triangle = document.querySelector("#triangle #_12triangleback");
       if (triangle) {
         triangle.style.opacity = 0;
@@ -467,7 +419,7 @@ const Launch = ({ finishLaunching }) => {
   return (
     <>
       <Seo title="Launch" description={"test"} />
-      <div className="imagewrapper">
+      <div className={styles.imagewrapper}>
         <svg
           id="logo"
           xmlns="http://www.w3.org/2000/svg"
