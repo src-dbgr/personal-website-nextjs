@@ -1,7 +1,7 @@
 {
-  "id": "https://sblm.netlify.app/",
+  "id": "https://devsam.io",
   "name": "Samuel B",
-  "short_name": "SBLM",
+  "short_name": "DEVSAM",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

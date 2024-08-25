@@ -81,31 +81,30 @@ const privacy = ({ cookies }) => { // cookies als Prop hinzufügen
             </div>
             <div className="impressum-name">
               <div className="impressum-name">https://www.</div>
-              <div className="impressum-name">sb</div>
-              <div className="impressum-name">lm.me/</div>
+              <div className="impressum-name">de</div>
+              <div className="impressum-name">vs</div>
+              <div className="impressum-name">am.io/</div>
               <div className="impressum-name">con</div>
               <div className="impressum-name">tact</div>
             </div>
             <div className="impressum-name">
-              <div className="impressum-name">s</div>
+              <div className="impressum-name">m</div>
               <div className="impressum-name">a</div>
-              <div className="impressum-name">mu</div>
-              <div className="impressum-name">e</div>
-              <div className="impressum-name">l.</div>
-              <div className="impressum-name">b</div>
-              <div className="impressum-name">le</div>
-              <div className="impressum-name">hm</div>
+              <div className="impressum-name">il</div>
               <div className="impressum-name">@</div>
+              <div className="impressum-name">d</div>
+              <div className="impressum-name">ev</div>
               <div className="impressum-name">s</div>
-              <div className="impressum-name">bl</div>
-              <div className="impressum-name">m.m</div>
-              <div className="impressum-name">e</div>
+              <div className="impressum-name">am</div>
+              <div className="impressum-name">.i</div>
+              <div className="impressum-name">o</div>
             </div>
             <div className="impressum-name">
-              <div className="impressum-name">https://www.</div>
-              <div className="impressum-name">sb</div>
-              <div className="impressum-name">lm.</div>
-              <div className="impressum-name">me/</div>
+              <div className="impressum-name">https://</div>
+              <div className="impressum-name">de</div>
+              <div className="impressum-name">vs</div>
+              <div className="impressum-name">am.</div>
+              <div className="impressum-name">io/</div>
               <div className="impressum-name">privacy</div>
             </div>
             <br />
