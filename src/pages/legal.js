@@ -61,19 +61,17 @@ const legal  = ({ cookies }) => { // cookies als Prop hinzufügen
             </div>
             <div className="impressum-name">
               <p>E-Mail:&nbsp;</p>
-              <div className="impressum-name">s</div>
+              <div className="impressum-name">m</div>
               <div className="impressum-name">a</div>
-              <div className="impressum-name">mu</div>
-              <div className="impressum-name">e</div>
-              <div className="impressum-name">l.</div>
-              <div className="impressum-name">b</div>
-              <div className="impressum-name">le</div>
-              <div className="impressum-name">hm</div>
+              <div className="impressum-name">il</div>
               <div className="impressum-name">@</div>
-              <div className="impressum-name">sb</div>
-              <div className="impressum-name">lm</div>
-              <div className="impressum-name">.m</div>
-              <div className="impressum-name">e</div>
+              <div className="impressum-name">de</div>
+              <div className="impressum-name">v</div>
+              <div className="impressum-name">sa</div>
+              <div className="impressum-name">m</div>
+              <div className="impressum-name">.</div>
+              <div className="impressum-name">i</div>
+              <div className="impressum-name">o</div>
             </div>
           </div>
           <p>
