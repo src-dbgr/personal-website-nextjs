@@ -38,7 +38,7 @@ const Contact = ({ cookies }) => {
       if (nameValidity && messageValidity && emailValidity) {
         let form = document.getElementById("mailForm");
         form.method = "post";
-        form.action = `${process.env.FS_API_URL}`;
+        form.action = `${process.env.NEXT_PUBLIC_FS_API_URL}`;
         form.submit();
       }
     }

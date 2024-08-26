@@ -80,7 +80,7 @@ const privacy = ({ cookies }) => { // cookies als Prop hinzufügen
               <div className="impressum-name">04</div>
             </div>
             <div className="impressum-name">
-              <div className="impressum-name">https://www.</div>
+              <div className="impressum-name">https://</div>
               <div className="impressum-name">de</div>
               <div className="impressum-name">vs</div>
               <div className="impressum-name">am.io/</div>
