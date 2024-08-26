@@ -20,27 +20,49 @@ const Launch = ({ finishLaunching }) => {
   const theme = useContext(GlobalStateContext).theme;
   const [shouldSkipAnimation, setShouldSkipAnimation] = useState(false);
 
-
   useEffect(() => {
+    // Function to reset viewport
+    const resetViewport = () => {
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        // Remove the current viewport meta tag
+        viewport.parentNode.removeChild(viewport);
+      }
+      // Create and add a new viewport meta tag
+      const newViewport = document.createElement('meta');
+      newViewport.name = 'viewport';
+      newViewport.content = 'width=device-width, initial-scale=1.0, viewport-fit=cover';
+      document.getElementsByTagName('head')[0].appendChild(newViewport);
+      
+      // Force a reflow
+      document.body.style.display = 'none';
+      void document.body.offsetHeight;
+      document.body.style.display = '';
+    };
+
+    // Reset viewport on component mount
+    resetViewport();
+
+    // Original overflow control
     const originalStyle = window.getComputedStyle(document.body).overflow;
     document.body.style.overflow = 'hidden';
 
-    // Prevent default touch behavior
     const preventDefault = (e) => { e.preventDefault(); };
     document.body.addEventListener('touchmove', preventDefault, { passive: false });
 
-    // Set initial height
-    setVHUnit();
-
-    // Update height on resize and orientation change
-    window.addEventListener('resize', setVHUnit);
-    window.addEventListener('orientationchange', setVHUnit);
+    // Force layout recalculation
+    window.requestAnimationFrame(() => {
+      const wrapper = document.querySelector(`.${styles.launchWrapper}`);
+      if (wrapper) {
+        wrapper.style.opacity = '0';
+        void wrapper.offsetHeight; // Trigger a reflow
+        wrapper.style.opacity = '1';
+      }
+    });
 
     return () => {
       document.body.style.overflow = originalStyle;
       document.body.removeEventListener('touchmove', preventDefault);
-      window.removeEventListener('resize', setVHUnit);
-      window.removeEventListener('orientationchange', setVHUnit);
     };
   }, []);
 
