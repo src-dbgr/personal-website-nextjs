@@ -20,6 +20,35 @@ const Launch = ({ finishLaunching }) => {
   const theme = useContext(GlobalStateContext).theme;
   const [shouldSkipAnimation, setShouldSkipAnimation] = useState(false);
 
+
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = 'hidden';
+
+    // Prevent default touch behavior
+    const preventDefault = (e) => { e.preventDefault(); };
+    document.body.addEventListener('touchmove', preventDefault, { passive: false });
+
+    // Set initial height
+    setVHUnit();
+
+    // Update height on resize and orientation change
+    window.addEventListener('resize', setVHUnit);
+    window.addEventListener('orientationchange', setVHUnit);
+
+    return () => {
+      document.body.style.overflow = originalStyle;
+      document.body.removeEventListener('touchmove', preventDefault);
+      window.removeEventListener('resize', setVHUnit);
+      window.removeEventListener('orientationchange', setVHUnit);
+    };
+  }, []);
+
+  const setVHUnit = () => {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+
   // Memoized function to check if animation should be skipped
   const checkSkipAnimation = useCallback((query) => {
     const skipParams = ["n", "a", "sk", "skip"];
@@ -50,6 +79,7 @@ const Launch = ({ finishLaunching }) => {
    * 3. It helps to optimize performance
    */
   const skipAnimation = useCallback(() => {
+    document.body.style.overflow = '';
     finishLaunching();
   }, [theme, finishLaunching]); // only changes is theme or finishLaunching changes
 
@@ -320,6 +350,7 @@ const Launch = ({ finishLaunching }) => {
    */
   const killAnimation = useCallback(
     (event, tl_stop, animations, introAnimation) => {
+      document.body.style.overflow = '';
       const triangle = document.querySelector("#triangle #_12triangleback");
       if (triangle) {
         triangle.style.opacity = 0;
@@ -419,13 +450,21 @@ const Launch = ({ finishLaunching }) => {
   return (
     <>
       <Seo title="Launch" description={"test"} />
-      <div className={styles.imagewrapper}>
+      <div className={styles.launchWrapper}>
+        <div className={styles.imagewrapper}>
         <svg
-          id="logo"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlnsXlink="http://www.w3.org/1999/xlink"
-          viewBox="0 0 300 260"
-        >
+            id="logo"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlnsXlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 300 260"
+            style={{
+              width: '100%',
+              height: '100%',
+              maxWidth: '300px',
+              maxHeight: '260px'
+            }}
+            preserveAspectRatio="xMidYMid meet"
+          >
           <defs>
             <radialGradient
               id="Unbenannter_Verlauf_249"
@@ -963,6 +1002,7 @@ const Launch = ({ finishLaunching }) => {
             />
           </g>
         </svg>
+        </div>
       </div>
     </>
   );

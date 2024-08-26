@@ -1,9 +1,21 @@
+.launchWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  height: calc(var(--vh, 1vh) * 100);
+  background: var(--clr-background-major);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
 .imagewrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--clr-background-major);
-    overflow: hidden;
-  }
+  width: min(100%, 80vmin, 300px);
+  height: min(100%, 80vmin, 260px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
