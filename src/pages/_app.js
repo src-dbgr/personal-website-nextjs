@@ -36,7 +36,7 @@ function MyApp({ Component, pageProps }) {
     if (typeof window !== "undefined") {
       console.log("\n\nWelcome to:%c\n" + devsamio, "color: #3d8b68;");
     }
-  }, []);
+  }, [devsamio]);
 
   return (
     <ApolloProviderWrapper>
