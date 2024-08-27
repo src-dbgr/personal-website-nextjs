@@ -131,7 +131,7 @@ This project is licensed under the Creative Commons Attribution-NonCommercial 4.
 
 ## Contact
 
-[Your Name] - [Your Email]
+src-dbgr - https://devsam.io/contact
 
 Project Link: [https://github.com/yourusername/personal-website-nextjs](https://github.com/yourusername/personal-website-nextjs)
 
