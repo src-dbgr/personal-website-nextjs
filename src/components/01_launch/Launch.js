@@ -1,9 +1,15 @@
-import React, { useEffect, useState, useContext, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  useRef,
+} from "react";
 import { useRouter } from "next/router";
 import anime from "animejs";
 import Seo from "../general/Seo";
 import { GlobalStateContext } from "../../context/GlobalContextProvider";
-import styles from './Launch.module.css';
+import styles from "./Launch.module.css";
 
 /**
  * Launch Component
@@ -20,7 +26,15 @@ const Launch = ({ finishLaunching }) => {
   const theme = useContext(GlobalStateContext).theme;
   const [shouldSkipAnimation, setShouldSkipAnimation] = useState(false);
 
-  // Memoized function to check if animation should be skipped
+  // Use refs to break circular dependencies
+  const killAnimationRef = useRef(null);
+  const handleKeyDownRef = useRef(null);
+
+  /**
+   * Checks if the animation should be skipped based on URL parameters
+   * @param {Object} query - The query object from Next.js router
+   * @returns {boolean} True if animation should be skipped, false otherwise
+   */
   const checkSkipAnimation = useCallback((query) => {
     const skipParams = ["n", "a", "sk", "skip"];
     return Object.keys(query).some((key) =>
@@ -30,68 +44,164 @@ const Launch = ({ finishLaunching }) => {
     );
   }, []);
 
-  // Check if animation should be skipped based on URL parameters
-  useEffect(() => {
-    setShouldSkipAnimation(checkSkipAnimation(query));
-  }, [query, checkSkipAnimation]);
-
-  // Initialize animation or skip based on shouldSkipAnimation state
-  useEffect(() => {
-    shouldSkipAnimation ? skipAnimation() : initializeAnimation();
-  }, [shouldSkipAnimation]); // eslint-disable-line react-hooks/exhaustive-deps
-
   /**
    * Skips the animation and proceeds to the main application
-   * 
-   * @useCallback is used here to memoize this function. This is beneficial because:
-   * 1. It prevents unnecessary re-creation of this function on every render.
-   * 2. It ensures that the same function instance is used across re-renders,
-   *    which can be important if this function is passed as a prop to child components.
-   * 3. It helps to optimize performance
    */
   const skipAnimation = useCallback(() => {
     finishLaunching();
-  }, [theme, finishLaunching]); // only changes is theme or finishLaunching changes
+  }, [finishLaunching]);
 
   /**
-   * Initializes the animation based on browser type
+   * Creates animation for a single triangle element
+   * @param {Element} el - The triangle element
+   * @param {number} i - Index of the element
+   * @param {string} theme - Current theme ('dark' or 'light')
+   * @returns {Object} Anime.js animation object
    */
-  const initializeAnimation = useCallback(() => {
-    setupMainAnimation();
+  const createTriangleAnimation = useCallback((el, i, theme) => {
+    return anime({
+      targets: el,
+      stroke: {
+        value:
+          theme === "dark" ? "rgb(61, 139, 104)" : "rgba(150, 149, 141, 0.8)",
+        duration: 1000,
+      },
+      strokeWidth: [0, 1.5],
+      translateX: [2, -4],
+      translateY: [2, -4],
+      opacity: [0.3, 1],
+      easing: "easeOutQuad",
+      autoplay: false,
+    });
   }, []);
 
   /**
-   * Sets up the main animation
+   * Creates the start animation
+   * @returns {Object} Anime.js timeline object
    */
-  const setupMainAnimation = useCallback(() => {
-    const { tl_stop, animations, introAnimation } = createLaunchAnimation();
-    setupInitialAnimation(animations, introAnimation);
-    setupEventListeners(tl_stop, animations, introAnimation);
-    setupDescriptionAnimation();
+  const createStartAnimation = useCallback(() => {
+    return anime
+      .timeline({
+        easing: "easeOutExpo",
+        duration: 1000,
+      })
+      .add({
+        targets: "#outercircle",
+        opacity: 1,
+        transformOrigin: ["50% 50% 0", "50% 50% 0"],
+        scale: [0, 0.5, 1],
+      })
+      .add({
+        targets: "#triangle,#innercircle",
+        transformOrigin: ["50% 50% 0", "50% 50% 0"],
+        opacity: [0, 0.2, 0.5, 0.95],
+        rotate: [0, 1080],
+        scale: [0, 0.2, 1.1, 1],
+      })
+      .add({
+        targets: "#description",
+        opacity: [0, 1],
+      })
+      .add({
+        targets: "#triangle",
+        transformOrigin: ["50% 55% 0", "50% 55% 0"],
+        rotate: [0, 720],
+      });
   }, []);
 
   /**
-   * Creates the main launch animation
-   * @returns {Object} Object containing timeline, animations, and intro animation
+   * Wrapper function to finish the launch process
+   * @param {number} counter - The current iteration count
    */
-  const createLaunchAnimation = useCallback(() => {
-    try {
-      const logoEl = document.querySelector("#logo");
-      if (!logoEl) throw new Error("Logo element not found");
+  const finishLaunchWrapper = useCallback(
+    (counter) => {
+      counter = counter + 1;
+      if (counter === 3) {
+        setTimeout(finishLaunching, 1000);
+      } else {
+        setTimeout(() => finishLaunchWrapper(counter), 1000);
+      }
+    },
+    [finishLaunching]
+  );
 
-      const trianglePathEls = logoEl.querySelectorAll(
-        "#triangle polygon:not(#_12triangleback)"
+  /**
+   * Stops the animation and transitions to the main application
+   */
+  killAnimationRef.current = useCallback(
+    (event, tl_stop, animations, introAnimation) => {
+      const triangle = document.querySelector("#triangle #_12triangleback");
+      if (triangle) {
+        triangle.style.opacity = 0;
+        if (tl_stop && typeof tl_stop.play === "function") {
+          tl_stop.play();
+        }
+        if (introAnimation && typeof introAnimation.pause === "function") {
+          introAnimation.pause();
+        }
+        if (
+          animations &&
+          animations.breathAnimation &&
+          typeof animations.breathAnimation.pause === "function"
+        ) {
+          animations.breathAnimation.pause();
+        }
+        const triangleElement = document.querySelector("#triangle");
+        if (triangleElement) {
+          triangleElement.removeEventListener(
+            "click",
+            killAnimationRef.current
+          );
+        }
+        document.body.removeEventListener(
+          "keydown",
+          handleKeyDownRef.current,
+          true
+        );
+
+        if (event instanceof Event && event.code !== "customIdentifier") {
+          finishLaunching();
+        } else {
+          finishLaunchWrapper(0);
+        }
+      }
+    },
+    [finishLaunching, finishLaunchWrapper]
+  );
+
+  /**
+   * Handles keydown events
+   */
+  handleKeyDownRef.current = useCallback(
+    (event, tl_stop, animations, introAnimation) => {
+      if (event.defaultPrevented) return;
+      if (event.key === "Enter") {
+        killAnimationRef.current(event, tl_stop, animations, introAnimation);
+        event.preventDefault();
+      }
+    },
+    []
+  );
+
+  /**
+   * Sets up event listeners for animation control
+   */
+  const setupEventListeners = useCallback(
+    (tl_stop, animations, introAnimation) => {
+      const triangleElement = document.querySelector("#triangle");
+      if (triangleElement) {
+        triangleElement.onclick = (event) =>
+          killAnimationRef.current(event, tl_stop, animations, introAnimation);
+      }
+      document.body.addEventListener(
+        "keydown",
+        (event) =>
+          handleKeyDownRef.current(event, tl_stop, animations, introAnimation),
+        true
       );
-      const animations = createBreathAnimation(trianglePathEls);
-      const introAnimation = createIntroAnimation(trianglePathEls);
-      const tl_stop = createStopAnimation();
-
-      return { tl_stop, animations, introAnimation };
-    } catch (err) {
-      console.error("Error in launch animation setup:", err);
-      return { tl_stop: null, animations: null, introAnimation: null };
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Creates the breathing animation for the triangle elements
@@ -119,32 +229,8 @@ const Launch = ({ finishLaunching }) => {
       });
       return { breathAnimation, animations };
     },
-    [theme]
+    [theme, createTriangleAnimation]
   );
-
-  /**
-   * Creates animation for a single triangle element
-   * @param {Element} el - The triangle element
-   * @param {number} i - Index of the element
-   * @param {string} theme - Current theme ('dark' or 'light')
-   * @returns {Object} Anime.js animation object
-   */
-  const createTriangleAnimation = useCallback((el, i, theme) => {
-    return anime({
-      targets: el,
-      stroke: {
-        value:
-          theme === "dark" ? "rgb(61, 139, 104)" : "rgba(150, 149, 141, 0.8)",
-        duration: 1000,
-      },
-      strokeWidth: [0, 1.5],
-      translateX: [2, -4],
-      translateY: [2, -4],
-      opacity: [0.3, 1],
-      easing: "easeOutQuad",
-      autoplay: false,
-    });
-  }, []);
 
   /**
    * Creates the intro animation
@@ -213,159 +299,54 @@ const Launch = ({ finishLaunching }) => {
   }, []);
 
   /**
+   * Creates the main launch animation
+   * @returns {Object} Object containing timeline, animations, and intro animation
+   */
+  const createLaunchAnimation = useCallback(() => {
+    try {
+      const logoEl = document.querySelector("#logo");
+      if (!logoEl) throw new Error("Logo element not found");
+
+      const trianglePathEls = logoEl.querySelectorAll(
+        "#triangle polygon:not(#_12triangleback)"
+      );
+      const animations = createBreathAnimation(trianglePathEls);
+      const introAnimation = createIntroAnimation(trianglePathEls);
+      const tl_stop = createStopAnimation();
+
+      return { tl_stop, animations, introAnimation };
+    } catch (err) {
+      console.error("Error in launch animation setup:", err);
+      return { tl_stop: null, animations: null, introAnimation: null };
+    }
+  }, [createBreathAnimation, createIntroAnimation, createStopAnimation]);
+
+  /**
    * Sets up the initial animation
    * @param {Object} animations - The animations object
    * @param {Object} introAnimation - The intro animation object
    */
-  const setupInitialAnimation = useCallback((animations, introAnimation) => {
-    const nodes = document.querySelectorAll(
-      "#description,#outercircle,#innercircle,#triangle,#_12triangleback"
-    );
-    const triangleBack = document.querySelector("#_12triangleback");
-    if (triangleBack) triangleBack.style.opacity = 0;
-    nodes.forEach((item) => {
-      item.style.opacity = 0;
-    });
-
-    const logo = document.querySelector("#logo");
-    if (logo) logo.style.opacity = 1;
-    const startAnim = createStartAnimation();
-    startAnim.play();
-    setTimeout(() => {
-      introAnimation.play();
-      animations.breathAnimation.play();
-    }, 3000);
-  }, []);
-
-  /**
-   * Creates the start animation
-   * @returns {Object} Anime.js timeline object
-   */
-  const createStartAnimation = useCallback(() => {
-    return anime
-      .timeline({
-        easing: "easeOutExpo",
-        duration: 1000,
-      })
-      .add({
-        targets: "#outercircle",
-        opacity: 1,
-        transformOrigin: ["50% 50% 0", "50% 50% 0"],
-        scale: [0, 0.5, 1],
-      })
-      .add({
-        targets: "#triangle,#innercircle",
-        transformOrigin: ["50% 50% 0", "50% 50% 0"],
-        opacity: [0, 0.2, 0.5, 0.95],
-        rotate: [0, 1080],
-        scale: [0, 0.2, 1.1, 1],
-      })
-      .add({
-        targets: "#description",
-        opacity: [0, 1],
-      })
-      .add({
-        targets: "#triangle",
-        transformOrigin: ["50% 55% 0", "50% 55% 0"],
-        rotate: [0, 720],
-      });
-  }, []);
-
-  /**
-   * Sets up event listeners for animation control
-   * @param {Object} tl_stop - The stop animation timeline
-   * @param {Object} animations - The animations object
-   * @param {Object} introAnimation - The intro animation object
-   */
-  const setupEventListeners = useCallback(
-    (tl_stop, animations, introAnimation) => {
-      const triangleElement = document.querySelector("#triangle");
-      if (triangleElement) {
-        triangleElement.onclick = (event) =>
-          killAnimation(event, tl_stop, animations, introAnimation);
-      }
-      document.body.addEventListener(
-        "keydown",
-        (event) => handleKeyDown(event, tl_stop, animations, introAnimation),
-        true
+  const setupInitialAnimation = useCallback(
+    (animations, introAnimation) => {
+      const nodes = document.querySelectorAll(
+        "#description,#outercircle,#innercircle,#triangle,#_12triangleback"
       );
-    },
-    []
-  );
+      const triangleBack = document.querySelector("#_12triangleback");
+      if (triangleBack) triangleBack.style.opacity = 0;
+      nodes.forEach((item) => {
+        item.style.opacity = 0;
+      });
 
-  /**
-   * Handles keydown events
-   * @param {Event} event - The keydown event
-   * @param {Object} tl_stop - The stop animation timeline
-   * @param {Object} animations - The animations object
-   * @param {Object} introAnimation - The intro animation object
-   */
-  const handleKeyDown = useCallback(
-    (event, tl_stop, animations, introAnimation) => {
-      if (event.defaultPrevented) return;
-      if (event.key === "Enter") {
-        killAnimation(event, tl_stop, animations, introAnimation);
-        event.preventDefault();
-      }
+      const logo = document.querySelector("#logo");
+      if (logo) logo.style.opacity = 1;
+      const startAnim = createStartAnimation();
+      startAnim.play();
+      setTimeout(() => {
+        introAnimation.play();
+        animations.breathAnimation.play();
+      }, 3000);
     },
-    []
-  );
-
-  /**
-   * Stops the animation and transitions to the main application
-   * @param {Event} event - The triggering event
-   * @param {Object} tl_stop - The stop animation timeline
-   * @param {Object} animations - The animations object
-   * @param {Object} introAnimation - The intro animation object
-   */
-  const killAnimation = useCallback(
-    (event, tl_stop, animations, introAnimation) => {
-      const triangle = document.querySelector("#triangle #_12triangleback");
-      if (triangle) {
-        triangle.style.opacity = 0;
-        if (tl_stop && typeof tl_stop.play === "function") {
-          tl_stop.play();
-        }
-        if (introAnimation && typeof introAnimation.pause === "function") {
-          introAnimation.pause();
-        }
-        if (
-          animations &&
-          animations.breathAnimation &&
-          typeof animations.breathAnimation.pause === "function"
-        ) {
-          animations.breathAnimation.pause();
-        }
-        const triangleElement = document.querySelector("#triangle");
-        if (triangleElement) {
-          triangleElement.removeEventListener("click", killAnimation);
-        }
-        document.body.removeEventListener("keydown", handleKeyDown, true);
-
-        if (event instanceof Event && event.code !== "customIdentifier") {
-          finishLaunching();
-        } else {
-          finishLaunchWrapper(0);
-        }
-      }
-    },
-    [theme, finishLaunching]
-  );
-
-  /**
-   * Wrapper function to finish the launch process
-   * @param {number} counter - The current iteration count
-   */
-  const finishLaunchWrapper = useCallback(
-    (counter) => {
-      counter = counter + 1;
-      if (counter === 3) {
-        setTimeout(finishLaunching, 1000);
-      } else {
-        setTimeout(() => finishLaunchWrapper(counter), 1000);
-      }
-    },
-    [finishLaunching]
+    [createStartAnimation]
   );
 
   /**
@@ -393,7 +374,6 @@ const Launch = ({ finishLaunching }) => {
         if (index === letters.length - 1) {
           setTimeout(() => {
             callback(letter, () => {
-              // Simulate a keydown event to stop animation and launch page
               document.body.dispatchEvent(
                 new KeyboardEvent("keydown", {
                   key: "Enter",
@@ -415,6 +395,31 @@ const Launch = ({ finishLaunching }) => {
 
     makeDescriptionVisible(enableDescriptionLetters, printSpeed, startDelay);
   }, []);
+
+  /**
+   * Initializes the animation
+   */
+  const initializeAnimation = useCallback(() => {
+    const { tl_stop, animations, introAnimation } = createLaunchAnimation();
+    setupInitialAnimation(animations, introAnimation);
+    setupEventListeners(tl_stop, animations, introAnimation);
+    setupDescriptionAnimation();
+  }, [
+    createLaunchAnimation,
+    setupInitialAnimation,
+    setupEventListeners,
+    setupDescriptionAnimation,
+  ]);
+
+  // Check if animation should be skipped based on URL parameters
+  useEffect(() => {
+    setShouldSkipAnimation(checkSkipAnimation(query));
+  }, [query, checkSkipAnimation]);
+
+  // Initialize animation or skip based on shouldSkipAnimation state
+  useEffect(() => {
+    shouldSkipAnimation ? skipAnimation() : initializeAnimation();
+  }, [shouldSkipAnimation, skipAnimation, initializeAnimation]);
 
   return (
     <>

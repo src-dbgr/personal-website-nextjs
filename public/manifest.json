@@ -1,14 +1,15 @@
 {
   "id": "https://devsam.io",
-  "name": "Samuel B",
-  "short_name": "DEVSAM",
+  "name": "devsam.io",
+  "short_name": "devsam.io",
+  "description": "devsam.io personal Web Application",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "fullscreen"],
   "theme_color": "#3d8b68",
   "background_color": "#b5aba6",
-  "orientation": "portrait",
+  "orientation": "any",
   "icons": [
     {
       "src": "/assets/images/icons/icon-512.png",
@@ -58,23 +59,13 @@
     }
   ],
   "categories": ["education", "productivity"],
-  "protocol_handlers": [
-    {
-      "protocol": "mailto",
-      "url": "/newEmail?to=%s"
-    }
-  ],
   "shortcuts": [
     {
-      "name": "New Project",
-      "url": "/new-project",
-      "icons": [
-        {
-          "src": "/assets/images/icons/fav.png",
-          "sizes": "2000x2000",
-          "type": "image/png"
-        }
-      ]
+      "name": "Contact Samuel",
+      "short_name": "Contact",
+      "description": "Send a message to Samuel",
+      "url": "/contact",
+      "icons": [{ "src": "/assets/images/icons/android-chrome-192x192.png", "sizes": "192x192" }]
     }
   ],
   "share_target": {
@@ -86,5 +77,9 @@
       "text": "description",
       "url": "link"
     }
-  }
+  },
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "lang": "en-US",
+  "dir": "ltr"
 }
