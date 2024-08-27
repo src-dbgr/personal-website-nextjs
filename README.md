@@ -49,7 +49,7 @@ While the core content and purpose remain the same, this Next.js version incorpo
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/personal-website-nextjs.git
+   git clone https://github.com/src-dbgr/personal-website-nextjs.git
    cd personal-website-nextjs
    ```
 
