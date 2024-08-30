@@ -1,9 +1,10 @@
 import Link from "next/link";
-import React from "react";
+import React, { useContext } from "react";
 import { FaGithubAlt } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { ImSoundcloud } from "react-icons/im";
 import { IoIosPaperPlane } from "react-icons/io";
+import { GlobalDispatchContext } from "../../context/GlobalContextProvider";
 
 const data = [
   {
@@ -33,12 +34,19 @@ const data = [
 ];
 
 const SocialLinks = ({ styleClass }) => {
+  const dispatch = useContext(GlobalDispatchContext);
+
+  const handleInternalLinkClick = () => {
+    dispatch({ type: "NAV_TOGGLE_LOGO" });
+    setTimeout(() => dispatch({ type: "NAV_CIRC" }), 0);
+  };
+
   const links = data.map((link) => {
     if (link.type === "internal") {
       return (
         <li key={link.id}>
           <Link href={link.url} passHref legacyBehavior>
-            <a className="social-link">{link.icon}</a>
+            <a className="social-link" onClick={handleInternalLinkClick}>{link.icon}</a>
           </Link>
         </li>
       );
