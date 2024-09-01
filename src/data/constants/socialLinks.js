@@ -1,15 +1,15 @@
 import Link from "next/link";
 import React, { useContext } from "react";
-import { FaGithubAlt } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { ImSoundcloud } from "react-icons/im";
-import { IoIosPaperPlane } from "react-icons/io";
+import { MdMessage } from "react-icons/md";
 import { GlobalDispatchContext, GlobalStateContext } from "../../context/GlobalContextProvider";
 
 const data = [
   {
     id: 1,
-    icon: <FaGithubAlt className="social-icon" />,
+    icon: <FaGithub className="social-icon" />,
     url: "https://www.github.com/src-dbgr",
     type: "external",
   },
@@ -21,7 +21,7 @@ const data = [
   },
   {
     id: 3,
-    icon: <IoIosPaperPlane className="social-icon" />,
+    icon: <MdMessage className="social-icon" />,
     url: "/contact",
     type: "internal",
   },
