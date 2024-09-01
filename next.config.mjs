@@ -19,8 +19,8 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value: process.env.NODE_ENV === 'development' 
-              ? "default-src 'self'; script-src 'self' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com; img-src 'self' data: https://www.google-analytics.com https://res.cloudinary.com; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; form-action 'self' https://formspree.io;"
-              : "default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com; img-src 'self' data: https://www.google-analytics.com https://res.cloudinary.com; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; form-action 'self' https://formspree.io;"
+              ? "default-src 'self'; script-src 'self' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://res.cloudinary.com https://*.cloudinary.com; img-src 'self' data: https://www.google-analytics.com https://res.cloudinary.com; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; form-action 'self' https://formspree.io;"
+              : "default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://res.cloudinary.com https://*.cloudinary.com; img-src 'self' data: https://www.google-analytics.com https://res.cloudinary.com; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; form-action 'self' https://formspree.io;"
           },
           {
             key: 'Strict-Transport-Security',
