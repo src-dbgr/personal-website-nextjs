@@ -4,7 +4,7 @@ import { FaGithubAlt } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { ImSoundcloud } from "react-icons/im";
 import { IoIosPaperPlane } from "react-icons/io";
-import { GlobalDispatchContext } from "../../context/GlobalContextProvider";
+import { GlobalDispatchContext, GlobalStateContext } from "../../context/GlobalContextProvider";
 
 const data = [
   {
@@ -35,10 +35,13 @@ const data = [
 
 const SocialLinks = ({ styleClass }) => {
   const dispatch = useContext(GlobalDispatchContext);
+  const navopen = useContext(GlobalStateContext).navopen;
 
   const handleInternalLinkClick = () => {
-    dispatch({ type: "NAV_TOGGLE_LOGO" });
-    setTimeout(() => dispatch({ type: "NAV_CIRC" }), 0);
+    if(navopen){
+      dispatch({ type: "NAV_TOGGLE_LOGO" });
+      setTimeout(() => dispatch({ type: "NAV_CIRC" }), 0);
+    }
   };
 
   const links = data.map((link) => {
