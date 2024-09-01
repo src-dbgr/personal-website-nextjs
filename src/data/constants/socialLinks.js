@@ -1,34 +1,34 @@
 import Link from "next/link";
 import React, { useContext } from "react";
-import { FaGithub } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
-import { ImSoundcloud } from "react-icons/im";
-import { MdMessage } from "react-icons/md";
+import { FaSquareGithub } from "react-icons/fa6";
+import { FaSquareXTwitter } from "react-icons/fa6";
+import { ImSoundcloud2 } from "react-icons/im";
+import { FaEnvelopeSquare } from "react-icons/fa";
 import { GlobalDispatchContext, GlobalStateContext } from "../../context/GlobalContextProvider";
 import { useNavigation } from "../../hooks/useNavigation";
 
 const data = [
   {
     id: 1,
-    icon: <FaGithub className="social-icon" />,
+    icon: <FaSquareGithub className="social-icon" />,
     url: "https://www.github.com/src-dbgr",
     type: "external",
   },
   {
     id: 2,
-    icon: <FaXTwitter className="social-icon" />,
+    icon: <FaSquareXTwitter className="social-icon" />,
     url: "https://www.x.com/smlblm",
     type: "external",
   },
   {
     id: 3,
-    icon: <MdMessage className="social-icon" />,
+    icon: <FaEnvelopeSquare className="social-icon" />,
     url: "/contact",
     type: "internal",
   },
   {
     id: 4,
-    icon: <ImSoundcloud className="social-icon" />,
+    icon: <ImSoundcloud2 className="social-icon soundcloud" />,
     url: "https://soundcloud.com/ivorycone",
     type: "external",
   },

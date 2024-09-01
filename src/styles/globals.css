@@ -2490,6 +2490,12 @@ Blog Template
   transition: var(--transition);
 }
 
+.soundcloud {
+ height: 24px;
+ padding-top: 1.5px;
+ padding-bottom: 1.5px;
+}
+
 /*
 ===============
 Footer
