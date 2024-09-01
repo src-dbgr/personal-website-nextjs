@@ -23,7 +23,7 @@ const data = [
   {
     id: 3,
     icon: <MdMessage className="social-icon" />,
-    url: "/contacts",
+    url: "/contact",
     type: "internal",
   },
   {
