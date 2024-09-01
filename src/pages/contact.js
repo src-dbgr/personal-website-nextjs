@@ -9,11 +9,12 @@ const Contact = ({ cookies }) => {
     const [isMailValid, setMailValid] = useState(true);
     const [isNameValid, setNameValid] = useState(true);
     const [isMessageValid, setMessageValid] = useState(true);
-  
+    const [message, setMessage] = useState('');
+
     function checkData(event) {
       event.preventDefault();
       let nameValidity = !isBlank(event.target.elements.name.value);
-      let messageValidity = !isBlank(event.target.elements.message.value);
+      let messageValidity = !isBlank(message);
       let emailValidity = validateEmail(event.target.elements.email.value);
       setNameValid(nameValidity);
       setMessageValid(messageValidity);
@@ -39,6 +40,11 @@ const Contact = ({ cookies }) => {
         let form = document.getElementById("mailForm");
         form.method = "post";
         form.action = `${process.env.NEXT_PUBLIC_FS_API_URL}`;
+        const hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.name = 'message';
+        hiddenField.value = message;
+        form.appendChild(hiddenField);
         form.submit();
       }
     }
@@ -57,6 +63,17 @@ const Contact = ({ cookies }) => {
   
     function isBlank(str) {
       return !str || /^\s*$/.test(str);
+    }
+
+    function handleMessageChange(e) {
+      setMessage(e.target.value);
+    }
+
+    function handleKeyDown(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        setMessage(prevMessage => prevMessage + '\n');
+      }
     }
   
     return (
@@ -91,6 +108,9 @@ const Contact = ({ cookies }) => {
                   <textarea
                     id="message"
                     name="message"
+                    value={message}
+                    onChange={handleMessageChange}
+                    onKeyDown={handleKeyDown}
                     rows="5"
                     placeholder="message"
                     className="form-control"
@@ -143,4 +163,3 @@ const Contact = ({ cookies }) => {
   }
 
   export default Contact;
-  
