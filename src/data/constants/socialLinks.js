@@ -5,6 +5,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import { ImSoundcloud } from "react-icons/im";
 import { MdMessage } from "react-icons/md";
 import { GlobalDispatchContext, GlobalStateContext } from "../../context/GlobalContextProvider";
+import { useNavigation } from "../../hooks/useNavigation";
 
 const data = [
   {
@@ -34,29 +35,33 @@ const data = [
 ];
 
 const SocialLinks = ({ styleClass }) => {
-  const dispatch = useContext(GlobalDispatchContext);
-  const navopen = useContext(GlobalStateContext).navopen;
-
-  const handleInternalLinkClick = () => {
-    if(navopen){
-      dispatch({ type: "NAV_TOGGLE_LOGO" });
-      setTimeout(() => dispatch({ type: "NAV_CIRC" }), 0);
-    }
-  };
+  const { handleInternalLinkClick, handleInternalKeyDown, handleExternalKeyDown } = useNavigation();
 
   const links = data.map((link) => {
     if (link.type === "internal") {
       return (
         <li key={link.id}>
           <Link href={link.url} passHref legacyBehavior>
-            <a className="social-link" onClick={handleInternalLinkClick}>{link.icon}</a>
+            <a 
+              className="social-link" 
+              onClick={(e) => handleInternalLinkClick(e, link.url)}
+              onKeyDown={(e) => handleInternalKeyDown(e, link.url)}
+            >
+              {link.icon}
+            </a>
           </Link>
         </li>
       );
     } else {
       return (
         <li key={link.id}>
-          <a href={link.url} className="social-link" target="_blank" rel="noopener noreferrer">
+          <a 
+            href={link.url} 
+            className="social-link" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            onKeyDown={handleExternalKeyDown}
+          >
             {link.icon}
           </a>
         </li>
