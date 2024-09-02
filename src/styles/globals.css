@@ -2477,17 +2477,17 @@ Blog Template
 .social-link {
   font-size: 1.5rem;
   color: var(--clr-passive);
-  transition: var(--transition);
+  transition: var(--transition-very-fast);
 }
 
 .social-icon {
   color: var(--clr-passive);
-  transition: var(--transition);
+  transition: var(--transition-very-fast);
 }
 
 .social-link:hover .social-icon {
   color: var(--clr-green-major);
-  transition: var(--transition);
+  transition: var(--transition-very-fast);
 }
 
 .soundcloud {
@@ -2549,7 +2549,7 @@ Footer
   color: var(--clr-passive);
   text-transform: uppercase;
   font-size: 8pt;
-  transition: var(--transition);
+  transition: var(--transition-very-fast);
 }
 
 .recaptcha a {
@@ -2561,7 +2561,7 @@ Footer
   text-decoration: none;
   color: var(--clr-green-major);
   font-size: 8pt;
-  transition: var(--transition);
+  transition: var(--transition-very-fast);
 }
 
 .fourofour {
@@ -3577,11 +3577,25 @@ Contact Page
 }
 
 .grecaptcha-badge {
-  visibility: hidden;
+  visibility: visible;
+  z-index: 198;
+  opacity: 0.6;
+  transition: var(--transition-fast);
+}
+
+.grecaptcha-badge:hover {
+  visibility: visible;
+  z-index: 10000;
+  opacity: 1;
+  transition: var(--transition-fast);
 }
 
 .form-group {
   padding: 1rem 1.5rem;
+}
+
+input {
+  color-scheme: dark;
 }
 
 input:focus,

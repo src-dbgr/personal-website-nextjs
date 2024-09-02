@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }) {
 
   const devsamio =
     "" +
-    "\n  ;                                                                                             " +
+    "\n  ;                                                                                               " +
     "\n  ED.                                                                                       :     " +
     "\n  E#Wi                 ,;                    .                                             t#,    " +
     "\n  E###G.             f#i                    ;W                                     t      ;##W.   " +
@@ -32,11 +32,14 @@ function MyApp({ Component, pageProps }) {
     "\n  E#t                               ,       ,,,      .,,           .          ;E#t.,;.            " +
     "\n  L:";
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      console.log("\n\nWelcome to:%c\n" + devsamio, "color: #3d8b68;");
-    }
-  }, [devsamio]);
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        console.log(
+          "\n\nWelcome to:%c\n" + devsamio,
+          "color: #3d8b68; font-family: monospace;"
+        );
+      }
+    }, [devsamio]);
 
   return (
     <ApolloProviderWrapper>
