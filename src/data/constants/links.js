@@ -3,7 +3,7 @@ import {
   GlobalStateContext,
 } from "../../context/GlobalContextProvider";
 import React, { useEffect, useContext } from "react";
-import { useRouter } from 'next/router';
+import CustomLink from "@/components/general/CustomLink";
 import Link from "next/link";
 import Aos from "aos";
 import "aos/dist/aos.css";
@@ -47,34 +47,6 @@ import "aos/dist/aos.css";
 //     </li>
 //   );
 // });
-
-const CustomLink = ({ href, children }) => {
-  const router = useRouter();
-  const dispatch = useContext(GlobalDispatchContext);
-  const { navopen } = useContext(GlobalStateContext);
-
-  const handleClick = (e) => {
-    e.preventDefault();
-    if (navopen) {
-      dispatch({ type: "NAV_TOGGLE_LOGO" });
-      dispatch({ type: "NAV_CIRC" });
-
-      // Verzögert die navigation um das link menü nicht abrupt zu schliessen
-      setTimeout(() => {
-        router.push(href);
-      }, 450); // css trantisition zeit ->   --transition: all 0.5s ease;
-    } else {
-      router.push(href);
-    }
-
-  };
-
-  return (
-    <a href={href} onClick={handleClick}>
-      {children}
-    </a>
-  );
-};
 
 const Links = function (props) {
   useEffect(() => {

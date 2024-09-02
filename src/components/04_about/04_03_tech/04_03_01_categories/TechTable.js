@@ -3,7 +3,8 @@ import {
   HiOutlineChevronDoubleDown,
   HiOutlineChevronDoubleUp,
 } from "react-icons/hi";
-import Image from 'next/image';
+import Image from "next/image";
+import SVGImage from "@/components/general/SVGImage";
 
 const TechTable = ({ caption, technologies }) => {
   const [tableCollapsed, setTableCollapsed] = useState(true);
@@ -141,12 +142,18 @@ const TechTable = ({ caption, technologies }) => {
                         // src={`assets/img/tech/${technology.imgfilename}`}
                         alt={technology.skilltitle}
                       /> */}
-                      <Image
+                      {/* <SVGImage src={technology.imgurl} alt={technology.skilltitle} height="40px" /> */}
+                      <SVGImage
+                        src={technology.imgurl}
+                        alt={technology.skilltitle}
+                        height="40px"
+                      />
+                      {/* <Image
                         src={technology.imgurl}
                         alt={technology.skilltitle}
                         width="40"
                         height="40"
-                      />
+                      /> */}
                     </a>
                     <br />
                     {technology.skilltitle}
