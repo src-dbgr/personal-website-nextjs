@@ -15,7 +15,6 @@ const Contact = ({ cookies }) => {
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
 
   function checkData(event) {
-    console.log("here");
     event.preventDefault();
     let nameValidity = !isBlank(event.target.elements.name.value);
     let messageValidity = !isBlank(message);
@@ -49,9 +48,8 @@ const Contact = ({ cookies }) => {
           .then((token) => {
             const formData = new FormData(event.target);
             formData.append("g-recaptcha-response", token);
-            formData.append("message", message);
 
-            // Prüfen, ob wir in der Entwicklungsumgebung sind
+            // check for dev mode - dont send in dev mode
             if (process.env.NODE_ENV === "development") {
               console.log("Entwicklungsmodus: Formular würde gesendet werden.");
               setSubmissionStatus("success");
