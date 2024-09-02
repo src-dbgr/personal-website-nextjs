@@ -2552,6 +2552,15 @@ Footer
   transition: var(--transition-very-fast);
 }
 
+.recaptcha {
+  max-width: 35rem;
+  width: 90vw;
+  text-align: center;
+  margin-top: -4rem;
+  margin-bottom: 4rem;
+  height: 100%;
+}
+
 .recaptcha a {
   color: var(--clr-green-major);
 }
@@ -3561,6 +3570,11 @@ Contact Page
   min-height: calc(100vh - 9rem);
 }
 
+.contact-page .fade-in-section {
+  display: flex;
+  flex-direction: column;
+}
+
 .contact-form {
   background: var(--clr-background-minor);
   text-align: center;
@@ -3577,17 +3591,8 @@ Contact Page
 }
 
 .grecaptcha-badge {
-  visibility: visible;
+  visibility: hidden;
   z-index: 198;
-  opacity: 0.6;
-  transition: var(--transition-fast);
-}
-
-.grecaptcha-badge:hover {
-  visibility: visible;
-  z-index: 10000;
-  opacity: 1;
-  transition: var(--transition-fast);
 }
 
 .form-group {
