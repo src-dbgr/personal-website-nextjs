@@ -1,7 +1,10 @@
 import React, { useContext } from "react";
 import SocialLinks from "../../data/constants/socialLinks";
 import Link from "next/link";
-import { GlobalDispatchContext, GlobalStateContext } from "../../context/GlobalContextProvider";
+import {
+  GlobalDispatchContext,
+  GlobalStateContext,
+} from "../../context/GlobalContextProvider";
 import { useNavigation } from "../../hooks/useNavigation";
 
 const Footer = ({ darkFooter }) => {
@@ -14,7 +17,7 @@ const Footer = ({ darkFooter }) => {
         <h4>copyright&copy;{new Date().getFullYear()}</h4>
         <div>
           <Link href="/legal" legacyBehavior>
-            <a 
+            <a
               className="legal-disclosure"
               onClick={(e) => handleInternalLinkClick(e, "/legal")}
               onKeyDown={(e) => handleInternalKeyDown(e, "/legal")}
@@ -23,7 +26,7 @@ const Footer = ({ darkFooter }) => {
             </a>
           </Link>
           <Link href="/privacy" legacyBehavior>
-            <a 
+            <a
               className="legal-disclosure"
               onClick={(e) => handleInternalLinkClick(e, "/privacy")}
               onKeyDown={(e) => handleInternalKeyDown(e, "/privacy")}
@@ -31,6 +34,12 @@ const Footer = ({ darkFooter }) => {
               Privacy Policy | Datenschutzerklärung
             </a>
           </Link>
+          <small className="recaptcha">
+            This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy">Privacy Policy</a> and 
+            <a href="https://policies.google.com/terms"> Terms of Service
+            </a>{" "}
+            apply.
+          </small>
         </div>
       </div>
     </div>

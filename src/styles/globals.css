@@ -2545,11 +2545,15 @@ Footer
   color: var(--clr-dark);
 }
 
-.legal-disclosure {
+.legal-disclosure, .recaptcha {
   color: var(--clr-passive);
   text-transform: uppercase;
   font-size: 8pt;
   transition: var(--transition);
+}
+
+.recaptcha a {
+  color: var(--clr-green-major);
 }
 
 .legal-disclosure:hover {
@@ -3572,6 +3576,10 @@ Contact Page
   padding-top: 1.25rem;
 }
 
+.grecaptcha-badge {
+  visibility: hidden;
+}
+
 .form-group {
   padding: 1rem 1.5rem;
 }
@@ -3640,6 +3648,13 @@ textarea:focus {
 
 .invalid-header p {
   color: var(--clr-dark);
+}
+
+.success-message p {
+  color: var(--clr-dark);
+}
+.error-message p {
+  color: #c00000
 }
 
 /*
