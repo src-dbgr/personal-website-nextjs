@@ -1,25 +1,29 @@
-import { GlobalDispatchContext, GlobalStateContext } from "../../context/GlobalContextProvider";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import PageLinks from "../../data/constants/links";
 import SocialLinks from "../../data/constants/socialLinks";
+import { useNavigation } from "../../hooks/useNavigation";
 
 const Topbar = (props) => {
-  const dispatch = useContext(GlobalDispatchContext);
-  const navopen = useContext(GlobalStateContext).navopen;
+  const { handleTopbarToggle, closeTopbar, navopen } = useNavigation();
 
-  const handleToggle = (e) => {
-    // Nur auslösen, wenn direkt auf die aside geklickt wurde
-    if (e.target === e.currentTarget) {
-      dispatch({ type: "NAV_TOGGLE_LOGO" });
-      setTimeout(() => dispatch({ type: "NAV_CIRC" }), 0);
-    }
-  };
+  useEffect(() => {
+    const handleEscapeKey = (event) => {
+      if (event.key === 'Escape' && navopen) {
+        closeTopbar();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [navopen, closeTopbar]);
 
   return (
     <aside
       className={`topbar ${navopen ? "show-topbar" : ""}`}
-      onClick={handleToggle}
-      onKeyDown={(e) => e.key === 'Escape' && handleToggle(e)}
+      onClick={handleTopbarToggle}
       role="presentation"
     >
       <div className="top-container">
