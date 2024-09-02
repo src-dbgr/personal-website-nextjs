@@ -1,4 +1,3 @@
-import Script from "next/script";
 import { useState, useEffect } from "react";
 import Layout from "../components/general/Layout";
 import Title from "../components/general/Title";
@@ -13,6 +12,30 @@ const Contact = ({ cookies }) => {
   const [message, setMessage] = useState("");
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadRecaptcha = () => {
+      const script = document.createElement('script');
+      script.src = `https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`;
+      script.id = 'recaptcha-script';
+      script.onload = () => setRecaptchaLoaded(true);
+      document.body.appendChild(script);
+    };
+
+    loadRecaptcha();
+
+    return () => {
+      const script = document.getElementById('recaptcha-script');
+      if (script) {
+        document.body.removeChild(script);
+      }
+      const badge = document.querySelector('.grecaptcha-badge');
+      if (badge) {
+        badge.remove();
+      }
+      delete window.grecaptcha;
+    };
+  }, []);
 
   function checkData(event) {
     event.preventDefault();
@@ -115,16 +138,6 @@ const Contact = ({ cookies }) => {
 
   return (
     <Layout darkFooter={true} cookies={cookies}>
-      <Script
-        src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
-        strategy="afterInteractive"
-        onLoad={() => {
-          setRecaptchaLoaded(true);
-          window.grecaptcha.ready(() => {
-            console.log("reCAPTCHA is ready");
-          });
-        }}
-      />
       <Seo
         title="Contact"
         description="Samuel IT - Get in touch by sending a message."
