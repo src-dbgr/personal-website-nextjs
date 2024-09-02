@@ -15,9 +15,9 @@ const Contact = ({ cookies }) => {
 
   useEffect(() => {
     const loadRecaptcha = () => {
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = `https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`;
-      script.id = 'recaptcha-script';
+      script.id = "recaptcha-script";
       script.onload = () => setRecaptchaLoaded(true);
       document.body.appendChild(script);
     };
@@ -25,11 +25,11 @@ const Contact = ({ cookies }) => {
     loadRecaptcha();
 
     return () => {
-      const script = document.getElementById('recaptcha-script');
+      const script = document.getElementById("recaptcha-script");
       if (script) {
         document.body.removeChild(script);
       }
-      const badge = document.querySelector('.grecaptcha-badge');
+      const badge = document.querySelector(".grecaptcha-badge");
       if (badge) {
         badge.remove();
       }
@@ -199,14 +199,12 @@ const Contact = ({ cookies }) => {
               )}
               {submissionStatus === "success" && (
                 <div className="success-message">
-                  <p>Your message has been sent successfully!</p>
+                  <p>Message sent successfully!</p>
                 </div>
               )}
               {submissionStatus === "error" && (
                 <div className="error-message">
-                  <p>
-                    There was an error sending your message. Please try again.
-                  </p>
+                  <p>Error sending message. Try again.</p>
                 </div>
               )}
               <button
@@ -218,6 +216,15 @@ const Contact = ({ cookies }) => {
               </button>
             </form>
           </article>
+          <small className="recaptcha">
+            This site is protected by reCAPTCHA and the Google{" "}
+            <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+            <a href="https://policies.google.com/terms">
+              {" "}
+              Terms of Service
+            </a>{" "}
+            apply.
+          </small>
         </FadeInSection>
       </section>
     </Layout>
