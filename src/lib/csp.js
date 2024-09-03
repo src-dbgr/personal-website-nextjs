@@ -10,7 +10,6 @@ export function getCspContent() {
       "https://www.google-analytics.com",
     ],
     "frame-src": ["https://www.google.com"],
-    "frame-ancestors": ["'self'", "https://www.google.com"],    
     "connect-src": [
       "'self'",
       "https://formspree.io",
