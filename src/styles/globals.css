@@ -2477,17 +2477,17 @@ Blog Template
 .social-link {
   font-size: 1.5rem;
   color: var(--clr-passive);
-  transition: var(--transition);
+  transition: var(--transition-very-fast);
 }
 
 .social-icon {
   color: var(--clr-passive);
-  transition: var(--transition);
+  transition: var(--transition-very-fast);
 }
 
 .social-link:hover .social-icon {
   color: var(--clr-green-major);
-  transition: var(--transition);
+  transition: var(--transition-very-fast);
 }
 
 .soundcloud {
@@ -2549,7 +2549,16 @@ Footer
   color: var(--clr-passive);
   text-transform: uppercase;
   font-size: 8pt;
-  transition: var(--transition);
+  transition: var(--transition-very-fast);
+}
+
+.recaptcha {
+  max-width: 35rem;
+  width: 90vw;
+  text-align: center;
+  margin-top: -4rem;
+  margin-bottom: 4rem;
+  height: 100%;
 }
 
 .recaptcha a {
@@ -2561,7 +2570,7 @@ Footer
   text-decoration: none;
   color: var(--clr-green-major);
   font-size: 8pt;
-  transition: var(--transition);
+  transition: var(--transition-very-fast);
 }
 
 .fourofour {
@@ -3561,6 +3570,11 @@ Contact Page
   min-height: calc(100vh - 9rem);
 }
 
+.contact-page .fade-in-section {
+  display: flex;
+  flex-direction: column;
+}
+
 .contact-form {
   background: var(--clr-background-minor);
   text-align: center;
@@ -3578,10 +3592,15 @@ Contact Page
 
 .grecaptcha-badge {
   visibility: hidden;
+  z-index: 198;
 }
 
 .form-group {
   padding: 1rem 1.5rem;
+}
+
+input {
+  color-scheme: dark;
 }
 
 input:focus,

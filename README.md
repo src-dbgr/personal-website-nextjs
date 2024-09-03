@@ -61,7 +61,8 @@ While the core content and purpose remain the same, this Next.js version incorpo
 3. Set up environment variables:
    Create `.env.local` and `.env.production` files in the root directory and add the following variables to both:
    ```
-   FS_API_URL=<form-spree-api-url>
+   NEXT_PUBLIC_FS_API_URL=<form-spree-api-url>
+   NEXT_PUBLIC_RECAPTCHA_SITE_KEY=<google-recaptcha-site-key>
    STRAPI_GRAPHQL_URL=http://127.0.0.1:1337/graphql
    STRAPI_API_URL=http://127.0.0.1:1337/api
    STRAPI_TOKEN=<strapi-token>
