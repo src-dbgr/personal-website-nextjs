@@ -217,7 +217,7 @@ const Contact = ({ cookies }) => {
             </form>
           </article>
           <small className="recaptcha">
-            This site is protected by reCAPTCHA and the Google{" "}
+            This site is protected by reCAPTCHA. The Google{" "}
             <a href="https://policies.google.com/privacy">Privacy Policy</a> and
             <a href="https://policies.google.com/terms">
               {" "}
