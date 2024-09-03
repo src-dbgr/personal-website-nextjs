@@ -1,17 +1,14 @@
 import React from 'react';
+import Image from 'next/image';
 
 const SVGImage = ({ src, alt, width, height }) => {
   return (
-    <div style={{ width, height, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <img 
+    <div style={{ width, height, position: 'relative' }}>
+      <Image 
         src={src} 
         alt={alt} 
-        style={{ 
-          maxWidth: '100%', 
-          maxHeight: '100%', 
-          width: 'auto', 
-          height: 'auto' 
-        }} 
+        fill
+        style={{ objectFit: 'contain' }}
       />
     </div>
   );

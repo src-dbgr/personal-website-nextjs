@@ -132,7 +132,7 @@ const TechTable = ({ caption, technologies }) => {
               return (
                 <tr key={i}>
                   <td>
-                    <a href={technology.techurl}>
+                    <a href={technology.techurl} className="tech-table-anchor">
                       {/* In case cloudinary fails to serve the images 
                       copy the images in path src/assets/images/technologies to the static folder
                       create your desired path structure there, for instance => assets/img/tech/<filename>
@@ -146,6 +146,7 @@ const TechTable = ({ caption, technologies }) => {
                       <SVGImage
                         src={technology.imgurl}
                         alt={technology.skilltitle}
+                        width="40px"
                         height="40px"
                       />
                       {/* <Image
