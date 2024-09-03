@@ -1662,8 +1662,12 @@ About Page
   background: linear-gradient(to bottom, transparent, var(--clr-background-major));
 }
 
+.h-500 {
+  height: 500px;
+}
+
 .about-text.colappsed {
-  max-height: 300px;
+  max-height: 195px;
   transition: var(--transition-fast);
 }
 
@@ -3011,6 +3015,7 @@ ul li:nth-child(even) .timeline-node {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 @media screen and (min-width: 576px) {
+
   .blogs-center {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(368px, 1fr));
@@ -3020,6 +3025,7 @@ ul li:nth-child(even) .timeline-node {
 }
 
 @media screen and (min-width: 676px) {
+
   .about-component-center {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -3295,6 +3301,11 @@ ul li:nth-child(even) .timeline-node {
 }
 
 @media screen and (max-width: 992px) {
+
+  .tech-table {
+    font-size: 10pt !important;
+  }
+
   .cookie-consent {
     flex-direction: column;
     opacity: 0.95;
@@ -3350,6 +3361,15 @@ ul li:nth-child(even) .timeline-node {
 }
 
 @media screen and (max-width: 676px) {
+
+  .tech-table {
+    font-size: 11pt !important;
+  }
+
+  .h-500 {
+    height: unset;
+  }
+
   .blog-content p img {
     max-height: 300px;
     max-width: 300px;
