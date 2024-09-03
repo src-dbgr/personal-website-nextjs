@@ -1,4 +1,3 @@
-import Script from "next/script";
 import { useState, useEffect } from "react";
 import Layout from "../components/general/Layout";
 import Title from "../components/general/Title";
@@ -14,8 +13,31 @@ const Contact = ({ cookies }) => {
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
 
+  useEffect(() => {
+    const loadRecaptcha = () => {
+      const script = document.createElement("script");
+      script.src = `https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`;
+      script.id = "recaptcha-script";
+      script.onload = () => setRecaptchaLoaded(true);
+      document.body.appendChild(script);
+    };
+
+    loadRecaptcha();
+
+    return () => {
+      const script = document.getElementById("recaptcha-script");
+      if (script) {
+        document.body.removeChild(script);
+      }
+      const badge = document.querySelector(".grecaptcha-badge");
+      if (badge) {
+        badge.remove();
+      }
+      delete window.grecaptcha;
+    };
+  }, []);
+
   function checkData(event) {
-    console.log("here");
     event.preventDefault();
     let nameValidity = !isBlank(event.target.elements.name.value);
     let messageValidity = !isBlank(message);
@@ -49,9 +71,8 @@ const Contact = ({ cookies }) => {
           .then((token) => {
             const formData = new FormData(event.target);
             formData.append("g-recaptcha-response", token);
-            formData.append("message", message);
 
-            // Prüfen, ob wir in der Entwicklungsumgebung sind
+            // check for dev mode - dont send in dev mode
             if (process.env.NODE_ENV === "development") {
               console.log("Entwicklungsmodus: Formular würde gesendet werden.");
               setSubmissionStatus("success");
@@ -117,16 +138,6 @@ const Contact = ({ cookies }) => {
 
   return (
     <Layout darkFooter={true} cookies={cookies}>
-      <Script
-        src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
-        strategy="afterInteractive"
-        onLoad={() => {
-          setRecaptchaLoaded(true);
-          window.grecaptcha.ready(() => {
-            console.log("reCAPTCHA is ready");
-          });
-        }}
-      />
       <Seo
         title="Contact"
         description="Samuel IT - Get in touch by sending a message."
@@ -188,14 +199,12 @@ const Contact = ({ cookies }) => {
               )}
               {submissionStatus === "success" && (
                 <div className="success-message">
-                  <p>Your message has been sent successfully!</p>
+                  <p>Message sent successfully!</p>
                 </div>
               )}
               {submissionStatus === "error" && (
                 <div className="error-message">
-                  <p>
-                    There was an error sending your message. Please try again.
-                  </p>
+                  <p>Error sending message. Try again.</p>
                 </div>
               )}
               <button
@@ -207,6 +216,15 @@ const Contact = ({ cookies }) => {
               </button>
             </form>
           </article>
+          <small className="recaptcha">
+            This site is protected by reCAPTCHA and the Google{" "}
+            <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+            <a href="https://policies.google.com/terms">
+              {" "}
+              Terms of Service
+            </a>{" "}
+            apply.
+          </small>
         </FadeInSection>
       </section>
     </Layout>
