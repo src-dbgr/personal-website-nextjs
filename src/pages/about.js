@@ -34,7 +34,7 @@ const AboutPage = ({ customData, cookies }) => {
       <Seo title="About" description={""} />
       <section className="about-page">
         <Title title={about.title} />
-        <div className="section section-center about-component-center">
+        <div className={`section section-center about-component-center ${isExpanded ? '' : 'h-500'}`}>
           <FadeInSection>
             <article key="1" className="about-component shadow-box">
               <div className="ball-icon-wrapper">
