@@ -4,7 +4,7 @@
 
 This repository contains the source code for my personal website, built with Next.js. It's a modern, responsive web application showcasing my portfolio, blog, and professional experience. Originally built with Gatsby, this project has been successfully migrated to Next.js to take advantage of its enhanced features and performance capabilities.
 
-The live version of this website can be accessed at [https://codesam.io](https://codesam.io).
+The live version of this website can be accessed at [https://devsam.io](https://devsam.io).
 
 ## Project History
 
