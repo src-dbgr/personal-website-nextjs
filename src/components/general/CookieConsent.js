@@ -332,12 +332,10 @@ const CookieConsent = ({ cookies }) => {
                     This website uses cookies and other tracking technologies.
                     By accepting all cookies, you consent to this website&apos;s use
                     of all cookies. You can also activate only specific cookies
-                    or decline the entire usage of cookies. Declining stops all
-                    tracking cookies but will use local window storage to not
-                    show the banner again on revisit. Usage of cookies helps to
-                    analyze this website&apos;s traffic and understand where visitors
-                    are coming from. Your Identity always remains
-                    anonymous.&nbsp;
+                    or decline the entire usage of cookies. 
+                    Declining stops tracking cookies but allows essential use of localStorage for preferences and theme. 
+                    Accepted cookies help analyze traffic. Your identity remains anonymous.
+                    For full details on our data practices, please refer to the Privacy Policy.&nbsp;
                     <Link href="/privacy" className="link">Learn more</Link>
                   </span>
                 </div>
