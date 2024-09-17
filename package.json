@@ -43,8 +43,8 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^14.2.7",
-    "eslint": "^8.56.0",
-    "eslint-config-next": "14.2.6",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.12",
     "npm-check-updates": "^17.1.0",
     "serve": "^14.2.3"
   }
