@@ -2489,12 +2489,24 @@ Blog Template
   transition: var(--transition-very-fast);
 }
 
-.social-link:hover .social-icon {
+.social-link:hover .social-icon,
+.bluesky-icon:hover {
   color: var(--clr-green-major);
   transition: var(--transition-very-fast);
 }
 
-.soundcloud {
+.social-icon-svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--clr-passive);
+}
+
+.social-icon-svg:hover {
+  fill:  var(--clr-green-major);
+  transition: var(--transition-very-fast);
+}
+
+.soundcloud, .social-icon-svg {
  height: 24px;
  padding-top: 1.5px;
  padding-bottom: 1.5px;
