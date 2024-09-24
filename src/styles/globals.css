@@ -2496,6 +2496,8 @@ Blog Template
 }
 
 .social-icon-svg {
+  width: 24px;
+  height: 24px;
   fill: var(--clr-passive);
 }
 
@@ -2508,7 +2510,6 @@ Blog Template
  height: 24px;
  padding-top: 1.5px;
  padding-bottom: 1.5px;
- padding-right: 1.5px;
 }
 
 /*
