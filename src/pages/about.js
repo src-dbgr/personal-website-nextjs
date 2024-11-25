@@ -1,5 +1,3 @@
-// pages/about.js
-
 import React, { useState } from "react";
 import Image from 'next/image';
 import Layout from "../components/general/Layout";
@@ -16,16 +14,11 @@ import apolloClient from '../lib/apolloClient';
 import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 
 const AboutPage = ({ customData, cookies }) => {
-  const [isDefault, setDefault] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-
-  function flipRadioButton() {
-    setDefault((isDefault) => !isDefault);
-  }
 
   const { about, stations, categories, techstacks } = customData;
 
@@ -67,25 +60,12 @@ const AboutPage = ({ customData, cookies }) => {
         <FadeInSection>
           <div id="resume" className="about-download">
             <div className="resume-wrapper">
-              <a href={isDefault ? "/resume_sb_df.pdf" : "/resume_sb_wh.pdf"} className="btn center-btn">
+              <a href="/resume_sb.pdf" className="btn center-btn">
                 <span className="btn">
                   <MdFileDownload className="icon-margin" />
                   RÉSUMÉ
                 </span>
               </a>
-              <div className="about-download-radio-wrapper">
-                <p>RÉSUMÉ BACKGROUND:</p>
-                <label>
-                  <input type="radio" value="White" name="resume" checked={!isDefault} onChange={flipRadioButton} />
-                  <span className="overlay"></span>
-                  <span className="text-radio">WHITE</span>
-                </label>
-                <label>
-                  <input type="radio" value="Default" name="resume" checked={isDefault} onChange={flipRadioButton} />
-                  <span className="overlay"></span>
-                  <span className="text-radio">DEFAULT</span>
-                </label>
-              </div>
             </div>
           </div>
         </FadeInSection>
