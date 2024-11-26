@@ -19,16 +19,16 @@
     "clean-install": "rm -rf .next && rm -rf node_modules && rm -f package-lock.json && npm cache clean --force && npm install && echo 'Clean install completed. Remember to restart your dev server!'"
   },
   "dependencies": {
-    "@apollo/client": "^3.11.4",
+    "@apollo/client": "^3.11.10",
     "@juggle/resize-observer": "^3.4.0",
     "@loadable/component": "^5.16.4",
-    "@react-three/fiber": "^8.17.5",
+    "@react-three/fiber": "^8.17.10",
     "animejs": "^3.2.2",
     "aos": "^2.3.4",
-    "framer-motion": "^11.3.29",
+    "framer-motion": "^11.11.17",
     "graphql": "^16.9.0",
     "js-cookie": "^3.0.5",
-    "next": "^14.2.6",
+    "next": "^15.0.3",
     "patch-package": "^8.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -42,10 +42,10 @@
     }
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^14.2.7",
+    "@next/bundle-analyzer": "^15.0.3",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.12",
-    "npm-check-updates": "^17.1.0",
-    "serve": "^14.2.3"
+    "npm-check-updates": "^17.1.11",
+    "serve": "^14.2.4"
   }
 }
