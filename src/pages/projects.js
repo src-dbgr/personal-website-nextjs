@@ -1,4 +1,3 @@
-// pages/projects.js
 import React from 'react';
 import { gql } from '@apollo/client';
 import apolloClient from '../lib/apolloClient';
@@ -10,25 +9,20 @@ import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 const GET_PROJECTS = gql`
   query GetProjects {
     projects(sort: ["orderid:asc"]) {
-      data {
-        attributes {
-          github
-          orderid
-          description
-          title
-          url
-          image {
-            data {
-              attributes {
-                url
-              }
-            }
-          }
-          stack {
-            id
-            title
-          }
-        }
+      github
+      orderid
+      description
+      title
+      documentId
+      url
+      image {
+        url
+        caption
+        name
+      }
+      stack {
+        id
+        title
       }
     }
   }
@@ -49,14 +43,11 @@ const ProjectsPage = ({ projects, cookies }) => {
 };
 
 export async function getStaticProps() {
-  const { data: projectsData } = await apolloClient.query({
+  const { data } = await apolloClient.query({
     query: GET_PROJECTS,
   });
 
-  const projects = projectsData.projects.data.map(project => ({
-    ...project.attributes,
-    image: project.attributes.image.data.attributes,
-  }));
+  const projects = data.projects;
 
   const { cookies } = await fetchCookieStaticProps();
 
@@ -65,7 +56,7 @@ export async function getStaticProps() {
       projects,
       cookies,
     },
-    revalidate: 10, // Optional: Setzt die Revalidierungszeit für die statische Seite
+    revalidate: 10,
   };
 }
 
