@@ -10,7 +10,7 @@ import { gql } from '@apollo/client';
 import apolloClient from '../lib/apolloClient';
 import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 
-const index = ({ customData, cookies }) => { // cookies als Prop hinzufügen
+const index = ({ customData, cookies }) => {
   const {
     about,
     blogs,
@@ -22,7 +22,7 @@ const index = ({ customData, cookies }) => { // cookies als Prop hinzufügen
     <Layout darkFooter={true} cookies={cookies}>
       <Seo title="Home" description={""}/>
       <Hero />
-      <About  infomain={about} />
+      <About infomain={about} />
       <Experience jobs={jobs}/>
       <Projects projects={projects} title="Featured Projects" showLink />
       <BlogsSection blogs={blogs} title="Latest Blog Articles" showLink />
@@ -35,102 +35,73 @@ export async function getStaticProps() {
     query: gql`
       query {
         blogs(sort: "date:desc", pagination: { limit: 3 }) {
-          data {
-            attributes {
-              date
-              slug
-              desc
-              title
-              category
-              createdAt
-              image {
-                data {
-                  attributes {
-                    url
-                  }
-                }
-              }
-            }
-            id
+          date
+          slug
+          desc
+          title
+          category
+          createdAt
+          image {
+            url
           }
+          documentId
         }
         projects(filters: { featured: { eq: true } }, sort: "orderid:asc") {
-          data {
-            attributes {
-              title
-              description
-              image {
-                data {
-                  attributes {
-                    url
-                    caption
-                    name
-                  }
-                }
-              }
-              github
-              url
-              stack {
-                id
-                title
-              }
-              orderid
-              createdAt
-              updatedAt
-              publishedAt
-              featured
-            }
+          title
+          description
+          image {
+            url
+            caption
+            name
           }
+          github
+          url
+          stack {
+            id
+            title
+          }
+          orderid
+          createdAt
+          updatedAt
+          publishedAt
+          featured
         }
         about {
-          data {
-            attributes {
-              infomain
-            }
-          }
+          infomain
         }
         jobs(sort: "id:desc") {
-          data {
-            attributes {
-              company
-              short_company
-              date
-              desc {
-                id
-                name
-              }
-              position
-            }
+          company
+          short_company
+          date
+          desc {
             id
+            name
           }
+          position
+          documentId
         }
       }
     `
   });
 
-  const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
+  const { cookies } = await fetchCookieStaticProps();
 
-  const projects = data.projects.data.map(project => {
-    const attributes = JSON.parse(JSON.stringify(project.attributes));
-    attributes.image = attributes.image.data.attributes;
-    return attributes;
-  });
-
-  const blogs = data.blogs.data.map(blog => {
-    const attributes = JSON.parse(JSON.stringify(blog.attributes));
-    attributes.image = attributes.image.data.attributes;
-    return {id: blog.id, ...attributes};
-  });
+  const projects = data.projects;
+  
+  const blogs = data.blogs.map(blog => ({
+    id: blog.documentId,
+    ...blog
+  }));
 
   return {
     props: {
       customData: {
-        about: data.about.data.attributes.infomain,
+        about: data.about.infomain,
         blogs,
         projects,
-        jobs: data.jobs.data.map(e => e.attributes)
+        jobs: data.jobs
       },
-      cookies, // Cookies Daten hinzufügen
+      cookies,
     },
     revalidate: 10
   };

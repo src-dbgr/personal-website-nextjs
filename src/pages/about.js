@@ -85,121 +85,87 @@ export async function getStaticProps() {
     query: gql`
       query {
         about {
-          data {
-            attributes {
-              title
-              stack {
-                id
-                title
-              }
-              info
-              image {
-                data {
-                  attributes {
-                    url
-                  }
-                }
-              }
-            }
+          title
+          stack {
+            id
+            title
+          }
+          info
+          image {
+            url
           }
         }
         stations(pagination: {pageSize: 1000}, sort: "Order_Id:desc", filters: { Activated: { eq: true } }) {
-          data {
-            attributes {
-              Date
-              Description
-              From_Month
-              From_Year
-              Order_Id
-              To_Month
-              To_Year
-              To_Text
-              Graduation
-              Institution
-              stack {
-                id
-                title
-              }
-              urls {
-                id
-                title
-                url
-              }
-              stationctgry {
-                data {
-                  attributes {
-                    title
-                    description
-                    icon {
-                      data {
-                        attributes {
-                          url
-                          mime
-                        }
-                        id
-                      }
-                    }
-                  }
-                }
-              }
+          Date
+          Description
+          From_Month
+          From_Year
+          Order_Id
+          To_Month
+          To_Year
+          To_Text
+          Graduation
+          Institution
+          stack {
+            id
+            title
+          }
+          urls {
+            id
+            title
+            url
+          }
+          stationctgry {
+            title
+            description
+            icon {
+              url
+              mime
             }
           }
         }
         stationctgries {
-          data {
-            attributes {
-              title
-              description
-              icon {
-                data {
-                  id
-                  attributes {
-                    mime
-                    url
-                  }
-                }
-              }
-            }
+          title
+          description
+          icon {
+            mime
+            url
           }
         }
         techstacks(pagination: {pageSize: 1000}, filters: { active: { eq: true } }, sort: "skilllevel:desc") {
-          data {
-            attributes {
-              skilldescription
-              skillleveltag
-              skillcategory
-              imgfilename
-              skilltitle
-              skilllevel
-              skilltype
-              techurl
-              imgurl
-              categorylabel
-            }
-          }
+          skilldescription
+          skillleveltag
+          skillcategory
+          imgfilename
+          skilltitle
+          skilllevel
+          skilltype
+          techurl
+          imgurl
+          categorylabel
         }
       }
     `
   });
 
   const about = {
-    ...data.about.data.attributes,
-    image: data.about.data.attributes.image.data.attributes,
+    ...data.about,
+    image: { url: data.about.image.url }
   };
 
-  const stations = data.stations.data.map((station) => ({
-    ...station.attributes,
-    stationctgry: station.attributes.stationctgry.data.attributes,
+  const stations = data.stations.map((station) => ({
+    ...station,
+    stationctgry: station.stationctgry
   }));
 
-  const categories = data.stationctgries.data.map((category) => ({
-    ...category.attributes,
-    icon: category.attributes.icon.data.attributes,
+  const categories = data.stationctgries.map((category) => ({
+    ...category,
+    icon: category.icon
   }));
 
-  const techstacks = data.techstacks.data.map((techstack) => techstack.attributes);
+  const techstacks = data.techstacks;
 
-  const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
+  const { cookies } = await fetchCookieStaticProps();
 
   return {
     props: {
@@ -209,7 +175,7 @@ export async function getStaticProps() {
         categories,
         techstacks,
       },
-      cookies, // Cookies Daten übergeben
+      cookies,
     },
     revalidate: 10,
   };
