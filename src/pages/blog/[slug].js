@@ -12,14 +12,11 @@ import { fetchCookieStaticProps } from '../../lib/staticPropsHelpers';
 const GET_BLOG_BY_SLUG = gql`
   query GetBlogBySlug($slug: String!) {
     blogs(filters: { slug: { eq: $slug } }) {
-      data {
-        attributes {
-          content
-          title
-          desc
-          slug
-        }
-      }
+      content
+      title
+      desc
+      slug
+      documentId
     }
   }
 `;
@@ -27,17 +24,14 @@ const GET_BLOG_BY_SLUG = gql`
 const GET_ALL_BLOGS = gql`
   query GetAllBlogs {
     blogs {
-      data {
-        attributes {
-          slug
-        }
-      }
+      slug
+      documentId
     }
   }
 `;
 
 const BlogTemplate = ({ blog, cookies }) => { 
-  const { content, title, desc } = blog.attributes;
+  const { content, title, desc } = blog;
 
   return (
     <Layout darkFooter={false} cookies={cookies}>
@@ -62,11 +56,10 @@ const BlogTemplate = ({ blog, cookies }) => {
 };
 
 export async function getStaticPaths() {
+  const { data } = await apolloClient.query({ query: GET_ALL_BLOGS });
 
-    const { data } = await apolloClient.query({ query: GET_ALL_BLOGS });
-
-  const paths = data.blogs.data.map((blog) => ({
-    params: { slug: blog.attributes.slug },
+  const paths = data.blogs.map((blog) => ({
+    params: { slug: blog.slug },
   }));
 
   return { paths, fallback: false };
@@ -78,14 +71,14 @@ export async function getStaticProps({ params }) {
     variables: { slug: params.slug },
   });
 
-  const blog = data.blogs.data[0];
+  const blog = data.blogs[0];
 
-  const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
+  const { cookies } = await fetchCookieStaticProps();
 
   return {
     props: { 
       blog,
-      cookies, // Cookies Daten übergeben
+      cookies,
     },
   };
 }
