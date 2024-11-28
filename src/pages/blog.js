@@ -9,30 +9,22 @@ import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 
 const GET_BLOGS = gql`
   query GetBlogs {
-    blogs(pagination: {pageSize: 1000},sort: ["date:desc"]) {
-      data {
-        id
-        attributes {
-          slug
-          desc
-          date
-          title
-          content
-          category
-          image {
-            data {
-              attributes {
-                url
-              }
-            }
-          }
-        }
+    blogs(pagination: {pageSize: 1000}, sort: ["date:desc"]) {
+      slug
+      desc
+      date
+      title
+      content
+      category
+      documentId
+      image {
+        url
       }
     }
   }
 `;
 
-const BlogPage = ({ blogs, cookies }) => { // cookies als Prop hinzufügen
+const BlogPage = ({ blogs, cookies }) => {
   return (
     <Layout darkFooter={true} cookies={cookies}>
       <Seo
@@ -43,7 +35,7 @@ const BlogPage = ({ blogs, cookies }) => { // cookies als Prop hinzufügen
         <Title title="All Blog Articles" />
         <div className="section-center blogs-center">
           {blogs.map((blog) => {
-            return <Blog key={blog.id} {...blog} />;
+            return <Blog key={blog.documentId} {...blog} />;
           })}
         </div>
       </section>
@@ -56,20 +48,19 @@ export async function getStaticProps() {
     query: GET_BLOGS,
   });
 
-  const blogs = data.blogs.data.map((blog) => ({
-    id: blog.id,
-    ...blog.attributes,
-    image: blog.attributes.image.data.attributes,
+  const blogs = data.blogs.map((blog) => ({
+    ...blog,
+    id: blog.documentId // Behalte id für Kompatibilität, aber nutze documentId
   }));
 
-  const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
+  const { cookies } = await fetchCookieStaticProps();
 
   return {
     props: {
       blogs,
-      cookies, // Cookies Daten übergeben
+      cookies,
     },
-    revalidate: 10, // Optional: Setzt die Revalidierungszeit für die statische Seite
+    revalidate: 10,
   };
 }
 
