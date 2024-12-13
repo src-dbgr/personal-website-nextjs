@@ -85,6 +85,7 @@ export async function getStaticProps() {
     query: gql`
       query {
         about {
+          documentId
           title
           stack {
             id
