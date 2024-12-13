@@ -152,8 +152,7 @@ const Contact = ({ cookies }) => {
     return {
       props: {
         cookies,
-      },
-      revalidate: 10, // Optional: Setzt die Revalidierungszeit für die statische Seite
+      }
     };
   }
 

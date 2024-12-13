@@ -55,8 +55,7 @@ export async function getStaticProps() {
     props: {
       projects,
       cookies,
-    },
-    revalidate: 10,
+    }
   };
 }
 

@@ -103,8 +103,7 @@ export async function getStaticProps() {
         jobs: data.jobs
       },
       cookies,
-    },
-    revalidate: 10
+    }
   };
 }
 

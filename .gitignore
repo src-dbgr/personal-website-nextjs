@@ -20,6 +20,8 @@
 .DS_Store
 *.pem
 my_readme.md
+*recursive.sh
+output.txt
 
 # debug
 npm-debug.log*

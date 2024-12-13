@@ -7,8 +7,15 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [{ hostname: "res.cloudinary.com" }],
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+    // unoptimized: true,
   },
   env: {
     STRAPI_GRAPHQL_URL: process.env.STRAPI_GRAPHQL_URL,

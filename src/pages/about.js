@@ -52,7 +52,16 @@ const AboutPage = ({ customData, cookies }) => {
           <FadeInSection>
             <article key="2" className="about-component about-img-container">
               <div className="about-img" id="paimg">
-                <Image src={about.image.url} width={500} height={427} className="about-default-img" alt={about.title} />
+                <Image
+                  src="/assets/images/about/var_6.png"
+                  alt="about-img"
+                  className="about-default-img"
+                  blurDataURL="/assets/images/about/var_6.png"                  quality={90}
+                  placeholder="blur"
+                  priority
+                  width={500}
+                  height={427}
+                />
               </div>
             </article>
           </FadeInSection>
@@ -177,8 +186,7 @@ export async function getStaticProps() {
         techstacks,
       },
       cookies,
-    },
-    revalidate: 10,
+    }
   };
 }
 
