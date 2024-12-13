@@ -43,8 +43,9 @@ const About = ({ infomain }) => {
                 alt="about-img"
                 className="about-default-img"
                 blurDataURL="/assets/images/about/var_5.png"
+                placeholder="blur"
                 quality={90}
-
+                priority
                 width={500}
                 height={427}
               />
@@ -53,7 +54,6 @@ const About = ({ infomain }) => {
                 alt="about-img"
                 className="about-hover-img"
                 quality={90}
-
                 width={500}
                 height={427}
               />
