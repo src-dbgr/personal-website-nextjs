@@ -67,6 +67,7 @@ export async function getStaticProps() {
           featured
         }
         about {
+          documentId
           infomain
         }
         jobs(sort: "id:desc") {

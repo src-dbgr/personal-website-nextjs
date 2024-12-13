@@ -3,39 +3,50 @@ import { setContext } from '@apollo/client/link/context';
 
 // HTTP-Verbindung zu deinem GraphQL-Endpunkt
 const httpLink = createHttpLink({
-    uri: process.env.STRAPI_GRAPHQL_URL
+  uri: process.env.STRAPI_GRAPHQL_URL
 });
 
 // Auth-Link, der den Token zu jeder Anfrage hinzufügt
 const authLink = setContext((_, { headers }) => {
-    // Hole das Token aus dem lokalen Speicher oder einer anderen Quelle
-    const token = process.env.STRAPI_TOKEN
-
-    // Rückgabe der Header, inklusive des Authorization-Headers
-    return {
-        headers: {
-            ...headers,
-            authorization: token ? `Bearer ${token}` : "",
-        }
-    };
+  const token = process.env.STRAPI_TOKEN;
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
 });
 
 const apolloClient = new ApolloClient({
-    link: from([authLink, httpLink]),
-    cache: new InMemoryCache({
-        typePolicies: {
-            BlogEntity: {
-                fields: {
-                    attributes: {
-                        merge(existing, incoming) {
-                            return { ...existing, ...incoming };
-                        }
-                    }
-                }
+  link: from([authLink, httpLink]),
+  cache: new InMemoryCache({
+    typePolicies: {
+      About: {
+        // Hier sagen wir Apollo, dass "documentId" das eindeutige Feld ist.
+        keyFields: ["documentId"]
+      },
+      Query: {
+        fields: {
+          about: {
+            // Überschreibt bestehende Daten bei erneutem Fetch.
+            merge(existing, incoming) {
+              return incoming;
+            },
+          },
+        },
+      },
+      BlogEntity: {
+        fields: {
+          attributes: {
+            merge(existing, incoming) {
+              return { ...existing, ...incoming };
             }
+          }
         }
-    }),
-    connectToDevTools: process.env.NODE_ENV === 'development',// Diese Zeile unterdrückt die DevTools-Meldung in der browser konsole im prod mode
+      }
+    },
+  }),
+  connectToDevTools: process.env.NODE_ENV === 'development',
 });
 
 export default apolloClient;
