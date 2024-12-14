@@ -4,7 +4,6 @@ import {
 } from "../../context/GlobalContextProvider";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import anime from "animejs";
-import Aos from "aos";
 import "aos/dist/aos.css";
 import PageLinks from "../../data/constants/links";
 
@@ -108,16 +107,22 @@ const Navbar = (props) => {
   useEffect(() => {
     let alive = true;
     if (navanimation) {
-      Aos.init({ duration: 1000 });
-      setTimeout(() => {
-        if (alive) {
-          dispatch({ type: "NAV_ANIMATION" });
-        }
-      }, 1200);
+      // Dynamisches Laden von Aos
+      import("aos").then((Aos) => {
+        Aos.init({ duration: 1000 });
+        setTimeout(() => {
+          if (alive) {
+            dispatch({ type: "NAV_ANIMATION" });
+          }
+        }, 1200);
+      });
     }
+
     return () => {
-      // Disable Animation afer initial execution
-      Aos.init({ duration: 0 });
+      import("aos").then((Aos) => {
+        // Disable Animation afer initial execution
+        Aos.init({ duration: 0 });
+      });
       alive = false;
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

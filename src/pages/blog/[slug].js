@@ -5,9 +5,14 @@ import Layout from '../../components/general/Layout';
 import Title from '../../components/general/Title';
 import ReactMarkdown from 'react-markdown';
 import Seo from '../../components/general/Seo';
-import FadeInSection from '../../hooks/FadeInSection';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { fetchCookieStaticProps } from '../../lib/staticPropsHelpers';
+
+const FadeInSection = dynamic(() => import("../../hooks/FadeInSection"), {
+  ssr: false,
+  loading: () => <div>Loading ...</div>, // optionaler Fallback
+});
 
 const GET_BLOG_BY_SLUG = gql`
   query GetBlogBySlug($slug: String!) {

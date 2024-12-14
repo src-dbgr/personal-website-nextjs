@@ -7,11 +7,16 @@ import { IoTriangleSharp } from "react-icons/io5";
 import { MdFileDownload } from "react-icons/md";
 import Technologies from "../components/04_about/04_03_tech/Technologies";
 import Stations from "../components/04_about/04_02_stations/Stations";
-import FadeInSection from "../hooks/FadeInSection";
 import Seo from "../components/general/Seo";
 import { gql } from '@apollo/client';
 import apolloClient from '../lib/apolloClient';
 import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
+import dynamic from 'next/dynamic';
+
+const FadeInSection = dynamic(() => import("../hooks/FadeInSection"), {
+  ssr: false,
+  loading: () => <div>Loading ...</div>, // optionaler Fallback
+});
 
 const AboutPage = ({ customData, cookies }) => {
   const [isExpanded, setIsExpanded] = useState(false);

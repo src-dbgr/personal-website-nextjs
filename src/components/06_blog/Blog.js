@@ -1,8 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
-import FadeInSection from "../../hooks/FadeInSection";
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
+
+const FadeInSection = dynamic(() => import("../../hooks/FadeInSection"), {
+  ssr: false,
+  loading: () => <div>Loading ...</div>, // optionaler Fallback
+});
 
 const Blog = ({ id, title, desc, slug, date, category, image }) => {
   return (

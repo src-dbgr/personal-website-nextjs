@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import Title from "../../general/Title";
 import { VscCircleFilled } from "react-icons/vsc";
 import Link from "next/link";
-import FadeInSection from "../../../hooks/FadeInSection";
+import dynamic from 'next/dynamic';
+
+const FadeInSection = dynamic(() => import("../../../hooks/FadeInSection"), {
+  ssr: false,
+  loading: () => <div>Loading ...</div>, // optionaler Fallback
+});
 
 const Experience = ({ jobs }) => {
   const [value, setValue] = useState(0);

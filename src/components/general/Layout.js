@@ -1,5 +1,4 @@
 import React, { useEffect, useContext } from "react";
-import { motion } from "framer-motion";
 import dynamic from 'next/dynamic';
 import Navbar from "../02_navigation/Navbar";
 import Topbar from "../02_navigation/Topbar";
@@ -9,6 +8,14 @@ import {
   GlobalDispatchContext,
   GlobalStateContext,
 } from "../../context/GlobalContextProvider";
+
+const MotionMain = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.main),
+  {
+    ssr: false,
+    loading: () => <main>Loading...</main>,
+  }
+);
 
 const Launch = dynamic(() => import('../01_launch/Launch'), { ssr: false });
 
@@ -113,7 +120,7 @@ const Layout = ({ children, darkFooter, cookies }) => {
         <>
           <Navbar />
           <Topbar />
-          <motion.main
+          <MotionMain
             initial={{ opacity: 0, x: 0 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 0 }}
@@ -125,7 +132,7 @@ const Layout = ({ children, darkFooter, cookies }) => {
             }}
           >
             {children}
-          </motion.main>
+          </MotionMain>
           <Footer darkFooter={darkFooter} />
         </>
       )}
