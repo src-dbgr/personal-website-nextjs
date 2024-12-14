@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { MdWork } from "react-icons/md";
 import {
   FaUniversity,
@@ -19,39 +19,7 @@ const Stations = ({ stations, categories }) => {
   const [legendCollapsed, setLegendCollapsed] = useState(true);
   const initialRun = useRef(true);
 
-  useEffect(() => {
-    return () => {
-      window.removeEventListener("scroll", check);
-    }; // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  function refreshEventListener() {
-    window.removeEventListener("scroll", check);
-    window.addEventListener("scroll", check);
-  }
-
-  function collapseLegend() {
-    setLegendCollapsed((legendCollapsed) => !legendCollapsed);
-  }
-
-  useEffect(() => {
-    if (nodes !== null && inViewCount >= nodes.length) {
-      window.removeEventListener("scroll", check);
-    }
-    return () => { }; // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inViewCount]);
-
-  // trigger once station nodes are loaded
-  useEffect(() => {
-    if (initialRun.current) {
-      initialRun.current = false;
-      return;
-    }
-    refreshEventListener();
-    return () => { }; // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodes]);
-
-  function check() {
+  const check = useCallback(() => {
     if (nodes !== null) {
       for (var i = 0; i < nodes.length; i++) {
         if (
@@ -72,7 +40,7 @@ const Stations = ({ stations, categories }) => {
         }
       }
     }
-  }
+  }, [nodes]); // nodes als Dependency
 
   // check whether the considered element is somewhere visible
   function isElementInViewport(el) {
@@ -81,34 +49,68 @@ const Stations = ({ stations, categories }) => {
       rect.bottom > 0 &&
       rect.right > 0 &&
       rect.left <
-      (window.innerWidth ||
-        document.documentElement.clientWidth) /* or $(window).width() */ &&
+      (window.innerWidth || document.documentElement.clientWidth) &&
       rect.top <
-      (window.innerHeight ||
-        document.documentElement.clientHeight) /* or $(window).height() */
+      (window.innerHeight || document.documentElement.clientHeight)
     );
   }
 
-  function collectElements() {
-    let found_nodes = document.querySelectorAll(".timeline-node, .timeline-bullet-time");
-    setNodes(found_nodes);
+  function collapseLegend() {
+    setLegendCollapsed((legendCollapsed) => !legendCollapsed);
   }
 
-  // check whether everything is loaded
-  (function ready() {
-    // If the body element and the #main element exist
-    if (nodes !== null) {
-      return;
-    } else {
-      if (document.querySelectorAll(".timeline-node, .timeline-bullet-time").length > 10) {
-        // Return so that we don't call requestAnimationFrame() again
-        collectElements();
-        return;
+  // Initial setup and cleanup
+  useEffect(() => {
+    function collectElements() {
+      let found_nodes = document.querySelectorAll(".timeline-node, .timeline-bullet-time");
+      if (found_nodes.length > 10) {
+        setNodes(found_nodes);
       }
     }
-    // If the body element isn't found, run ready() again at the next pain
-    setTimeout(ready, 200);
-  })();
+
+    // Polls the DOM every 200ms to check for timeline nodes
+    // - Replaces recursive setTimeout with a cleaner interval approach
+    // - Continues checking until sufficient nodes (>=10) are found
+    // - Automatically cleans up when component unmounts
+    // - Calls collectElements() which updates component state once nodes are found
+    // This pattern ensures DOM elements are available before attempting to work with them
+    const checkNodesInterval = setInterval(() => {
+      collectElements();
+    }, 200);
+
+    // Cleanup
+    return () => {
+      clearInterval(checkNodesInterval); // stops the interval on unmount to prevent memory leaks
+    };
+  }, []); // Empty dependency array for initial setup
+
+  // Separater Effect für Event Listener Cleanup
+  useEffect(() => {
+    return () => {
+      window.removeEventListener("scroll", check);
+    };
+  }, [check]);
+
+  // Handle scroll listener setup/cleanup
+  useEffect(() => {
+    if (nodes !== null) {
+      window.addEventListener("scroll", check);
+      check(); // Initial check
+    }
+
+    return () => {
+      if (nodes !== null) {
+        window.removeEventListener("scroll", check);
+      }
+    };
+  }, [nodes, check]);
+
+  // Handle completion
+  useEffect(() => {
+    if (nodes !== null && inViewCount >= nodes.length) {
+      window.removeEventListener("scroll", check);
+    }
+  }, [inViewCount, nodes, check]);
 
   return (
     <div className="section section-center stations">
@@ -166,7 +168,6 @@ const Stations = ({ stations, categories }) => {
                   </td>
                   <td>{category.title}</td>
                   <td>{category.description}</td>
-                  {/* <FaLink className="timeline-link-icon" /> */}
                 </tr>
               );
             })}
@@ -182,105 +183,105 @@ const Stations = ({ stations, categories }) => {
         <ul>
           {stations.map((station) => {
             return (
-                <li key={station.Order_Id}>
-                  <div className="timeline-node shadow-box">
-                    <div className="timeline-meta-head">
-                      <div>
-                        {station.stationctgry.title === "Work" ? (
-                          <MdWork />
-                        ) : station.stationctgry.title === "School" ? (
-                          <FaSchool />
-                        ) : station.stationctgry.title === "Internship" ? (
-                          <HiIdentification />
-                        ) : station.stationctgry.title === "University" ? (
-                          <FaUniversity />
-                        ) : station.stationctgry.title === "Education" ? (
-                          <FaGraduationCap />
-                        ) : (
-                          <FaPencilRuler />
-                        )}
-                        <div className="timeline-from-to-category">
+              <li key={station.Order_Id}>
+                <div className="timeline-node shadow-box">
+                  <div className="timeline-meta-head">
+                    <div>
+                      {station.stationctgry.title === "Work" ? (
+                        <MdWork />
+                      ) : station.stationctgry.title === "School" ? (
+                        <FaSchool />
+                      ) : station.stationctgry.title === "Internship" ? (
+                        <HiIdentification />
+                      ) : station.stationctgry.title === "University" ? (
+                        <FaUniversity />
+                      ) : station.stationctgry.title === "Education" ? (
+                        <FaGraduationCap />
+                      ) : (
+                        <FaPencilRuler />
+                      )}
+                      <div className="timeline-from-to-category">
+                        <div className="timeline-width">
+                          <h4>Category:</h4>
+                        </div>
+                        <div className="timeline-div-text">
+                          {station.stationctgry.title}
+                        </div>
+                      </div>
+                      <div className="timeline-from-to">
+                        <div className="timeline-from-to">
                           <div className="timeline-width">
-                            <h4>Category:</h4>
+                            <h4>Institution:</h4>
                           </div>
-                          <div className="timeline-div-text">
-                            {station.stationctgry.title}
+                          <div>{station.Institution}</div>
+                        </div>
+                      </div>
+                      <div className="timeline-from-to">
+                        <div className="timeline-from-to">
+                          <div className="timeline-width">
+                            <h4>From:</h4>
+                          </div>
+                          <div>
+                            {station.From_Month}/{station.From_Year}
                           </div>
                         </div>
                         <div className="timeline-from-to">
-                          <div className="timeline-from-to">
-                            <div className="timeline-width">
-                              <h4>Institution:</h4>
-                            </div>
-                            <div>{station.Institution}</div>
+                          <div className="timeline-width-two">
+                            <h4>To:</h4>
+                          </div>
+                          <div>
+                            {station.To_Text !== null
+                              ? station.To_Text
+                              : station.To_Month + "/" + station.To_Year}
                           </div>
                         </div>
+                      </div>
+                      {station.Graduation != null && (
                         <div className="timeline-from-to">
                           <div className="timeline-from-to">
                             <div className="timeline-width">
-                              <h4>From:</h4>
+                              <h4>Graduation:</h4>
                             </div>
-                            <div>
-                              {station.From_Month}/{station.From_Year}
-                            </div>
-                          </div>
-                          <div className="timeline-from-to">
-                            <div className="timeline-width-two">
-                              <h4>To:</h4>
-                            </div>
-                            <div>
-                              {station.To_Text !== null
-                                ? station.To_Text
-                                : station.To_Month + "/" + station.To_Year}
-                            </div>
+                            <div>{station.Graduation}</div>
                           </div>
                         </div>
-                        {station.Graduation != null && (
-                          <div className="timeline-from-to">
-                            <div className="timeline-from-to">
-                              <div className="timeline-width">
-                                <h4>Graduation:</h4>
-                              </div>
-                              <div>{station.Graduation}</div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <p>{station.Description}</p>
-                    {station.urls.length > 0 && (
-                      <div className="timeline-from-to timeline-resources">
-                        <div className="timeline-links">
-                          <h4>Resources / Certificates:</h4>
-                          {station.urls.map((url) => {
-                            return (
-                              <table key={url.id}>
-                                <tbody>
-                                  <tr className="timeline-link-element">
-                                    <td>
-                                      <FaLink className="timeline-link-icon" />
-                                    </td>
-                                    <td>
-                                      <a href={url.url}>{url.title}</a>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                    <div className="about-stack">
-                      {station.stack.map((item) => {
-                        return <span key={item.id}>{item.title}</span>;
-                      })}
+                      )}
                     </div>
                   </div>
-                  <p className="timeline-bullet-time">
-                    {station.From_Year}
-                  </p>
-                </li>
+                  <p>{station.Description}</p>
+                  {station.urls.length > 0 && (
+                    <div className="timeline-from-to timeline-resources">
+                      <div className="timeline-links">
+                        <h4>Resources / Certificates:</h4>
+                        {station.urls.map((url) => {
+                          return (
+                            <table key={url.id}>
+                              <tbody>
+                                <tr className="timeline-link-element">
+                                  <td>
+                                    <FaLink className="timeline-link-icon" />
+                                  </td>
+                                  <td>
+                                    <a href={url.url}>{url.title}</a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  <div className="about-stack">
+                    {station.stack.map((item) => {
+                      return <span key={item.id}>{item.title}</span>;
+                    })}
+                  </div>
+                </div>
+                <p className="timeline-bullet-time">
+                  {station.From_Year}
+                </p>
+              </li>
             );
           })}
         </ul>
