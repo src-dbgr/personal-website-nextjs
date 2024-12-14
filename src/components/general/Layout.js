@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from "react";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import Navbar from "../02_navigation/Navbar";
 import Topbar from "../02_navigation/Topbar";
 import Footer from "../07_footer/Footer";
@@ -9,6 +9,11 @@ import {
   GlobalStateContext,
 } from "../../context/GlobalContextProvider";
 
+const PageWrapper = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.div),
+  { ssr: false }
+);
+
 const MotionMain = dynamic(
   () => import("framer-motion").then((mod) => mod.motion.main),
   {
@@ -17,7 +22,7 @@ const MotionMain = dynamic(
   }
 );
 
-const Launch = dynamic(() => import('../01_launch/Launch'), { ssr: false });
+const Launch = dynamic(() => import("../01_launch/Launch"), { ssr: false });
 
 const Layout = ({ children, darkFooter, cookies }) => {
   const isIndexPage = true; // TODO ==> Change, compare to location pathname or slug!
@@ -70,10 +75,10 @@ const Layout = ({ children, darkFooter, cookies }) => {
     };
   }, [state.animation]);
 
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return null; // or a loading placeholder
   }
-  
+
   // disable in production
   // disabling on first render
   // useEffect(() => {
@@ -117,7 +122,11 @@ const Layout = ({ children, darkFooter, cookies }) => {
           }}
         />
       ) : (
-        <>
+        <PageWrapper
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.1 }}
+        >
           <Navbar />
           <Topbar />
           <MotionMain
@@ -134,7 +143,7 @@ const Layout = ({ children, darkFooter, cookies }) => {
             {children}
           </MotionMain>
           <Footer darkFooter={darkFooter} />
-        </>
+        </PageWrapper>
       )}
     </>
   );
