@@ -4,7 +4,12 @@ import Image from "next/image"; // Next.js image component
 import { FaGithubSquare } from "react-icons/fa";
 import { BsCircleFill } from "react-icons/bs";
 import { IoTriangleSharp } from "react-icons/io5";
-import FadeInSection from "../../hooks/FadeInSection";
+import dynamic from 'next/dynamic';
+
+const FadeInSection = dynamic(() => import("../../hooks/FadeInSection"), {
+  ssr: false,
+  loading: () => <div>Loading ...</div>, // optionaler Fallback
+});
 
 const Project = ({ image, title, description, github, stack, url, index }) => {
   const [active, setActive] = useState(false);
