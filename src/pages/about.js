@@ -5,8 +5,12 @@ import Title from "../components/general/Title";
 import { BsCircleFill } from "react-icons/bs";
 import { IoTriangleSharp } from "react-icons/io5";
 import { MdFileDownload } from "react-icons/md";
-import Technologies from "../components/04_about/04_03_tech/Technologies";
-import Stations from "../components/04_about/04_02_stations/Stations";
+const Technologies = dynamic(() => import('../components/04_about/04_03_tech/Technologies'), {
+  loading: () => <div>Loading...</div>
+});
+const Stations = dynamic(() => import('../components/04_about/04_02_stations/Stations'), {
+  loading: () => <div>Loading...</div>
+});
 import Seo from "../components/general/Seo";
 import { gql } from '@apollo/client';
 import apolloClient from '../lib/apolloClient';

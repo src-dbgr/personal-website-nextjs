@@ -1,14 +1,4 @@
-import React, { useEffect, useContext } from "react";
 import dynamic from "next/dynamic";
-import Navbar from "../02_navigation/Navbar";
-import Topbar from "../02_navigation/Topbar";
-import Footer from "../07_footer/Footer";
-import CookieConsent from "./CookieConsent";
-import {
-  GlobalDispatchContext,
-  GlobalStateContext,
-} from "../../context/GlobalContextProvider";
-
 const PageWrapper = dynamic(
   () => import("framer-motion").then((mod) => mod.motion.div),
   { ssr: false }
@@ -22,13 +12,23 @@ const MotionMain = dynamic(
   }
 );
 
+import React, { useEffect, useContext } from "react";
+import Navbar from "../02_navigation/Navbar";
+import Topbar from "../02_navigation/Topbar";
+import Footer from "../07_footer/Footer";
+import CookieConsent from "./CookieConsent";
+import {
+  GlobalDispatchContext,
+  GlobalStateContext,
+} from "../../context/GlobalContextProvider";
+
 const Launch = dynamic(() => import("../01_launch/Launch"), { ssr: false });
 
 const Layout = ({ children, darkFooter, cookies }) => {
   const isIndexPage = true; // TODO ==> Change, compare to location pathname or slug!
 
   const state = useContext(GlobalStateContext);
-  const dispatch = useContext(GlobalDispatchContext);
+  const dispatch = useContext(GlobalDispatchContext); 
 
   const disableCookieConsent = React.useCallback(() => {
     dispatch({ type: "COOKIE_CONSENT" });
