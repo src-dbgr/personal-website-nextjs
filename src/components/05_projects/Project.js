@@ -4,7 +4,7 @@ import Image from "next/image"; // Next.js image component
 import { FaGithubSquare } from "react-icons/fa";
 import { BsCircleFill } from "react-icons/bs";
 import { IoTriangleSharp } from "react-icons/io5";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
 const FadeInSection = dynamic(() => import("../../hooks/FadeInSection"), {
   ssr: false,
@@ -18,12 +18,19 @@ const Project = ({ image, title, description, github, stack, url, index }) => {
     setActive((active) => !active);
   }
 
+  // Prüfen ob es ein gültiger GitHub-Link ist
+  const isGithubLink = (link) => {
+    return link && link.trim() !== "" && link.includes("github.com");
+  };
+
   return (
     <FadeInSection>
       <div className={index % 2 === 0 ? "project" : "project even"}>
         <div
           className={
-            active ? "project-img-wrapper project-z-index project-img-wrapper-active" : "project-img-wrapper"
+            active
+              ? "project-img-wrapper project-z-index project-img-wrapper-active"
+              : "project-img-wrapper"
           }
           onClick={flipActivation}
           onKeyDown={flipActivation}
@@ -32,7 +39,11 @@ const Project = ({ image, title, description, github, stack, url, index }) => {
           {image && (
             <Image
               src={image?.url ?? image?.data?.attributes?.url} // Pfad zur Bildquelle, eventuell anpassen
-              className={active ? "project-img-active shadow-box-dark" : "project-img shadow-box-dark"}
+              className={
+                active
+                  ? "project-img-active shadow-box-dark"
+                  : "project-img shadow-box-dark"
+              }
               alt={title}
               width={772} // Passende Breite setzen
               height={471} // Passende Höhe setzen
@@ -57,18 +68,33 @@ const Project = ({ image, title, description, github, stack, url, index }) => {
               return <span key={item.id}>{item.title}</span>;
             })}
           </div>
-          <div className="project-links">
-            <a href={github}>
-              <FaGithubSquare className="project-icon" />
-              <p>
-                GITHUB{" "}
-                {String(github.match("[^/]+(?=/$|$)"))
-                  .replace(/-/g, " ")
-                  .toUpperCase()}
-              </p>
-            </a>
-          </div>
-          {url.includes("github") && (
+          {/* GitHub-Link oder allgemeiner Link */}
+          {github && github.trim() !== "" && (
+            <div className="project-links">
+              <a href={github}>
+                {isGithubLink(github) ? (
+                  <>
+                    <FaGithubSquare className="project-icon" />
+                    <p>
+                      GITHUB{" "}
+                      {String(github.match("[^/]+(?=/$|$)"))
+                        .replace(/-/g, " ")
+                        .toUpperCase()}
+                    </p>
+                  </>
+                ) : (
+                  <p>
+                    {String(github.match("[^/]+(?=/$|$)"))
+                      .replace(/-/g, " ")
+                      .toUpperCase()}
+                  </p>
+                )}
+              </a>
+            </div>
+          )}
+
+          {/* Bestehende URL-Prüfung für GitHub */}
+          {url && url.includes("github") && (
             <div className="project-links">
               <a href={url}>
                 <FaGithubSquare className="project-icon" />
