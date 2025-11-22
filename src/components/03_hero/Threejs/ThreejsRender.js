@@ -1,48 +1,45 @@
-import { GlobalStateContext } from "../../../context/GlobalContextProvider";
-import React, { Suspense, useState, useContext } from "react";
+import React, { Suspense, useState } from "react";
 import dynamic from "next/dynamic";
+import { Environment, PerspectiveCamera } from "@react-three/drei";
 
-// Eine leere Komponente als Platzhalter während die Textur lädt
-// Damit bleibt der Canvas aktiv, auch wenn die Kugel noch nicht da ist.
-const Loader = () => null;
+// Dynamischer Import des Canvas
+const DynamicCanvas = dynamic(
+  () => import("@react-three/fiber").then((mod) => mod.Canvas),
+  { ssr: false }
+);
+
+// Unser neuer Kristall
+const DigitalCrystal = dynamic(() => import("./DigitalCrystal"), {
+  ssr: false,
+});
 
 const ThreejsRender = () => {
+  // STANDARDMÄSSIG AUS (false), wie im Original
   const [animation, setAnimation] = useState(false);
-  // theme wird hier geladen, falls du es später für Farben brauchst
-  const theme = useContext(GlobalStateContext).theme;
 
   const toggleAnimation = () => {
     setAnimation(!animation);
   };
 
+  const brandGreen = "#00af64";
+  const brandPurple = "#ac4a9c";
+
   let Content;
 
   if (animation) {
-    // Wir importieren den Canvas dynamisch, damit SSR (Server Side Rendering) nicht meckert
-    const DynamicCanvas = dynamic(
-      () => import("@react-three/fiber").then((mod) => mod.Canvas),
-      { ssr: false }
-    );
-
-    // Die 3D-Objekte importieren wir auch dynamisch
-    const Sphere = dynamic(() => import("./Sphere"), { ssr: false });
-    const Tetrahedron = dynamic(() => import("./Tetrahedron"), { ssr: false });
-
+    // --- 3D ANSICHT ---
     Content = (
       <div style={{ width: "100%", height: "100%" }}>
         <DynamicCanvas
-          camera={{ fov: 75, near: 0.1, far: 500, position: [-2, 2, 3] }}
-          className="trianglecanvas"
-          // WICHTIG: Alpha an, damit wir Transparenz haben
+          dpr={[1, 2]}
           gl={{
-            alpha: true,
             antialias: true,
-            powerPreference: "high-performance",
+            alpha: true,
+            toneMappingExposure: 1.2,
+            powerPreference: "high-performance", // Performance-Boost vom Original übernommen
           }}
-          // WICHTIG: Event Listener für Context Lost, um Crash abzufangen
+          // Context-Lost-Handler vom Original übernommen für Stabilität
           onCreated={({ gl }) => {
-            gl.setClearColor(0x000000, 0); // Hintergrund sofort transparent
-
             gl.domElement.addEventListener(
               "webglcontextlost",
               (event) => {
@@ -53,46 +50,46 @@ const ThreejsRender = () => {
             );
           }}
         >
-          {/* Lichter benötigen keine Texturen, sie sind sofort da */}
-          <ambientLight intensity={0.5} />
-          <pointLight
-            position={[-3, 3, -2]}
-            intensity={20}
-            color={0x767081}
-            decay={0.5}
-          />
-          <pointLight
-            position={[1, 1.5, 3]}
-            intensity={20}
-            color={0x35a169}
-            decay={0.5}
-          />
-          <pointLight
-            position={[1, -1.5, -7]}
-            intensity={10}
-            color={0xb5b2a6}
-            decay={0.5}
-          />
-          <pointLight
-            position={[2, 1, 4]}
-            intensity={5}
-            color={0x8f76be}
-            decay={0.5}
-          />
+          <PerspectiveCamera makeDefault position={[0, 0, 7]} fov={35} />
 
-          {/* HIER IST DER FIX: 
-             Suspense ist INNERHALB des Canvas. 
-             Der Canvas stürzt nicht mehr ab, wenn die Textur lädt.
-          */}
-          <Suspense fallback={<Loader />}>
-            <Sphere position={[1, 0.5, 0]} />
-            <Tetrahedron position={[1, 0.5, 0]} />
+          <Suspense fallback={null}>
+            {/* Lokales Environment */}
+            <Environment
+              files="/assets/images/textures/snow_4k.hdr"
+              background={false}
+              blur={1}
+            />
+
+            {/* Licht-Setup */}
+            <spotLight
+              position={[10, 20, 10]}
+              angle={0.3}
+              penumbra={1}
+              intensity={150}
+              color="white"
+            />
+            <ambientLight intensity={0.5} />
+            <pointLight
+              position={[-4, -2, 2]}
+              intensity={60}
+              color={brandGreen}
+              distance={10}
+            />
+            <pointLight
+              position={[4, 2, 2]}
+              intensity={60}
+              color={brandPurple}
+              distance={10}
+            />
+
+            {/* Der neue Kristall */}
+            <DigitalCrystal />
           </Suspense>
         </DynamicCanvas>
       </div>
     );
   } else {
-    // Das statische SVG Bild (wenn Animation aus ist)
+    // --- SVG ANSICHT (Fallback) ---
     Content = (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -125,22 +122,12 @@ const ThreejsRender = () => {
   }
 
   return (
-    <div className="animationWrapper">
-      <div className="animationToggleWrapper">
-        <div
-          className="animationToggle"
-          role="button"
-          tabIndex="0"
-          onClick={toggleAnimation}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") toggleAnimation();
-          }}
-        >
-          {animation ? (
-            <h5 className="stopAnim">STOP ANIMATION</h5>
-          ) : (
-            <h5 className="startAnim">START ANIMATION</h5>
-          )}
+    <div className="animationWrapper" style={{ width: "100%", height: "100%" }}>
+      <div className="animationToggleWrapper" onClick={toggleAnimation}>
+        <div className="animationToggle" role="button" tabIndex="0">
+          <h5 className={animation ? "stopAnim" : "startAnim"}>
+            {animation ? "STOP ANIMATION" : "START ANIMATION"}
+          </h5>
         </div>
         <svg className="arrows">
           <path d="M0 0l30 32L60 0" className="a1"></path>
