@@ -26,7 +26,7 @@ const InteractiveGlassCore = () => {
       autoRotateRef.current.rotation.z = Math.cos(t * 0.3) * 0.1;
     }
 
-    // Pulsieren
+    // Pulsieren & Levitation
     const glassScale = THREE.MathUtils.mapLinear(slowBreath, -1, 1, 0.8, 1.2);
     const levitationY = Math.sin(t * 0.4) * 0.2;
 
@@ -37,12 +37,47 @@ const InteractiveGlassCore = () => {
 
     // Material Transparenz
     const trans = THREE.MathUtils.mapLinear(slowBreath, -1, -0.2, 0.1, 1);
+
+    // Roughness-Pulsation zwischen 0.05 und 0.3
+    const roughnessValue = THREE.MathUtils.mapLinear(
+      slowBreath,
+      -1,
+      1,
+      0.0,
+      0.3
+    );
+
+    // Pulsation zwischen 0.5 und 1.5, um die Knoten optisch zu verschieben (Distortion wird nicht gesetzt, aber der Wert wird berechnet)
+    const distortionPulsation = THREE.MathUtils.mapLinear(
+      slowBreath,
+      -1,
+      1,
+      0.5,
+      1.5
+    );
+
+    // NEU: Farbe und Intensität für den GLOW (Bloom)
+    // Die Luminanz muss über 1 liegen, damit der Bloom-Effekt greift.
+    const glowColor = slowBreath < 0 ? "#aaffcc" : "#ffffff";
+    const colorIntensity = THREE.MathUtils.mapLinear(
+      slowBreath,
+      -1,
+      1,
+      3.0,
+      5.0
+    ); // Intensität > 1!
+
     if (materialRef.current) {
       materialRef.current.transmission = THREE.MathUtils.clamp(trans, 0.1, 1);
+
+      // ANPASSUNG: Farbe setzen und mit hoher Intensität multiplizieren für GLOW
       materialRef.current.color.lerp(
-        new THREE.Color(slowBreath < 0 ? "#aaffcc" : "#ffffff"),
+        new THREE.Color(glowColor).multiplyScalar(colorIntensity),
         0.02
       );
+
+      // ANPASSUNG: Roughness setzen
+      materialRef.current.roughness = roughnessValue;
     }
 
     // Kern
@@ -53,7 +88,7 @@ const InteractiveGlassCore = () => {
     }
   });
 
-  // Farben
+  // Farben (unverändert)
   const brandPurple = "#ac4a9c";
   const brandGreen = "#00af64";
 
@@ -79,6 +114,8 @@ const InteractiveGlassCore = () => {
           color="#ffffff" // Helles Glas
           attenuationDistance={5.0}
           attenuationColor="#ffffff"
+          // WICHTIG: Deaktiviert Tone Mapping, um HDR-Farben (Luminanz > 1) zu erlauben
+          toneMapped={false}
         />
       </mesh>
 
