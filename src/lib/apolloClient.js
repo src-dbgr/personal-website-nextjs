@@ -1,9 +1,14 @@
-import { ApolloClient, InMemoryCache, createHttpLink, from } from "@apollo/client";
-import { setContext } from '@apollo/client/link/context';
+import {
+  ApolloClient,
+  InMemoryCache,
+  createHttpLink,
+  from,
+} from "@apollo/client/core";
+import { setContext } from "@apollo/client/link/context";
 
 // HTTP-Verbindung zu deinem GraphQL-Endpunkt
 const httpLink = createHttpLink({
-  uri: process.env.STRAPI_GRAPHQL_URL
+  uri: process.env.STRAPI_GRAPHQL_URL,
 });
 
 // Auth-Link, der den Token zu jeder Anfrage hinzufügt
@@ -23,7 +28,7 @@ const apolloClient = new ApolloClient({
     typePolicies: {
       About: {
         // Hier sagen wir Apollo, dass "documentId" das eindeutige Feld ist.
-        keyFields: ["documentId"]
+        keyFields: ["documentId"],
       },
       Query: {
         fields: {
@@ -40,13 +45,15 @@ const apolloClient = new ApolloClient({
           attributes: {
             merge(existing, incoming) {
               return { ...existing, ...incoming };
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      },
     },
   }),
-  connectToDevTools: process.env.NODE_ENV === 'development',
+  devtools: {
+    enabled: process.env.NODE_ENV === "development",
+  },
 });
 
 export default apolloClient;

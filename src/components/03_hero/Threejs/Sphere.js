@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 
-
 const Sphere = (props) => {
   // This reference will give us direct access to the mesh so we can animate it
   const mesh = useRef();
@@ -20,16 +19,15 @@ const Sphere = (props) => {
   let elapsedTime = 0;
   let scaleValue = 0;
   useFrame(() => {
+    if (!mesh.current) return;
     elapsedTime = clock.elapsedTime;
     sin = Math.sin(elapsedTime / 10);
     scaleValue = (Math.abs(sin) + 0.2) * (active ? 1.8 : 0.8);
-    mesh.current.rotation.x = mesh.current.rotation.y +=
-      0.0035;
+    mesh.current.rotation.x = mesh.current.rotation.y += 0.0035;
     mesh.current.position.y = 0.9 * Math.abs(Math.sin(elapsedTime / 5));
     mesh.current.material.emissiveIntensity = 0.9 * sin;
-    mesh.current.material.opacity =
-      0.7 * Math.abs(Math.sin(elapsedTime / 3));
-    mesh.current.scale.x = scaleValue
+    mesh.current.material.opacity = 0.7 * Math.abs(Math.sin(elapsedTime / 3));
+    mesh.current.scale.x = scaleValue;
     mesh.current.scale.y = scaleValue;
     mesh.current.scale.z = scaleValue;
   });
@@ -56,7 +54,7 @@ const Sphere = (props) => {
       onPointerOver={(e) => setHover(true)}
       onPointerOut={(e) => setHover(false)}
     >
-      <sphereBufferGeometry attach="geometry" args={[0.8, 32, 32]} />
+      <sphereGeometry attach="geometry" args={[0.8, 32, 32]} />
       <meshStandardMaterial
         attach="material"
         roughness={0.5}
