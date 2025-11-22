@@ -8,10 +8,11 @@ const Plane = React.memo((props) => {
   const [map, displacementMap, alphaMap] = useLoader(TextureLoader, [
     "./assets/images/textures/rock.jpg",
     "./assets/images/textures/height.png",
-    "./assets/images/textures/alpha.png"
+    "./assets/images/textures/alpha.png",
   ]);
 
   useFrame(() => {
+    if (!mesh.current) return;
     const sin = Math.sin(clock.getElapsedTime() / 7);
     mesh.current.rotation.x = -1.7;
     mesh.current.rotation.y = -0.1;
@@ -26,7 +27,7 @@ const Plane = React.memo((props) => {
 
   return (
     <mesh {...props} ref={mesh}>
-      <planeBufferGeometry args={[3, 3, 32, 32]} />
+      <planeGeometry args={[3, 3, 32, 32]} />
       <meshStandardMaterial
         map={map}
         displacementMap={displacementMap}

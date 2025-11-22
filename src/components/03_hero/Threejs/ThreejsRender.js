@@ -1,40 +1,15 @@
-import {
-  GlobalStateContext,
-} from "../../../context/GlobalContextProvider";
-import React, { Suspense, useState, useContext, useEffect, useRef } from "react";
-import { ResizeObserver } from "@juggle/resize-observer";
+import { GlobalStateContext } from "../../../context/GlobalContextProvider";
+import React, { Suspense, useState, useContext } from "react";
 import dynamic from "next/dynamic";
+
+// Eine leere Komponente als Platzhalter während die Textur lädt
+// Damit bleibt der Canvas aktiv, auch wenn die Kugel noch nicht da ist.
+const Loader = () => null;
 
 const ThreejsRender = () => {
   const [animation, setAnimation] = useState(false);
+  // theme wird hier geladen, falls du es später für Farben brauchst
   const theme = useContext(GlobalStateContext).theme;
-  const canvasRef = useRef(null);
-  const [key, setKey] = useState(0); // Key to force re-render
-
-  useEffect(() => {
-    const handleContextLost = (event) => {
-      event.preventDefault();
-      console.error("WebGL context lost");
-      setKey(prevKey => prevKey + 1);
-    };
-
-    const handleContextRestored = () => {
-      console.log("WebGL context restored");
-    };
-
-    const canvas = canvasRef.current;
-    if (canvas) {
-      canvas.addEventListener("webglcontextlost", handleContextLost, false);
-      canvas.addEventListener("webglcontextrestored", handleContextRestored, false);
-    }
-
-    return () => {
-      if (canvas) {
-        canvas.removeEventListener("webglcontextlost", handleContextLost);
-        canvas.removeEventListener("webglcontextrestored", handleContextRestored);
-      }
-    };
-  }, []);
 
   const toggleAnimation = () => {
     setAnimation(!animation);
@@ -43,50 +18,88 @@ const ThreejsRender = () => {
   let Content;
 
   if (animation) {
-    // Dynamischer Import von Canvas und Komponenten nur wenn animation=true
-    const DynamicCanvas = dynamic(() => import("@react-three/fiber").then((mod) => mod.Canvas), {
-      ssr: false,
-    });
+    // Wir importieren den Canvas dynamisch, damit SSR (Server Side Rendering) nicht meckert
+    const DynamicCanvas = dynamic(
+      () => import("@react-three/fiber").then((mod) => mod.Canvas),
+      { ssr: false }
+    );
+
+    // Die 3D-Objekte importieren wir auch dynamisch
     const Sphere = dynamic(() => import("./Sphere"), { ssr: false });
     const Tetrahedron = dynamic(() => import("./Tetrahedron"), { ssr: false });
 
     Content = (
-      <Suspense fallback={
-        <div className="spinner-box">
-          <div className="pulse-container">
-            <div className="pulse-bubble pulse-bubble-1"></div>
-            <div className="pulse-bubble pulse-bubble-2"></div>
-            <div className="pulse-bubble pulse-bubble-3"></div>
-          </div>
-        </div>
-      }>
+      <div style={{ width: "100%", height: "100%" }}>
         <DynamicCanvas
-          key={key}
-          ref={canvasRef}
           camera={{ fov: 75, near: 0.1, far: 500, position: [-2, 2, 3] }}
           className="trianglecanvas"
-          resize={{ polyfill: ResizeObserver }}
+          // WICHTIG: Alpha an, damit wir Transparenz haben
+          gl={{
+            alpha: true,
+            antialias: true,
+            powerPreference: "high-performance",
+          }}
+          // WICHTIG: Event Listener für Context Lost, um Crash abzufangen
           onCreated={({ gl }) => {
-            gl.getContext().canvas.addEventListener('webglcontextlost', (event) => {
-              event.preventDefault();
-              setKey(prevKey => prevKey + 1);
-            });
+            gl.setClearColor(0x000000, 0); // Hintergrund sofort transparent
+
+            gl.domElement.addEventListener(
+              "webglcontextlost",
+              (event) => {
+                event.preventDefault();
+                console.warn("WebGL Context Lost recovered");
+              },
+              false
+            );
           }}
         >
-          <ambientLight />
-          <pointLight position={[-3, 3, -2]} intensity={20} color={0x767081} />
-          <pointLight position={[1, 1.5, 3]} intensity={20} color={0x35a169} />
-          <pointLight position={[1, -1.5, -7]} intensity={10} color={0xb5b2a6} />
-          <pointLight position={[2, 1, 4]} intensity={5} color={0x8f76be} />
-          <Sphere position={[1, 0.5, 0]} />
-          <Tetrahedron position={[1, 0.5, 0]} />
+          {/* Lichter benötigen keine Texturen, sie sind sofort da */}
+          <ambientLight intensity={0.5} />
+          <pointLight
+            position={[-3, 3, -2]}
+            intensity={20}
+            color={0x767081}
+            decay={0.5}
+          />
+          <pointLight
+            position={[1, 1.5, 3]}
+            intensity={20}
+            color={0x35a169}
+            decay={0.5}
+          />
+          <pointLight
+            position={[1, -1.5, -7]}
+            intensity={10}
+            color={0xb5b2a6}
+            decay={0.5}
+          />
+          <pointLight
+            position={[2, 1, 4]}
+            intensity={5}
+            color={0x8f76be}
+            decay={0.5}
+          />
+
+          {/* HIER IST DER FIX: 
+             Suspense ist INNERHALB des Canvas. 
+             Der Canvas stürzt nicht mehr ab, wenn die Textur lädt.
+          */}
+          <Suspense fallback={<Loader />}>
+            <Sphere position={[1, 0.5, 0]} />
+            <Tetrahedron position={[1, 0.5, 0]} />
+          </Suspense>
         </DynamicCanvas>
-      </Suspense>
+      </div>
     );
   } else {
-    // Wenn animation=false wird keine Three.js Lib geladen
+    // Das statische SVG Bild (wenn Animation aus ist)
     Content = (
-      <svg xmlns="http://www.w3.org/2000/svg" width={250} height={250} id="logo_2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={250}
+        height={250}
+        id="logo_2"
+      >
         <defs>
           <linearGradient
             id="rad_grad_a"
@@ -102,7 +115,11 @@ const ThreejsRender = () => {
             <stop offset={1} stopColor="#00af64" />
           </linearGradient>
         </defs>
-        <path data-name="triangle nav" d="m0 0 124.3 250L250 0Z" fill="url(#rad_grad_a)" />
+        <path
+          data-name="triangle nav"
+          d="m0 0 124.3 250L250 0Z"
+          fill="url(#rad_grad_a)"
+        />
       </svg>
     );
   }
@@ -110,14 +127,20 @@ const ThreejsRender = () => {
   return (
     <div className="animationWrapper">
       <div className="animationToggleWrapper">
-        <div 
-          className="animationToggle" 
-          role="button" 
-          tabIndex="0" 
-          onClick={toggleAnimation} 
-          onKeyDown={(e) => { if (e.key === 'Enter') toggleAnimation(); }}
+        <div
+          className="animationToggle"
+          role="button"
+          tabIndex="0"
+          onClick={toggleAnimation}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") toggleAnimation();
+          }}
         >
-          {animation ? (<h5 className="stopAnim">STOP ANIMATION</h5>) : (<h5 className="startAnim">START ANIMATION</h5>)}
+          {animation ? (
+            <h5 className="stopAnim">STOP ANIMATION</h5>
+          ) : (
+            <h5 className="startAnim">START ANIMATION</h5>
+          )}
         </div>
         <svg className="arrows">
           <path d="M0 0l30 32L60 0" className="a1"></path>

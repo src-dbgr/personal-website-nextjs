@@ -16,10 +16,11 @@ const Tetrahedron = (props) => {
   let addValue = 0;
   let elapsedTime = 0;
   useFrame(() => {
+    if (!mesh.current) return;
     elapsedTime = clock.elapsedTime;
     addValue = 0.0035;
-    mesh.current.rotation.x = mesh.current.rotation.y += addValue
-    mesh.current.rotation.y = mesh.current.rotation.x += addValue
+    mesh.current.rotation.x = mesh.current.rotation.y += addValue;
+    mesh.current.rotation.y = mesh.current.rotation.x += addValue;
     mesh.current.position.y = 0.9 * Math.abs(Math.sin(elapsedTime / 5));
     mesh.current.material.emissiveIntensity = 6 * Math.sin(elapsedTime);
   });
@@ -42,7 +43,7 @@ const Tetrahedron = (props) => {
         setHover(false);
       }}
     >
-      <tetrahedronBufferGeometry attach="geometry" args={[1.2, 0]} />
+      <tetrahedronGeometry attach="geometry" args={[1.2, 0]} />
       <meshStandardMaterial
         attach="material"
         roughness={0.6}
