@@ -3,7 +3,7 @@ import Title from "../general/Title";
 import Image from "next/image";
 import { BsCircleFill } from "react-icons/bs";
 import { IoTriangleSharp } from "react-icons/io5";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
 const FadeInSection = dynamic(() => import("../../hooks/FadeInSection"), {
   ssr: false,
@@ -31,11 +31,11 @@ const About = ({ infomain }) => {
             <div className="underline"></div>
             <p>{infomain}</p>
             <ul className="skill-set">
-              <li>Python</li>
               <li>Java</li>
+              <li>Python</li>
               <li>K8s</li>
               <li>Kafka</li>
-              <li>Llama 3.1</li>
+              <li>Angular</li>
               <li>TS</li>
             </ul>
           </article>
@@ -55,7 +55,7 @@ const About = ({ infomain }) => {
                 height={427}
               />
               <Image
-                src='/assets/images/about/var_1.png'
+                src="/assets/images/about/var_1.png"
                 alt="about-img"
                 className="about-hover-img"
                 quality={90}
