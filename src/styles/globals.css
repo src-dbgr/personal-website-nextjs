@@ -2134,6 +2134,10 @@ Projects Page
 =============== 
 */
 
+.backprop-template {
+  background: var(--clr-background-major) !important;
+}
+
 .projects-page .projects,
 .blog-page,
 .legal-page,
@@ -2228,6 +2232,13 @@ Blog
   display: grid;
   place-items: center;
   background: var(--clr-background-major);
+}
+
+.rounded-img-child svg {
+  width: 100;
+  height: 80;
+  stroke: var(--clr-dark);
+  stroke-width: 1;
 }
 
 @keyframes slideAndReturn {
@@ -2543,6 +2554,306 @@ Blog Template
   height: 24px;
   padding-top: 1.5px;
   padding-bottom: 1.5px;
+}
+
+/*
+==================================================
+PLAYGROUND VISUALIZER STYLES
+(Migration der Tailwind-Klassen zu reinem CSS)
+==================================================
+*/
+
+/* --- Hauptcontainer und Layout --- */
+
+.backprop-visualizer-container {
+  /* Verwenden Sie Ihre Haupt-Hintergrundfarbe */
+  min-height: 100vh;
+  background-color: var(
+    --clr-dark-strong
+  ); /* Korrigiert: Nutzt #2e2e2e im Dark-Theme */
+  color: rgb(229, 231, 235);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  font-family: var(--ff-primary);
+  border-radius: 12px;
+  width: 100%;
+}
+
+.backprop-section {
+  /* Ersetzt: w-full max-w-7xl mx-auto */
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.backprop-card {
+  /* Basis-Karte */
+  background-color: rgb(21, 21, 21); /* #151515 */
+  border: 1px solid rgb(51, 51, 51);
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+  padding: 1.25rem;
+}
+
+.backprop-params-area {
+  /* Dieses Div ist das Rechteck, das die Matrizen enthält */
+  background-color: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgb(51, 51, 51);
+  border-radius: 12px;
+  padding: 1rem;
+
+  /* FIX: Fixierte Höhe, basierend auf der höchsten Matrix (Weights L1/L2) */
+  min-height: 140px;
+  height: 140px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Zentralisiert horizontal (Wichtig!) */
+  justify-content: center; /* Zentralisiert vertikal */
+  overflow: hidden;
+  transition: all 0.2s ease; /* Übergang für visuelle Glättung beim Wechsel */
+}
+
+/* --- Matrizen-Zentrierung (Die Inhalte der Matrizen zentrieren) --- */
+/* (Wird durch die Flexbox-Eigenschaften im JSX-Code gesteuert,
+   aber diese Klasse stellt sicher, dass alle Unterelemente linksbündig sind,
+   damit die Container-Zentrierung funktioniert.) */
+
+.matrix-input-row {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+/* --- Typografie und Header --- */
+
+.backprop-header {
+  /* Ersetzt: flex items-center gap-2 text-xs font-bold text-emerald-500 uppercase tracking-widest mb-3 */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--clr-green-everywhere); /* Nutzt dein Akzentgrün */
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+
+.backprop-h3 {
+  /* Ersetzt: text-white font-bold mb-4 border-b border-[#333] pb-2 flex items-center gap-2 */
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgb(51, 51, 51);
+  padding-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.backprop-math {
+  /* Ersetzt: bg-black/50 border border-[#333] p-3 rounded inline-block font-mono text-sm text-gray-200 */
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(51, 51, 51);
+  padding: 0.75rem;
+  border-radius: 6px;
+  display: inline-block;
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: rgb(229, 231, 235);
+}
+
+/* --- Konfiguration & Formularelemente --- */
+
+.backprop-input {
+  /* matrix-input styles */
+  /* Ersetzt: background: #000; border: 1px solid #333; color: #4ade80; ... */
+  background: black;
+  border: 1px solid #333;
+  color: #4ade80; /* Spezifisches Grün für Daten */
+  font-family: monospace;
+  text-align: center;
+  border-radius: 4px;
+  width: 60px;
+  padding: 4px;
+  font-size: 0.75rem;
+  transition: border 0.2s;
+}
+
+.backprop-input:focus {
+  outline: 1px solid #4ade80;
+  border-color: #4ade80;
+}
+
+/* --- Responsive Grid --- */
+
+.backprop-grid-2 {
+  /* Ersetzt: grid grid-cols-1 lg:grid-cols-2 gap-6 */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .backprop-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* --- HILFS-KLASSEN FÜR BACKPROP VISUALIZER (Kompakte Buttons/Layout) --- */
+
+.backprop-flex-gap-1 {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.backprop-flex-gap-2 {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.backprop-flex-col-gap-1 {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* --- Parameter Input Buttons (Inputs / Weights / Biases) --- */
+
+.backprop-tab-group {
+  /* Ersetzt: flex bg-[#111] p-1 rounded-lg border border-[#333] gap-1 */
+  display: flex;
+  background-color: rgb(17, 17, 17); /* #111 */
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid rgb(51, 51, 51); /* #333 */
+  gap: 4px;
+}
+
+.backprop-tab-btn {
+  /* Ersetzt: px-2 py-1 text-[9px] rounded {active?'bg-[#333] text-white':'text-gray-500'} */
+  padding: 6px 12px;
+  font-size: 9px;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: all 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgb(136, 136, 136);
+  text-transform: uppercase;
+}
+
+.backprop-tab-btn.active {
+  /* Aktiver Tab */
+  background: rgb(51, 51, 51); /* #333 */
+  color: #fff;
+}
+
+/* --- Haupt-Aktionsbuttons (Play/Pause, Update Params) --- */
+
+/* 1. Randomize Button (Wichtig: Korrekte Farbe und Hintergrund) */
+.backprop-randomize-btn {
+  /* Ersetzt: hover:border-[#333] text-gray-400 hover:text-emerald-400 */
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid transparent; /* Transparent im Normalzustand */
+  color: rgb(156, 163, 175); /* Helles Grau/Silber */
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: transparent;
+}
+
+.backprop-randomize-btn:hover:not(:disabled) {
+  /* Hover-Zustand wie im Gemini-Screenshot */
+  border-color: rgb(51, 51, 51);
+  color: #4ade80; /* Akzentfarbe */
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* 2. Start Auto-Training Button (Wichtig: Nicht volle Breite, zentriert) */
+.backprop-training-btn-wrapper {
+  /* Container für Zentrierung und reduzierte Breite */
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.backprop-training-btn {
+  /* Button-Stil für Start Auto-Training */
+  /* Breite auf Basis des Inhalts (min-width für Klickfläche) */
+  width: auto !important;
+  min-width: 250px;
+  padding: 0.75rem 2rem;
+
+  /* Restliche Stile wie zuvor */
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+
+  /* Farben, die durch Inline-Styles in der Komponente gesetzt werden */
+}
+
+.backprop-action-btn-main {
+  /* Gemeinsame Basis für alle Aktionsbuttons im Steuerungspanel */
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(51, 51, 51);
+  border-radius: 8px;
+  background-color: rgb(37, 37, 37); /* Dunkler Hintergrund */
+  color: rgb(156, 163, 175);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 0.875rem;
+  box-shadow: none; /* Entfernt den globalen .btn Schatten */
+}
+
+.backprop-action-btn-main:hover:not(:disabled) {
+  background-color: rgb(50, 50, 50);
+  color: #fff;
+}
+
+/* Spezieller Stil für Update Params Button */
+.backprop-update-btn {
+  /* Ersetzt: bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold shadow-lg shadow-emerald-900/50 */
+  background-color: rgb(4, 120, 87) !important; /* #047857 */
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.4) !important; /* Grüner Schatten */
+  transition: background-color 0.2s;
+}
+
+.backprop-update-btn:hover:not(:disabled) {
+  background-color: rgb(16, 185, 129) !important; /* #10b981 */
+}
+
+/* Spezieller Stil für Reset Button */
+.backprop-reset-btn:hover:not(:disabled) {
+  background-color: rgb(34, 34, 34); /* #222 */
+}
+
+/* Anpassung der globalen .btn Klasse, falls sie auf den Visualizer angewendet wird */
+.tool-content-wrapper .btn {
+  /* Stellt sicher, dass die Standard-Buttons am Ende der Seite richtig angezeigt werden */
+  margin-top: 2rem !important;
 }
 
 /*
