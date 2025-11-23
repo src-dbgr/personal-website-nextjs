@@ -1,13 +1,13 @@
-import React from 'react';
-import { gql } from '@apollo/client';
-import apolloClient from '../../lib/apolloClient';
-import Layout from '../../components/general/Layout';
-import Title from '../../components/general/Title';
-import ReactMarkdown from 'react-markdown';
-import Seo from '../../components/general/Seo';
-import Link from 'next/link';
-import dynamic from 'next/dynamic';
-import { fetchCookieStaticProps } from '../../lib/staticPropsHelpers';
+import React from "react";
+import { gql } from "@apollo/client";
+import apolloClient from "../../lib/apolloClient";
+import Layout from "../../components/general/Layout";
+import Title from "../../components/general/Title";
+import ReactMarkdown from "react-markdown";
+import Seo from "../../components/general/Seo";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import { fetchCookieStaticProps } from "../../lib/staticPropsHelpers";
 
 const FadeInSection = dynamic(() => import("../../hooks/FadeInSection"), {
   ssr: false,
@@ -35,7 +35,7 @@ const GET_ALL_BLOGS = gql`
   }
 `;
 
-const BlogTemplate = ({ blog, cookies }) => { 
+const BlogTemplate = ({ blog, cookies }) => {
   const { content, title, desc } = blog;
 
   return (
@@ -81,7 +81,7 @@ export async function getStaticProps({ params }) {
   const { cookies } = await fetchCookieStaticProps();
 
   return {
-    props: { 
+    props: {
       blog,
       cookies,
     },

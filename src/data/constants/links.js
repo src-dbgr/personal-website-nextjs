@@ -106,13 +106,21 @@ const Links = function (props) {
         data-aos-once="true"
         data-aos-delay={`${navanimation ? "600" : "0"}`}
       >
+        <CustomLink href="/playground">playground</CustomLink>
+      </li>
+      <li
+        key="6"
+        data-aos={`${navanimation ? "fade-down" : ""}`}
+        data-aos-once="true"
+        data-aos-delay={`${navanimation ? "750" : "0"}`}
+      >
         <CustomLink href="/contact">contact</CustomLink>
       </li>
 
       <div
         id="themeiconwrapper"
         onClick={handleThemeToggle}
-        onKeyDown={(e) => e.key === 'Enter' && handleThemeToggle()}
+        onKeyDown={(e) => e.key === "Enter" && handleThemeToggle()}
         role="button"
         tabIndex={0}
         data-aos={`${navanimation ? "fade-down" : ""}`}
