@@ -139,9 +139,14 @@ const BackpropVisualizer = () => {
   const flowOut = isTraining || (step >= 3 && step < 9);
 
   const isBackprop = step >= 5 && step < 9;
+  // Logik für violette Färbung beim Backward Pass
+  const backPropL3 = isBackprop && step >= 6; // Output Gradients
+  const backPropL2 = isBackprop && step >= 7; // H2 Gradients
+  const backPropL1 = isBackprop && step >= 8; // H1 Gradients
+
   const inputsLocked = step > 0 || isTraining || network.epoch > 0;
 
-  // --- Steps Definition (Keine Änderung) ---
+  // --- Steps Definition ---
   const steps = [
     {
       id: "init",
@@ -202,7 +207,7 @@ const BackpropVisualizer = () => {
       desc: "We compute the gradient δ at the output. This indicates the direction and magnitude of error for each output node.",
       mathHTML: (
         <span>
-          δ<sup>[3]</sup> = (ŷ - y) · σ\'(Z<sup>[3]</sup>)
+          δ<sup>[3]</sup> = (ŷ - y) · σ'(Z<sup>[3]</sup>)
         </span>
       ),
     },
@@ -475,20 +480,17 @@ const BackpropVisualizer = () => {
 
   const currentInfo = steps[step];
 
-  // --- Dynamic Labels ---
   const getTabLabel = (layer: "L1" | "L2" | "L3") => {
     if (editMode === "WEIGHTS") {
       if (layer === "L1") return "Input → H1";
       if (layer === "L2") return "H1 → H2";
       return "H2 → Output";
     }
-    // Biases
     if (layer === "L1") return "H1 Layer";
     if (layer === "L2") return "H2 Layer";
     return "Output Layer";
   };
 
-  // --- Legend Data (Keine Änderung) ---
   const legendItems = [
     {
       symbol: "Z",
@@ -541,7 +543,6 @@ const BackpropVisualizer = () => {
     },
   ];
 
-  // --- Geometry Helper (Keine Änderung) ---
   const getLineCoords = (
     x1: number,
     y1: number,
@@ -569,53 +570,6 @@ const BackpropVisualizer = () => {
 
   return (
     <div className="backprop-visualizer-container">
-      {/* Styles Block for temporary CSS integration */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-            /* Neue CSS-Klassen aus Schritt 1 der letzten Antwort */
-            .matrix-input { 
-                background: #000; border: 1px solid #333; color: #4ade80; 
-                font-family: monospace; text-align: center; border-radius: 4px; 
-                width: 60px; padding: 4px; font-size: 0.75rem; transition: border 0.2s; 
-            }
-            .matrix-input:focus { outline: 1px solid #4ade80; border-color: #4ade80; }
-            .matrix-input:disabled { color: #555; border-color: #222; cursor: not-allowed; opacity: 0.5; }
-            
-            .backprop-tab-btn { padding: 6px 12px; font-size: 9px; font-weight: bold; border-radius: 6px; transition: all 0.2s; background: none; border: none; cursor: pointer; color: rgb(136, 136, 136); text-transform: uppercase; flex-shrink: 0; }
-            .backprop-tab-btn.active { background: rgb(51, 51, 51); color: #fff; }
-            .backprop-tab-btn.inactive { background: #1f1f1f; color: #888; border: 1px solid #333; }
-            
-            .legend-item { position: relative; cursor: help; }
-            .legend-tooltip { 
-              visibility: hidden; position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
-              background: #1a1a1a; border: 1px solid #444; color: #eee; padding: 0.75rem; border-radius: 6px;
-              width: 260px; font-size: 0.75rem; z-index: 50; text-align: left; box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-              opacity: 0; transition: opacity 0.2s; pointer-events: none;
-            }
-            .legend-item:hover .legend-tooltip { visibility: visible; opacity: 1; }
-            .legend-tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #1a1a1a transparent transparent transparent; }
-            
-            .layer-box { fill: none; stroke: #333; stroke-width: 1; stroke-dasharray: 4 4; rx: 8; }
-            .layer-label { font-family: monospace; font-size: 10px; font-weight: bold; fill: #555; text-anchor: middle; }
-
-            /* Grid und Flex Helfer */
-            .backprop-flex-col-1 { display: flex; flex-direction: column; gap: 0.25rem; align-items: center; }
-            .backprop-flex-gap-1 { display: flex; gap: 0.25rem; align-items: center; }
-            .backprop-flex-gap-2 { display: flex; gap: 0.5rem; align-items: center; }
-            .backprop-tab-group { display: flex; background-color: rgb(17, 17, 17); padding: 4px; border-radius: 8px; border: 1px solid rgb(51, 51, 51); gap: 4px; }
-            .backprop-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-            .backprop-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
-            
-            @keyframes slideInFromTop {
-              from { transform: translateY(-10px); opacity: 0; }
-              to { transform: translateY(0); opacity: 1; }
-            }
-            .animate-in { animation: slideInFromTop 0.3s ease-out; }
-          `,
-        }}
-      />
-
       {/* SECTION 1: DEFINITION */}
       <div className="backprop-section">
         <div className="backprop-header">
@@ -1049,6 +1003,7 @@ const BackpropVisualizer = () => {
             <div className="backprop-header">
               <Settings size={14} /> Configuration
             </div>
+            {/* ... INPUTS & TARGETS & RATE ... */}
             <div
               style={{
                 display: "flex",
@@ -1064,17 +1019,7 @@ const BackpropVisualizer = () => {
                 }}
               >
                 <div>
-                  <label
-                    style={{
-                      fontSize: "10px",
-                      color: "rgb(156, 163, 175)",
-                      fontWeight: "bold",
-                      marginBottom: "0.25rem",
-                      display: "block",
-                    }}
-                  >
-                    TARGETS (ŷ)
-                  </label>
+                  <label className="backprop-input-label">TARGETS (ŷ)</label>
                   <div className="backprop-flex-gap-2">
                     <input
                       type="number"
@@ -1101,17 +1046,7 @@ const BackpropVisualizer = () => {
                   </div>
                 </div>
                 <div>
-                  <label
-                    style={{
-                      fontSize: "10px",
-                      color: "rgb(156, 163, 175)",
-                      fontWeight: "bold",
-                      marginBottom: "0.25rem",
-                      display: "block",
-                    }}
-                  >
-                    RATE η (0-1)
-                  </label>
+                  <label className="backprop-input-label">RATE η (0-1)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1144,30 +1079,17 @@ const BackpropVisualizer = () => {
                     PARAMETERS
                   </label>
                   <div className="backprop-tab-group">
-                    <button
-                      onClick={() => setEditMode("INPUTS")}
-                      className={`backprop-tab-btn ${
-                        editMode === "INPUTS" ? "active" : "inactive"
-                      }`}
-                    >
-                      Inputs
-                    </button>
-                    <button
-                      onClick={() => setEditMode("WEIGHTS")}
-                      className={`backprop-tab-btn ${
-                        editMode === "WEIGHTS" ? "active" : "inactive"
-                      }`}
-                    >
-                      Weights
-                    </button>
-                    <button
-                      onClick={() => setEditMode("BIASES")}
-                      className={`backprop-tab-btn ${
-                        editMode === "BIASES" ? "active" : "inactive"
-                      }`}
-                    >
-                      Biases
-                    </button>
+                    {(["INPUTS", "WEIGHTS", "BIASES"] as const).map((m) => (
+                      <button
+                        key={m}
+                        onClick={() => setEditMode(m)}
+                        className={`backprop-tab-btn ${
+                          editMode === m ? "active" : "inactive"
+                        }`}
+                      >
+                        {m}
+                      </button>
+                    ))}
                   </div>
                   <button
                     onClick={randomizeSelection}
@@ -1179,40 +1101,28 @@ const BackpropVisualizer = () => {
                     <Shuffle size={12} /> Randomize Values
                   </button>
                 </div>
-                {/* FIX: Feste Höhe, Rechteck und Zentrierung */}
+                {/* --- PARAMETERS BOX --- */}
                 <div className="backprop-params-area">
                   {editMode !== "INPUTS" && (
                     <div
                       className="backprop-flex-gap-2"
                       style={{ marginBottom: "1rem" }}
                     >
-                      <button
-                        onClick={() => setActiveTab("L1")}
-                        className={`backprop-tab-btn ${
-                          activeTab === "L1" ? "active" : "inactive"
-                        }`}
-                      >
-                        {getTabLabel("L1")}
-                      </button>
-                      <button
-                        onClick={() => setActiveTab("L2")}
-                        className={`backprop-tab-btn ${
-                          activeTab === "L2" ? "active" : "inactive"
-                        }`}
-                      >
-                        {getTabLabel("L2")}
-                      </button>
-                      <button
-                        onClick={() => setActiveTab("L3")}
-                        className={`backprop-tab-btn ${
-                          activeTab === "L3" ? "active" : "inactive"
-                        }`}
-                      >
-                        {getTabLabel("L3")}
-                      </button>
+                      {(["L1", "L2", "L3"] as const).map((l) => (
+                        <button
+                          key={l}
+                          onClick={() => setActiveTab(l)}
+                          className={`backprop-tab-btn ${
+                            activeTab === l ? "active" : "inactive"
+                          }`}
+                        >
+                          {getTabLabel(l)}
+                        </button>
+                      ))}
                     </div>
                   )}
-                  {/* ANPASSUNG: Inputs Matrizen (Jetzt zentriert durch parent-Klasse) */}
+
+                  {/* Inputs */}
                   {editMode === "INPUTS" && (
                     <div className="backprop-flex-col-1">
                       <div
@@ -1221,22 +1131,14 @@ const BackpropVisualizer = () => {
                       >
                         {network.inputs.map((v, i) => (
                           <div key={i} style={{ textAlign: "center" }}>
-                            <div
-                              style={{
-                                fontSize: "9px",
-                                color: "rgb(156, 163, 175)",
-                                marginBottom: "0.25rem",
-                              }}
-                            >
-                              x{i + 1}
-                            </div>
+                            <div className="backprop-small-label">x{i + 1}</div>
                             <input
                               type="number"
                               step="0.1"
                               min="0"
                               max="1"
                               className="matrix-input"
-                              value={Number(v).toFixed(2)}
+                              value={formatNum(v)}
                               onChange={(e) =>
                                 handleParamChange("L1", 0, i, e.target.value)
                               }
@@ -1247,23 +1149,29 @@ const BackpropVisualizer = () => {
                       </div>
                     </div>
                   )}
-                  {/* ANPASSUNG: Weights Matrizen (Jetzt linksbündig in der zentrierten Box) */}
-                  {editMode === "WEIGHTS" && activeTab === "L1" && (
+
+                  {/* Weights */}
+                  {editMode === "WEIGHTS" && (
                     <div
                       className="backprop-flex-col-1"
                       style={{ alignItems: "flex-start" }}
                     >
-                      {network.weights1.map((r, i) => (
+                      {(activeTab === "L1"
+                        ? network.weights1
+                        : activeTab === "L2"
+                        ? network.weights2
+                        : network.weights3
+                      ).map((r, i) => (
                         <div key={i} className="matrix-input-row">
                           <span
-                            style={{
-                              fontSize: "9px",
-                              width: "1.5rem",
-                              color: "rgb(156, 163, 175)",
-                              textAlign: "right",
-                            }}
+                            className="backprop-small-label"
+                            style={{ width: "2rem", textAlign: "right" }}
                           >
-                            x{i + 1}
+                            {activeTab === "L1"
+                              ? `x${i + 1}`
+                              : activeTab === "L2"
+                              ? `h1_${i + 1}`
+                              : `h2_${i + 1}`}
                           </span>
                           {r.map((v, j) => (
                             <input
@@ -1271,9 +1179,14 @@ const BackpropVisualizer = () => {
                               type="number"
                               step="0.1"
                               className="matrix-input"
-                              value={Number(v).toFixed(2)}
+                              value={formatNum(v)}
                               onChange={(e) =>
-                                handleParamChange("L1", i, j, e.target.value)
+                                handleParamChange(
+                                  activeTab,
+                                  i,
+                                  j,
+                                  e.target.value
+                                )
                               }
                               disabled={inputsLocked}
                             />
@@ -1282,146 +1195,27 @@ const BackpropVisualizer = () => {
                       ))}
                     </div>
                   )}
-                  {editMode === "WEIGHTS" && activeTab === "L2" && (
-                    <div
-                      className="backprop-flex-col-1"
-                      style={{ alignItems: "flex-start" }}
-                    >
-                      {network.weights2.map((r, i) => (
-                        <div key={i} className="matrix-input-row">
-                          <span
-                            style={{
-                              fontSize: "9px",
-                              width: "1.5rem",
-                              color: "rgb(156, 163, 175)",
-                              textAlign: "right",
-                            }}
-                          >
-                            h1_{i + 1}
-                          </span>
-                          {r.map((v, j) => (
-                            <input
-                              key={j}
-                              type="number"
-                              step="0.1"
-                              className="matrix-input"
-                              value={Number(v).toFixed(2)}
-                              onChange={(e) =>
-                                handleParamChange("L2", i, j, e.target.value)
-                              }
-                              disabled={inputsLocked}
-                            />
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {editMode === "WEIGHTS" && activeTab === "L3" && (
-                    <div
-                      className="backprop-flex-col-1"
-                      style={{ alignItems: "flex-start" }}
-                    >
-                      {network.weights3.map((r, i) => (
-                        <div key={i} className="matrix-input-row">
-                          <span
-                            style={{
-                              fontSize: "9px",
-                              width: "1.5rem",
-                              color: "rgb(156, 163, 175)",
-                              textAlign: "right",
-                            }}
-                          >
-                            h2_{i + 1}
-                          </span>
-                          {r.map((v, j) => (
-                            <input
-                              key={j}
-                              type="number"
-                              step="0.1"
-                              className="matrix-input"
-                              value={Number(v).toFixed(2)}
-                              onChange={(e) =>
-                                handleParamChange("L3", i, j, e.target.value)
-                              }
-                              disabled={inputsLocked}
-                            />
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {/* ANPASSUNG: Biases Matrizen (Jetzt zentriert durch parent-Klasse) */}
-                  {editMode === "BIASES" && activeTab === "L1" && (
+
+                  {/* Biases */}
+                  {editMode === "BIASES" && (
                     <div className="backprop-flex-gap-2">
-                      {network.bias1.map((v, i) => (
+                      {(activeTab === "L1"
+                        ? network.bias1
+                        : activeTab === "L2"
+                        ? network.bias2
+                        : network.bias3
+                      ).map((v, i) => (
                         <div key={i} style={{ textAlign: "center" }}>
-                          <div
-                            style={{
-                              fontSize: "9px",
-                              color: "rgb(156, 163, 175)",
-                            }}
-                          >
-                            h1_{i + 1}
+                          <div className="backprop-small-label">
+                            {activeTab === "L3" ? `y${i + 1}` : `h${i + 1}`}
                           </div>
                           <input
                             type="number"
                             step="0.1"
                             className="matrix-input"
-                            value={Number(v).toFixed(2)}
+                            value={formatNum(v)}
                             onChange={(e) =>
-                              handleParamChange("L1", 0, i, e.target.value)
-                            }
-                            disabled={inputsLocked}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {editMode === "BIASES" && activeTab === "L2" && (
-                    <div className="backprop-flex-gap-2">
-                      {network.bias2.map((v, i) => (
-                        <div key={i} style={{ textAlign: "center" }}>
-                          <div
-                            style={{
-                              fontSize: "9px",
-                              color: "rgb(156, 163, 175)",
-                            }}
-                          >
-                            h2_{i + 1}
-                          </div>
-                          <input
-                            type="number"
-                            step="0.1"
-                            className="matrix-input"
-                            value={Number(v).toFixed(2)}
-                            onChange={(e) =>
-                              handleParamChange("L2", 0, i, e.target.value)
-                            }
-                            disabled={inputsLocked}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {editMode === "BIASES" && activeTab === "L3" && (
-                    <div className="backprop-flex-gap-2">
-                      {network.bias3.map((v, i) => (
-                        <div key={i} style={{ textAlign: "center" }}>
-                          <div
-                            style={{
-                              fontSize: "9px",
-                              color: "rgb(156, 163, 175)",
-                            }}
-                          >
-                            y{i + 1}
-                          </div>
-                          <input
-                            type="number"
-                            step="0.1"
-                            className="matrix-input"
-                            value={Number(v).toFixed(2)}
-                            onChange={(e) =>
-                              handleParamChange("L3", 0, i, e.target.value)
+                              handleParamChange(activeTab, 0, i, e.target.value)
                             }
                             disabled={inputsLocked}
                           />
@@ -1439,10 +1233,8 @@ const BackpropVisualizer = () => {
                 className="backprop-action-btn-main backprop-reset-btn"
                 style={{
                   width: "100%",
-                  padding: "0.75rem",
-                  color: "rgb(156, 163, 175)",
-                  backgroundColor: "rgba(34, 34, 34, 0.5)",
                   marginTop: "1.5rem",
+                  backgroundColor: "rgba(34, 34, 34, 0.5)",
                 }}
               >
                 <RotateCcw size={16} /> Reset Everything
@@ -1507,11 +1299,7 @@ const BackpropVisualizer = () => {
             >
               <button
                 className="backprop-action-btn-main"
-                style={{
-                  padding: "0.75rem",
-                  flexShrink: 0,
-                  color: "rgb(156, 163, 175)",
-                }}
+                style={{ flexShrink: 0 }}
                 onClick={() => setStep(Math.max(0, step - 1))}
                 disabled={isTraining}
               >
@@ -1519,7 +1307,7 @@ const BackpropVisualizer = () => {
               </button>
               <button
                 className="backprop-action-btn-main"
-                style={{ flex: 1, padding: "0.75rem", color: "#fff" }}
+                style={{ flex: 1, color: "#fff" }}
                 onClick={() => setIsPlaying(!isPlaying)}
                 disabled={isTraining}
               >
@@ -1528,23 +1316,11 @@ const BackpropVisualizer = () => {
                 ) : (
                   <Play size={20} fill="white" />
                 )}
-                <span
-                  style={{
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {isPlaying ? "Pause" : "Play Steps"}
-                </span>
+                <span>{isPlaying ? "Pause" : "Play Steps"}</span>
               </button>
               <button
                 className="backprop-action-btn-main"
-                style={{
-                  padding: "0.75rem",
-                  flexShrink: 0,
-                  color: "rgb(156, 163, 175)",
-                }}
+                style={{ flexShrink: 0 }}
                 onClick={() => setStep(Math.min(steps.length - 1, step + 1))}
                 disabled={isTraining}
               >
@@ -1569,7 +1345,7 @@ const BackpropVisualizer = () => {
         <div
           className="backprop-card"
           style={{
-            backgroundColor: "rgb(21, 21, 21)",
+            backgroundColor: "#151515", // HINTERGRUND WIEDERHERGESTELLT (Dunkelgrau)
             position: "relative",
             height: "550px",
             display: "flex",
@@ -1710,7 +1486,7 @@ const BackpropVisualizer = () => {
                 refY="3"
                 orient="auto"
               >
-                <path d="M0,0 L0,6 L9,3 z" fill="#666" />
+                <path d="M0,0 L0,6 L9,3 z" fill="#aaaaaaff" />
               </marker>
             </defs>
 
@@ -1748,10 +1524,11 @@ const BackpropVisualizer = () => {
             <text x="480" y="430" className="layer-label">
               A^[2] (H2)
             </text>
+            {/* FIX: Output Layer Box verbreitert auf 90 und Position angepasst (635 statt 650) */}
             <rect
-              x="650"
+              x="635"
               y="80"
-              width="60"
+              width="90"
               height="300"
               rx="8"
               className="layer-box"
@@ -1799,9 +1576,9 @@ const BackpropVisualizer = () => {
                       markerEnd={markerEnd}
                     />
                     <rect
-                      x={lx - 14}
+                      x={lx - 18}
                       y={ly - 7}
-                      width="28"
+                      width="35"
                       height="14"
                       rx="3"
                       fill="#0f0f0f"
@@ -1812,8 +1589,8 @@ const BackpropVisualizer = () => {
                       x={lx}
                       y={ly + 3}
                       textAnchor="middle"
-                      fontSize="8"
-                      fill={back ? "#fff" : "#666"}
+                      fontSize="10"
+                      fill={back ? "#fff" : "#aaa"}
                       fontFamily="monospace"
                     >
                       {network.weights1[i][j].toFixed(2)}
@@ -1860,9 +1637,9 @@ const BackpropVisualizer = () => {
                       markerEnd={markerEnd}
                     />
                     <rect
-                      x={lx - 14}
+                      x={lx - 18}
                       y={ly - 7}
-                      width="28"
+                      width="35"
                       height="14"
                       rx="3"
                       fill="#0f0f0f"
@@ -1873,8 +1650,8 @@ const BackpropVisualizer = () => {
                       x={lx}
                       y={ly + 3}
                       textAnchor="middle"
-                      fontSize="8"
-                      fill={back ? "#fff" : "#666"}
+                      fontSize="10"
+                      fill={back ? "#fff" : "#aaa"}
                       fontFamily="monospace"
                     >
                       {network.weights2[i][j].toFixed(2)}
@@ -1921,9 +1698,9 @@ const BackpropVisualizer = () => {
                       markerEnd={markerEnd}
                     />
                     <rect
-                      x={lx - 14}
+                      x={lx - 18}
                       y={ly - 7}
-                      width="28"
+                      width="35"
                       height="14"
                       rx="3"
                       fill="#0f0f0f"
@@ -1934,8 +1711,8 @@ const BackpropVisualizer = () => {
                       x={lx}
                       y={ly + 3}
                       textAnchor="middle"
-                      fontSize="8"
-                      fill={back ? "#fff" : "#666"}
+                      fontSize="10"
+                      fill={back ? "#fff" : "#aaa"}
                       fontFamily="monospace"
                     >
                       {network.weights3[i][k].toFixed(2)}
@@ -1953,7 +1730,7 @@ const BackpropVisualizer = () => {
                   y="0"
                   textAnchor="middle"
                   fill="#fff"
-                  fontSize="10"
+                  fontSize="12"
                   fontWeight="bold"
                   dominantBaseline="middle"
                 >
@@ -1963,7 +1740,7 @@ const BackpropVisualizer = () => {
                   y="35"
                   textAnchor="middle"
                   fill="#888"
-                  fontSize="10"
+                  fontSize="11"
                   fontFamily="monospace"
                 >
                   {network.inputs[i]}
@@ -1973,17 +1750,30 @@ const BackpropVisualizer = () => {
             {[0, 1, 2].map((j) => (
               <g key={"h1" + j} transform={`translate(280, ${100 + j * 120})`}>
                 <circle r="28" fill="#151515" />
+                {/* FIX: Färbt sich auch violett bei Backprop Step 8 */}
                 <circle
                   r="28"
-                  fill={flowL1 ? "rgba(74,222,128,0.1)" : "transparent"}
-                  stroke={flowL1 ? "#4ade80" : "#333"}
+                  fill={
+                    isBackprop && step >= 7
+                      ? "rgba(167, 139, 250, 0.1)"
+                      : flowL1
+                      ? "rgba(74,222,128,0.1)"
+                      : "transparent"
+                  }
+                  stroke={
+                    isBackprop && step >= 7
+                      ? "#a78bfa"
+                      : flowL1
+                      ? "#4ade80"
+                      : "#333"
+                  }
                   strokeWidth="2"
                 />
                 <text
                   y="-8"
                   textAnchor="middle"
                   fill="#fff"
-                  fontSize="10"
+                  fontSize="12"
                   fontWeight="bold"
                 >
                   h1_{j + 1}
@@ -1992,7 +1782,7 @@ const BackpropVisualizer = () => {
                   y="-38"
                   textAnchor="middle"
                   fill="#aaa"
-                  fontSize="9"
+                  fontSize="11"
                   fontFamily="monospace"
                 >
                   b:{network.bias1[j].toFixed(1)}
@@ -2002,7 +1792,7 @@ const BackpropVisualizer = () => {
                     y="12"
                     textAnchor="middle"
                     fill="#4ade80"
-                    fontSize="9"
+                    fontSize="11"
                     fontFamily="monospace"
                   >
                     {a1[j].toFixed(2)}
@@ -2013,17 +1803,30 @@ const BackpropVisualizer = () => {
             {[0, 1, 2].map((j) => (
               <g key={"h2" + j} transform={`translate(480, ${100 + j * 120})`}>
                 <circle r="28" fill="#151515" />
+                {/* FIX: Färbt sich auch violett bei Backprop Step 7 */}
                 <circle
                   r="28"
-                  fill={flowL2 ? "rgba(74,222,128,0.1)" : "transparent"}
-                  stroke={flowL2 ? "#4ade80" : "#333"}
+                  fill={
+                    isBackprop && step >= 6
+                      ? "rgba(167, 139, 250, 0.1)"
+                      : flowL2
+                      ? "rgba(74,222,128,0.1)"
+                      : "transparent"
+                  }
+                  stroke={
+                    isBackprop && step >= 6
+                      ? "#a78bfa"
+                      : flowL2
+                      ? "#4ade80"
+                      : "#333"
+                  }
                   strokeWidth="2"
                 />
                 <text
                   y="-8"
                   textAnchor="middle"
                   fill="#fff"
-                  fontSize="10"
+                  fontSize="12"
                   fontWeight="bold"
                 >
                   h2_{j + 1}
@@ -2032,7 +1835,7 @@ const BackpropVisualizer = () => {
                   y="-38"
                   textAnchor="middle"
                   fill="#aaa"
-                  fontSize="9"
+                  fontSize="11"
                   fontFamily="monospace"
                 >
                   b:{network.bias2[j].toFixed(1)}
@@ -2042,7 +1845,7 @@ const BackpropVisualizer = () => {
                     y="12"
                     textAnchor="middle"
                     fill="#4ade80"
-                    fontSize="9"
+                    fontSize="11"
                     fontFamily="monospace"
                   >
                     {a2[j].toFixed(2)}
@@ -2072,7 +1875,7 @@ const BackpropVisualizer = () => {
                   y="-48"
                   textAnchor="middle"
                   fill="#aaa"
-                  fontSize="9"
+                  fontSize="11"
                   fontFamily="monospace"
                 >
                   b:{network.bias3[k].toFixed(1)}
@@ -2082,7 +1885,7 @@ const BackpropVisualizer = () => {
                     y="15"
                     textAnchor="middle"
                     fill="#4ade80"
-                    fontSize="12"
+                    fontSize="13"
                     fontWeight="bold"
                     fontFamily="monospace"
                   >
@@ -2093,10 +1896,10 @@ const BackpropVisualizer = () => {
                   <g>
                     <text
                       x="0"
-                      y="55"
+                      y="58"
                       textAnchor="middle"
                       fill="#ef4444"
-                      fontSize="10"
+                      fontSize="11"
                       fontWeight="bold"
                       fontFamily="monospace"
                     >
@@ -2134,7 +1937,7 @@ const BackpropVisualizer = () => {
                     x="780"
                     y="155"
                     textAnchor="middle"
-                    fill="#666"
+                    fill="#aaa"
                     fontSize="8"
                     fontWeight="bold"
                   >
