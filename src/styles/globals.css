@@ -3135,6 +3135,10 @@ PLAYGROUND VISUALIZER STYLES
     border-top: 1px solid rgb(34, 34, 34);
   }
 
+  .backprop-grid-3 {
+    display: flex;
+    flex-direction: column;
+  }
   /* .matrix-input-row {
     display: unset !important;
   } */
