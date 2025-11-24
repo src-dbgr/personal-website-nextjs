@@ -236,10 +236,13 @@ const BackpropVisualizer = () => {
     {
       id: "update",
       title: "9. Parameter Update",
-      desc: "Gradient Descent: All weights and biases are adjusted by subtracting the gradient × learning rate (η). This reduces the error for the next pass.",
+      desc: "Gradient Descent: All weights and biases are adjusted using the gradients calculated. Note that we calculate the outer product of Activation and Delta to match the weight matrix shape.",
       mathHTML: (
         <span>
-          W<sub>new</sub> = W - η·∇W, b<sub>new</sub> = b - η·δ
+          {/* VORHER: delta * A_transposed (Falsche Dimension für Row-Major W) */}
+          {/* NACHHER: A_transposed * delta (Ergibt Matrix In x Out) */}W
+          <sub>new</sub> = W - η · (A<sup>T</sup> · δ), &nbsp; b<sub>new</sub> =
+          b - η · δ
         </span>
       ),
     },
@@ -351,8 +354,22 @@ const BackpropVisualizer = () => {
   useEffect(() => {
     let interval: any;
     if (isTraining) {
+      // LOGIK FÜR GESCHWINDIGKEIT:
+
+      // 1. Dynamisches Intervall (Delay):
+      // Speed 1  -> 1000ms Pause (1 Sekunde pro Schritt)
+      // Speed 50 -> 20ms Pause
+      // Speed 100 -> 10ms Pause
+      const delay = Math.max(10, Math.floor(1000 / trainSpeed));
+
+      // 2. Dynamische Batch Size (Menge pro Schritt):
+      // Unter Speed 10 -> Immer nur 1 Epoche (für Zeitlupe)
+      // Über Speed 10 -> Die Menge skaliert mit dem Slider
+      const batchSize = trainSpeed < 10 ? 1 : Math.ceil(trainSpeed / 2);
+
       interval = setInterval(() => {
         setNetwork((prev) => {
+          // Stop-Conditions prüfen
           if (prev.history.length > 0 && prev.history[0].error < 0.00001) {
             setIsTraining(false);
             return prev;
@@ -361,15 +378,17 @@ const BackpropVisualizer = () => {
             setIsTraining(false);
             return prev;
           }
+
+          // Training Loop
           let tmp = prev;
-          const batchSize = Math.max(1, Math.ceil(trainSpeed / 2));
           for (let i = 0; i < batchSize; i++) {
             tmp = calculateEpoch(tmp);
+            // Wenn Ziel während des Batches erreicht wird, sofort abbrechen
             if (tmp.history[0].error < 0.00001) break;
           }
           return tmp;
         });
-      }, 50);
+      }, delay);
     }
     return () => clearInterval(interval);
   }, [isTraining, trainSpeed]);
@@ -480,17 +499,6 @@ const BackpropVisualizer = () => {
 
   const currentInfo = steps[step];
 
-  const getTabLabel = (layer: "L1" | "L2" | "L3") => {
-    if (editMode === "WEIGHTS") {
-      if (layer === "L1") return "Input → H1";
-      if (layer === "L2") return "H1 → H2";
-      return "H2 → Output";
-    }
-    if (layer === "L1") return "H1 Layer";
-    if (layer === "L2") return "H2 Layer";
-    return "Output Layer";
-  };
-
   const legendItems = [
     {
       symbol: "Z",
@@ -499,8 +507,8 @@ const BackpropVisualizer = () => {
     },
     {
       symbol: "A",
-      name: "Activation (Matrix)",
-      desc: "The output of a layer. Capital letters denote matrices/vectors.",
+      name: "Activation",
+      desc: "A^[l] (or a^[l]) – the activations of layer l.",
     },
     {
       symbol: "W",
@@ -517,7 +525,11 @@ const BackpropVisualizer = () => {
       name: "Sigmoid",
       desc: "Activation function 1/(1+e^-x) mapping to (0,1).",
     },
-    { symbol: "δ", name: "Gradient", desc: "Error term for backpropagation." },
+    {
+      symbol: "δ",
+      name: "Error signal (delta)",
+      desc: "Local error term used to compute weight gradients.",
+    },
     {
       symbol: "η",
       name: "Learning Rate (Eta)",
@@ -534,8 +546,8 @@ const BackpropVisualizer = () => {
       name: "Transpose",
       desc: "Matrix transposition (swap rows/cols).",
     },
-    { symbol: "y", name: "Prediction", desc: "Network output." },
-    { symbol: "ŷ", name: "Target", desc: "True value." },
+    { symbol: "ŷ", name: "Prediction", desc: "Network output." },
+    { symbol: "y", name: "Target", desc: "True value." },
     {
       symbol: "λ",
       name: "Regularization",
@@ -604,7 +616,19 @@ const BackpropVisualizer = () => {
                   >
                     INPUT:
                   </span>{" "}
-                  <span>Training set (X, ŷ), Rate η</span>
+                  <span>Training set (X, y), Learning Rate η</span>
+                </div>
+                <div
+                  style={{
+                    paddingLeft: "1.5rem",
+                    marginTop: "-0.5rem",
+                    marginBottom: "0.5rem",
+                    fontSize: "0.7rem",
+                    color: "rgb(156, 163, 175)",
+                    fontFamily: "monospace",
+                  }}
+                >
+                  (Convention: A<sup>[0]</sup> = X)
                 </div>
                 <div style={{ marginBottom: "1rem" }}>
                   <div
@@ -658,7 +682,7 @@ const BackpropVisualizer = () => {
                     style={{ paddingLeft: "1rem", color: "rgb(156, 163, 175)" }}
                   >
                     <div>
-                      δ<sup>[L]</sup> = (y<sup>[L]</sup> - ŷ) · σ'(Z
+                      δ<sup>[L]</sup> = (ŷ - y<sup>[L]</sup>) · σ'(Z
                       <sup>[L]</sup>){" "}
                       <span
                         style={{ color: "rgb(75, 85, 99)", fontSize: "10px" }}
@@ -691,8 +715,8 @@ const BackpropVisualizer = () => {
                     style={{ paddingLeft: "1rem", color: "rgb(156, 163, 175)" }}
                   >
                     <div>
-                      W<sup>[l]</sup> ← W<sup>[l]</sup> - η · δ<sup>[l]</sup> ·
-                      (A<sup>[l-1]</sup>)<sup>T</sup>
+                      W<sup>[l]</sup> ← W<sup>[l]</sup> - η · (A<sup>[l-1]</sup>
+                      )<sup>T</sup> · δ<sup>[l]</sup>
                     </div>
                     <div>
                       b<sup>[l]</sup> ← b<sup>[l]</sup> - η · δ<sup>[l]</sup>
@@ -728,36 +752,15 @@ const BackpropVisualizer = () => {
                   >
                     <span
                       style={{
-                        fontWeight: "bold",
                         width: "2rem",
                         height: "1.5rem",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         borderRadius: "0.15rem",
-                        fontSize: "10px",
-                        color: ["Z", "A", "y"].includes(item.symbol)
-                          ? "#4ade80"
-                          : ["W", "b", "T", "[l]", "L", "∇"].includes(
-                              item.symbol
-                            )
-                          ? "#fff"
-                          : ["δ", "σ"].includes(item.symbol)
-                          ? "#a78bfa"
-                          : item.symbol === "η"
-                          ? "#60a5fa"
-                          : "rgb(107, 114, 128)",
-                        backgroundColor: ["Z", "A", "y"].includes(item.symbol)
-                          ? "rgba(74, 222, 128, 0.1)"
-                          : ["W", "b", "T", "[l]", "L", "∇"].includes(
-                              item.symbol
-                            )
-                          ? "rgba(255, 255, 255, 0.1)"
-                          : ["δ", "σ"].includes(item.symbol)
-                          ? "rgba(167, 139, 250, 0.1)"
-                          : item.symbol === "η"
-                          ? "rgba(96, 165, 250, 0.1)"
-                          : "rgb(31, 41, 55)",
+                        fontSize: "14px",
+                        color: "#fff",
+                        backgroundColor: "rgb(31, 41, 55)",
                       }}
                     >
                       {item.symbol}
@@ -799,7 +802,7 @@ const BackpropVisualizer = () => {
                 <div>
                   <strong
                     style={{
-                      color: "rgb(156, 163, 175)",
+                      color: "rgba(255, 255, 255, 1)",
                       display: "block",
                       marginBottom: "0.25rem",
                     }}
@@ -811,180 +814,6 @@ const BackpropVisualizer = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* SECTION 2: FLOW DIAGRAM */}
-      <div className="backprop-section">
-        <div className="backprop-header">
-          <Activity size={14} /> Flow Diagram
-        </div>
-        <div
-          className="backprop-card"
-          style={{
-            backgroundColor: "rgb(21, 21, 21)",
-            position: "relative",
-            overflow: "hidden",
-            minHeight: "10rem",
-          }}
-        >
-          <div
-            className="backprop-grid-4"
-            style={{ position: "relative", zIndex: 10, gap: "1rem" }}
-          >
-            <div
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                padding: "0.75rem",
-                borderRadius: "6px",
-                border: "1px solid rgb(51, 51, 51)",
-                fontFamily: "monospace",
-                fontSize: "0.75rem",
-                color: "rgb(110, 231, 158)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                height: "6rem",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "9px",
-                  color: "rgb(156, 163, 175)",
-                  textTransform: "uppercase",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                1. Forward
-              </div>
-              <div>
-                Z = A·W+b
-                <br />A = σ(Z)
-              </div>
-            </div>
-            <div
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                padding: "0.75rem",
-                borderRadius: "6px",
-                border: "1px solid rgb(51, 51, 51)",
-                fontFamily: "monospace",
-                fontSize: "0.75rem",
-                color: "rgb(110, 231, 158)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                height: "6rem",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "9px",
-                  color: "rgb(156, 163, 175)",
-                  textTransform: "uppercase",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                2. Loss
-              </div>
-              E = ½Σ(y-ŷ)²
-            </div>
-            <div
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                padding: "0.75rem",
-                borderRadius: "6px",
-                border: "1px solid rgb(51, 51, 51)",
-                fontFamily: "monospace",
-                fontSize: "0.75rem",
-                color: "rgb(192, 132, 252)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                height: "6rem",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "9px",
-                  color: "rgb(156, 163, 175)",
-                  textTransform: "uppercase",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                3. Backward
-              </div>
-              δ = (y-ŷ)·σ'
-            </div>
-            <div
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                padding: "0.75rem",
-                borderRadius: "6px",
-                border: "1px solid rgb(51, 51, 51)",
-                fontFamily: "monospace",
-                fontSize: "0.75rem",
-                color: "#fff",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                height: "6rem",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: "9px",
-                    color: "rgb(156, 163, 175)",
-                    textTransform: "uppercase",
-                    marginBottom: "0.25rem",
-                  }}
-                >
-                  4. Update
-                </div>
-                W -= η·∇W
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.25rem",
-                  fontSize: "10px",
-                  color: "rgb(107, 114, 128)",
-                  alignSelf: "flex-end",
-                }}
-              >
-                <Repeat size={10} /> Loop
-              </div>
-            </div>
-          </div>
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              pointerEvents: "none",
-              opacity: 0.3,
-            }}
-          >
-            <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 1000 160"
-              preserveAspectRatio="none"
-            >
-              <path
-                d="M 900 110 C 900 140, 100 140, 100 110"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-                strokeDasharray="5 5"
-              />
-              <path d="M 95 110 L 100 105 L 105 110 Z" fill="white" />
-            </svg>
           </div>
         </div>
       </div>
@@ -1019,7 +848,9 @@ const BackpropVisualizer = () => {
                 }}
               >
                 <div>
-                  <label className="backprop-input-label">TARGETS (ŷ)</label>
+                  <label className="backprop-input-label">
+                    TARGETS y = (y_1, y_2)
+                  </label>
                   <div className="backprop-flex-gap-2">
                     <input
                       type="number"
@@ -1046,7 +877,9 @@ const BackpropVisualizer = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="backprop-input-label">RATE η (0-1)</label>
+                  <label className="backprop-input-label">
+                    Learning Rate η (0-1)
+                  </label>
                   <input
                     type="number"
                     step="0.01"
@@ -1108,17 +941,77 @@ const BackpropVisualizer = () => {
                       className="backprop-flex-gap-2"
                       style={{ marginBottom: "1rem" }}
                     >
-                      {(["L1", "L2", "L3"] as const).map((l) => (
-                        <button
-                          key={l}
-                          onClick={() => setActiveTab(l)}
-                          className={`backprop-tab-btn ${
-                            activeTab === l ? "active" : "inactive"
-                          }`}
-                        >
-                          {getTabLabel(l)}
-                        </button>
-                      ))}
+                      {(["L1", "L2", "L3"] as const).map((l) => {
+                        // Label Logik hier inline oder in Funktion
+                        let mainLabel = "";
+                        let subLabel = "";
+
+                        if (l === "L1") {
+                          mainLabel =
+                            editMode === "WEIGHTS"
+                              ? "W"
+                              : editMode === "BIASES"
+                              ? "b"
+                              : "A";
+                          subLabel =
+                            editMode === "WEIGHTS" ? "(In → H1)" : "(H1)";
+                        } else if (l === "L2") {
+                          mainLabel =
+                            editMode === "WEIGHTS"
+                              ? "W"
+                              : editMode === "BIASES"
+                              ? "b"
+                              : "A";
+                          subLabel =
+                            editMode === "WEIGHTS" ? "(H1 → H2)" : "(H2)";
+                        } else {
+                          mainLabel =
+                            editMode === "WEIGHTS"
+                              ? "W"
+                              : editMode === "BIASES"
+                              ? "b"
+                              : "ŷ";
+                          subLabel =
+                            editMode === "WEIGHTS" ? "(H2 → Out)" : "(Out)";
+                        }
+
+                        // Index Zahl (1, 2, 3)
+                        const idx = l === "L1" ? "1" : l === "L2" ? "2" : "3";
+
+                        return (
+                          <button
+                            key={l}
+                            onClick={() => setActiveTab(l)}
+                            className={`backprop-tab-btn ${
+                              activeTab === l ? "active" : "inactive"
+                            }`}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                              fontFamily: "monospace", // Wichtig für math look
+                              fontSize: "11px", // Etwas größer damit man sup lesen kann
+                            }}
+                          >
+                            {/* Hauptsymbol: W^[1] */}
+                            <span>
+                              {mainLabel}
+                              <sup style={{ fontSize: "9px" }}>[{idx}]</sup>
+                            </span>
+
+                            {/* Erklärung: (In->H1) - etwas blasser */}
+                            <span
+                              style={{
+                                opacity: 0.6,
+                                fontSize: "9px",
+                                marginLeft: "2px",
+                              }}
+                            >
+                              {subLabel}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
 
@@ -1156,6 +1049,7 @@ const BackpropVisualizer = () => {
                       className="backprop-flex-col-1"
                       style={{ alignItems: "flex-start" }}
                     >
+                      {/* 1. Die Matrix-Reihen (Inputs) */}
                       {(activeTab === "L1"
                         ? network.weights1
                         : activeTab === "L2"
@@ -1163,16 +1057,23 @@ const BackpropVisualizer = () => {
                         : network.weights3
                       ).map((r, i) => (
                         <div key={i} className="matrix-input-row">
+                          {/* Zeilen-Label (z.B. x1) */}
                           <span
                             className="backprop-small-label"
-                            style={{ width: "2rem", textAlign: "right" }}
+                            style={{
+                              width: "2rem",
+                              textAlign: "right",
+                              marginTop: "4px", // Leichte Korrektur für vertikale Zentrierung
+                            }}
                           >
                             {activeTab === "L1"
                               ? `x${i + 1}`
                               : activeTab === "L2"
-                              ? `h1_${i + 1}`
-                              : `h2_${i + 1}`}
+                              ? `a1_${i + 1}`
+                              : `a2_${i + 1}`}
                           </span>
+
+                          {/* Die Input Felder */}
                           {r.map((v, j) => (
                             <input
                               key={j}
@@ -1193,6 +1094,32 @@ const BackpropVisualizer = () => {
                           ))}
                         </div>
                       ))}
+
+                      {/* 2. NEU: Die Spalten-Beschriftung darunter */}
+                      <div className="matrix-input-row">
+                        {/* Platzhalter links (entspricht Breite des Zeilen-Labels) */}
+                        <span style={{ width: "2rem" }}></span>
+
+                        {/* Labels generieren basierend auf Tab */}
+                        {(activeTab === "L1"
+                          ? ["a1_1", "a1_2", "a1_3"]
+                          : activeTab === "L2"
+                          ? ["a2_1", "a2_2", "a2_3"]
+                          : ["y1", "y2"]
+                        ).map((label, idx) => (
+                          <span
+                            key={idx}
+                            className="backprop-small-label"
+                            style={{
+                              width: "70px", // WICHTIG: Muss exakt der Breite von .matrix-input im CSS entsprechen
+                              textAlign: "center",
+                              display: "inline-block",
+                            }}
+                          >
+                            {label}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   )}
 
@@ -1355,6 +1282,7 @@ const BackpropVisualizer = () => {
             boxShadow: "0 10px 20px rgba(0, 0, 0, 0.8)",
           }}
         >
+          {/* --- STATUS INDICATORS (FORWARD / BACKPROP) --- */}
           <div
             style={{
               position: "absolute",
@@ -1365,6 +1293,7 @@ const BackpropVisualizer = () => {
               zIndex: 10,
             }}
           >
+            {/* FORWARD INDICATOR */}
             <div
               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >
@@ -1373,22 +1302,35 @@ const BackpropVisualizer = () => {
                   width: "0.5rem",
                   height: "0.5rem",
                   borderRadius: "50%",
-                  backgroundColor: "#10b981",
-                  boxShadow: "0 0 10px #10b981",
+                  // Logik: Leuchtet bei Training ODER Steps 1-4 (Forward Phase)
+                  backgroundColor:
+                    isTraining || (step >= 1 && step <= 4) ? "#10b981" : "#333", // Grün vs Dunkelgrau
+                  boxShadow:
+                    isTraining || (step >= 1 && step <= 4)
+                      ? "0 0 10px #10b981"
+                      : "none", // Glow vs kein Glow
+                  transition: "all 0.3s ease",
                 }}
               ></div>
               <span
                 style={{
                   fontSize: "10px",
-                  color: "rgb(156, 163, 175)",
+                  // Text dimmen, wenn inaktiv
+                  color:
+                    isTraining || (step >= 1 && step <= 4)
+                      ? "rgb(156, 163, 175)"
+                      : "rgb(80, 80, 80)",
                   textTransform: "uppercase",
                   fontWeight: "bold",
                   letterSpacing: "0.1em",
+                  transition: "color 0.3s ease",
                 }}
               >
                 Forward
               </span>
             </div>
+
+            {/* BACKPROP INDICATOR */}
             <div
               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >
@@ -1397,59 +1339,29 @@ const BackpropVisualizer = () => {
                   width: "0.5rem",
                   height: "0.5rem",
                   borderRadius: "50%",
-                  backgroundColor: "#8b5cf6",
-                  boxShadow: "0 0 10px #8b5cf6",
+                  // Logik: Leuchtet bei Training ODER isBackprop (Steps 5-8)
+                  backgroundColor:
+                    isTraining || isBackprop ? "#8b5cf6" : "#333", // Violett vs Dunkelgrau
+                  boxShadow:
+                    isTraining || isBackprop ? "0 0 10px #8b5cf6" : "none",
+                  transition: "all 0.3s ease",
                 }}
               ></div>
               <span
                 style={{
                   fontSize: "10px",
-                  color: "rgb(156, 163, 175)",
+                  color:
+                    isTraining || isBackprop
+                      ? "rgb(156, 163, 175)"
+                      : "rgb(80, 80, 80)",
                   textTransform: "uppercase",
                   fontWeight: "bold",
                   letterSpacing: "0.1em",
+                  transition: "color 0.3s ease",
                 }}
               >
                 Backprop
               </span>
-            </div>
-          </div>
-          <div
-            style={{
-              position: "absolute",
-              bottom: "1.5rem",
-              right: "1.5rem",
-              backgroundColor: "rgba(0, 0, 0, 0.8)",
-              backdropFilter: "blur(4px)",
-              border: "1px solid rgb(51, 51, 51)",
-              padding: "1rem",
-              borderRadius: "8px",
-              boxShadow: "0 10px 20px rgba(0, 0, 0, 0.8)",
-              zIndex: 10,
-            }}
-          >
-            <div
-              style={{
-                fontSize: "10px",
-                color: "rgb(107, 114, 128)",
-                textTransform: "uppercase",
-                fontWeight: "bold",
-                marginBottom: "0.25rem",
-                textAlign: "right",
-              }}
-            >
-              Total Loss (MSE)
-            </div>
-            <div
-              style={{
-                fontSize: "1.5rem",
-                fontFamily: "monospace",
-                fontWeight: "bold",
-                color: "#a78bfa",
-                textAlign: "right",
-              }}
-            >
-              {error.toFixed(6)}
             </div>
           </div>
 
@@ -1486,15 +1398,15 @@ const BackpropVisualizer = () => {
                 refY="3"
                 orient="auto"
               >
-                <path d="M0,0 L0,6 L9,3 z" fill="#aaaaaaff" />
+                <path d="M0,0 L0,6 L9,3 z" fill="#aaa" />
               </marker>
             </defs>
 
             {/* LAYER BOXES */}
             <rect
-              x="50"
-              y="50"
-              width="60"
+              x="45"
+              y="45"
+              width="70"
               height="360"
               rx="8"
               className="layer-box"
@@ -1503,9 +1415,9 @@ const BackpropVisualizer = () => {
               X (Input)
             </text>
             <rect
-              x="250"
-              y="50"
-              width="60"
+              x="245"
+              y="45"
+              width="70"
               height="360"
               rx="8"
               className="layer-box"
@@ -1514,9 +1426,9 @@ const BackpropVisualizer = () => {
               A^[1] (H1)
             </text>
             <rect
-              x="450"
-              y="50"
-              width="60"
+              x="445"
+              y="45"
+              width="70"
               height="360"
               rx="8"
               className="layer-box"
@@ -1536,7 +1448,80 @@ const BackpropVisualizer = () => {
             <text x="680" y="400" className="layer-label">
               A^[3] (Output)
             </text>
+            {/* Input Layer */}
+            <text
+              x="80"
+              y="430"
+              className="layer-label"
+              style={{ fill: "#fff", fontWeight: "bold" }}
+            >
+              X (Input)
+            </text>
+            <text
+              x="80"
+              y="450"
+              className="layer-label"
+              style={{ fontSize: "10px", fill: "#666" }}
+            >
+              Input Layer
+            </text>
 
+            {/* Hidden 1 */}
+            <text
+              x="280"
+              y="430"
+              className="layer-label"
+              style={{ fill: "#fff", fontWeight: "bold" }}
+            >
+              A^[1] (H1)
+            </text>
+            <text
+              x="280"
+              y="450"
+              className="layer-label"
+              style={{ fontSize: "10px", fill: "#666" }}
+            >
+              Hidden Layer 1
+            </text>
+
+            {/* Hidden 2 */}
+            <text
+              x="480"
+              y="430"
+              className="layer-label"
+              style={{ fill: "#fff", fontWeight: "bold" }}
+            >
+              A^[2] (H2)
+            </text>
+            <text
+              x="480"
+              y="450"
+              className="layer-label"
+              style={{ fontSize: "10px", fill: "#666" }}
+            >
+              Hidden Layer 2
+            </text>
+
+            {/* Output */}
+            {/* Positionierung für Output war y=400 in deinem Screenshot, ich habe es angepasst damit es auf einer Linie liegt,
+                falls die Box kürzer ist, musst du evtl. y anpassen.
+                Basierend auf deinem Screenshot ist Output etwas höher. Ich setze es passend dazu. */}
+            <text
+              x="680"
+              y="400"
+              className="layer-label"
+              style={{ fill: "#fff", fontWeight: "bold" }}
+            >
+              A^[3] (Output)
+            </text>
+            <text
+              x="680"
+              y="420"
+              className="layer-label"
+              style={{ fontSize: "10px", fill: "#666" }}
+            >
+              Output Layer
+            </text>
             {/* CONNECTIONS */}
             {[0, 1, 2].map((_, i) =>
               [0, 1, 2].map((j) => {
@@ -1557,7 +1542,7 @@ const BackpropVisualizer = () => {
                   y2 = t.y;
                 }
                 const fwd = flowL1;
-                const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#333";
+                const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#aaa";
                 const markerEnd = back
                   ? "url(#arrow-back)"
                   : fwd
@@ -1571,8 +1556,8 @@ const BackpropVisualizer = () => {
                       x2={x2}
                       y2={y2}
                       stroke={stroke}
-                      strokeWidth={back || fwd ? 1.5 : 0.5}
-                      opacity={back || fwd ? 1 : 0.6}
+                      strokeWidth={back || fwd ? 1.5 : 1}
+                      opacity={back || fwd ? 1 : 0.5}
                       markerEnd={markerEnd}
                     />
                     <rect
@@ -1618,7 +1603,7 @@ const BackpropVisualizer = () => {
                   y2 = t.y;
                 }
                 const fwd = flowL2;
-                const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#333";
+                const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#aaa";
                 const markerEnd = back
                   ? "url(#arrow-back)"
                   : fwd
@@ -1632,8 +1617,8 @@ const BackpropVisualizer = () => {
                       x2={x2}
                       y2={y2}
                       stroke={stroke}
-                      strokeWidth={back || fwd ? 1.5 : 0.5}
-                      opacity={back || fwd ? 1 : 0.6}
+                      strokeWidth={back || fwd ? 1.5 : 1}
+                      opacity={back || fwd ? 1 : 0.5}
                       markerEnd={markerEnd}
                     />
                     <rect
@@ -1679,7 +1664,7 @@ const BackpropVisualizer = () => {
                   y2 = t.y;
                 }
                 const fwd = flowOut;
-                const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#333";
+                const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#aaa";
                 const markerEnd = back
                   ? "url(#arrow-back)"
                   : fwd
@@ -1693,8 +1678,8 @@ const BackpropVisualizer = () => {
                       x2={x2}
                       y2={y2}
                       stroke={stroke}
-                      strokeWidth={back || fwd ? 2 : 0.5}
-                      opacity={back || fwd ? 1 : 0.6}
+                      strokeWidth={back || fwd ? 2 : 1}
+                      opacity={back || fwd ? 1 : 0.5}
                       markerEnd={markerEnd}
                     />
                     <rect
@@ -1748,9 +1733,9 @@ const BackpropVisualizer = () => {
               </g>
             ))}
             {[0, 1, 2].map((j) => (
-              <g key={"h1" + j} transform={`translate(280, ${100 + j * 120})`}>
+              <g key={"a1" + j} transform={`translate(280, ${100 + j * 120})`}>
                 <circle r="28" fill="#151515" />
-                {/* FIX: Färbt sich auch violett bei Backprop Step 8 */}
+                {/* FIX: Färbt sich nun bei step >= 7 (synchron zu L1 Arrows) */}
                 <circle
                   r="28"
                   fill={
@@ -1776,7 +1761,7 @@ const BackpropVisualizer = () => {
                   fontSize="12"
                   fontWeight="bold"
                 >
-                  h1_{j + 1}
+                  a1_{j + 1}
                 </text>
                 <text
                   y="-38"
@@ -1785,7 +1770,7 @@ const BackpropVisualizer = () => {
                   fontSize="11"
                   fontFamily="monospace"
                 >
-                  b:{network.bias1[j].toFixed(1)}
+                  b:{network.bias1[j].toFixed(2)}
                 </text>
                 {showValuesL1 && (
                   <text
@@ -1801,9 +1786,9 @@ const BackpropVisualizer = () => {
               </g>
             ))}
             {[0, 1, 2].map((j) => (
-              <g key={"h2" + j} transform={`translate(480, ${100 + j * 120})`}>
+              <g key={"a2" + j} transform={`translate(480, ${100 + j * 120})`}>
                 <circle r="28" fill="#151515" />
-                {/* FIX: Färbt sich auch violett bei Backprop Step 7 */}
+                {/* FIX: Färbt sich nun bei step >= 6 (synchron zu L2 Arrows) */}
                 <circle
                   r="28"
                   fill={
@@ -1829,7 +1814,7 @@ const BackpropVisualizer = () => {
                   fontSize="12"
                   fontWeight="bold"
                 >
-                  h2_{j + 1}
+                  a2_{j + 1}
                 </text>
                 <text
                   y="-38"
@@ -1838,7 +1823,7 @@ const BackpropVisualizer = () => {
                   fontSize="11"
                   fontFamily="monospace"
                 >
-                  b:{network.bias2[j].toFixed(1)}
+                  b:{network.bias2[j].toFixed(2)}
                 </text>
                 {showValuesL2 && (
                   <text
@@ -1869,7 +1854,7 @@ const BackpropVisualizer = () => {
                   fontSize="14"
                   fontWeight="bold"
                 >
-                  y{k + 1}
+                  ŷ_{k + 1}
                 </text>
                 <text
                   y="-48"
@@ -1878,7 +1863,7 @@ const BackpropVisualizer = () => {
                   fontSize="11"
                   fontFamily="monospace"
                 >
-                  b:{network.bias3[k].toFixed(1)}
+                  b:{network.bias3[k].toFixed(2)}
                 </text>
                 {showValuesOut && (
                   <text
@@ -1911,40 +1896,35 @@ const BackpropVisualizer = () => {
             ))}
             {showLoss &&
               [0, 1].map((k) => (
-                <g
-                  key={"t" + k}
-                  style={{ animation: "slideInFromTop 0.3s ease-out" }}
-                  transform={`translate(0, ${k * 120})`}
-                >
+                <g key={"t" + k} transform={`translate(0, ${k * 120})`}>
                   <line
                     x1="720"
                     y1="160"
                     x2="760"
                     y2="160"
-                    stroke="#555"
+                    stroke="#aaa"
                     strokeDasharray="4"
                   />
                   <rect
-                    x="760"
+                    x="730"
                     y="135"
-                    width="40"
+                    width="60"
                     height="50"
                     rx="4"
                     fill="#1a1a1a"
                     stroke="#444"
                   />
                   <text
-                    x="780"
+                    x="760"
                     y="155"
                     textAnchor="middle"
                     fill="#aaa"
-                    fontSize="8"
-                    fontWeight="bold"
+                    fontSize="12"
                   >
-                    TARGET
+                    Target y_{k + 1}
                   </text>
                   <text
-                    x="780"
+                    x="760"
                     y="175"
                     textAnchor="middle"
                     fill="#fff"
@@ -1955,15 +1935,13 @@ const BackpropVisualizer = () => {
                   </text>
                   <text
                     x="740"
-                    y="150"
+                    y="100"
                     textAnchor="middle"
                     fill="#fff"
                     fontSize="10"
                     fontWeight="bold"
                     opacity="0.5"
-                  >
-                    ŷ{k + 1}
-                  </text>
+                  ></text>
                 </g>
               ))}
           </svg>
@@ -2117,7 +2095,7 @@ const BackpropVisualizer = () => {
             borderRadius: "8px",
             overflow: "hidden",
             flex: 1,
-            minHeight: "300px",
+            minHeight: "80px",
             backgroundColor: "black",
           }}
         >
@@ -2137,11 +2115,11 @@ const BackpropVisualizer = () => {
             }}
           >
             <div>EPOCH</div>
-            <div>OUTPUT</div>
+            <div>OUTPUT (ŷ)</div>
             <div style={{ textAlign: "right" }}>LOSS</div>
             <div style={{ textAlign: "center" }}>INFO</div>
           </div>
-          <div style={{ overflowY: "auto", maxHeight: "400px" }}>
+          <div style={{ overflowY: "auto", maxHeight: "900px" }}>
             {network.history.length === 0 ? (
               <div
                 style={{
@@ -2155,7 +2133,7 @@ const BackpropVisualizer = () => {
                   gap: "0.5rem",
                 }}
               >
-                <Activity size={24} style={{ opacity: 0.2 }} />
+                <Activity size={24} />
                 No data.
               </div>
             ) : (
@@ -2249,8 +2227,8 @@ const BackpropVisualizer = () => {
                         >
                           Total Loss: {h.error.toFixed(6)}
                         </span>
-                        <span style={{ color: "rgb(107, 114, 128)" }}>
-                          Diff: [{Math.abs(h.diffs[0]).toFixed(4)},{" "}
+                        <span style={{ color: "rgb(239, 68, 68)" }}>
+                          Err: [{Math.abs(h.diffs[0]).toFixed(4)},{" "}
                           {Math.abs(h.diffs[1]).toFixed(4)}]
                         </span>
                       </div>
@@ -2266,6 +2244,7 @@ const BackpropVisualizer = () => {
                           NODE ACTIVATIONS
                         </div>
                         <div className="backprop-grid-3">
+                          {/* Block 1: Layer 1 */}
                           <div
                             style={{
                               backgroundColor: "rgb(21, 21, 21)",
@@ -2278,9 +2257,12 @@ const BackpropVisualizer = () => {
                               style={{
                                 color: "rgb(16, 185, 129)",
                                 marginBottom: "0.25rem",
+                                fontWeight: "bold",
                               }}
                             >
-                              H1
+                              {/* KORREKTUR: Großes A */}
+                              Activations A
+                              <sup style={{ fontSize: "0.7em" }}>[1]</sup>
                             </div>
                             <div>
                               [
@@ -2290,6 +2272,8 @@ const BackpropVisualizer = () => {
                               ]
                             </div>
                           </div>
+
+                          {/* Block 2: Layer 2 */}
                           <div
                             style={{
                               backgroundColor: "rgb(21, 21, 21)",
@@ -2302,9 +2286,12 @@ const BackpropVisualizer = () => {
                               style={{
                                 color: "rgb(96, 165, 250)",
                                 marginBottom: "0.25rem",
+                                fontWeight: "bold",
                               }}
                             >
-                              H2
+                              {/* KORREKTUR: Großes A */}
+                              Activations A
+                              <sup style={{ fontSize: "0.7em" }}>[2]</sup>
                             </div>
                             <div>
                               [
@@ -2314,6 +2301,8 @@ const BackpropVisualizer = () => {
                               ]
                             </div>
                           </div>
+
+                          {/* Block 3: Output */}
                           <div
                             style={{
                               backgroundColor: "rgb(21, 21, 21)",
@@ -2326,85 +2315,190 @@ const BackpropVisualizer = () => {
                               style={{
                                 color: "rgb(168, 85, 247)",
                                 marginBottom: "0.25rem",
+                                fontWeight: "bold",
                               }}
                             >
-                              OUT
+                              Output A
+                              <sup style={{ fontSize: "0.7em" }}>[3]</sup> = ŷ
                             </div>
+
                             <div>
                               [{h.output.map((n) => n.toFixed(2)).join(",")}]
                             </div>
                           </div>
                         </div>
                       </div>
+                      {/* --- KOMBINIERTER BLOCK: WEIGHTS & BIASES --- */}
                       <div
+                        className="backprop-grid-3"
                         style={{
-                          display: "grid",
-                          gridTemplateColumns: "1fr",
                           gap: "1rem",
                           marginTop: "1rem",
                           paddingTop: "1rem",
                           borderTop: "1px solid rgb(34, 34, 34)",
+                          alignItems: "start",
+                          fontFamily: "monospace", // Monospace sieht hier technischer/mathem. aus
                         }}
                       >
-                        <div>
-                          <div
-                            style={{
-                              color: "rgb(16, 185, 129)",
-                              marginBottom: "0.25rem",
-                              fontWeight: "bold",
-                              textTransform: "uppercase",
-                            }}
-                          >
-                            <span>L1 Weights (In→H1)</span>
-                          </div>
-                          {h.weights1.map((r, ri) => (
+                        {/* --- SPALTE 1: LAYER 1 (Weights + Biases) --- */}
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "1rem",
+                          }}
+                        >
+                          {/* L1 Weights */}
+                          <div>
                             <div
-                              key={ri}
-                              style={{ color: "rgb(156, 163, 175)" }}
+                              style={{
+                                color: "rgb(16, 185, 129)", // Grün
+                                marginBottom: "0.25rem",
+                                fontWeight: "bold",
+                              }}
                             >
-                              [{r.map((n) => n.toFixed(2)).join(", ")}]
+                              {/* Notation: W^[1] (In->H1) */}W
+                              <sup style={{ fontSize: "0.7em" }}>[1]</sup>{" "}
+                              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
+                                (In→H1)
+                              </span>
                             </div>
-                          ))}
+                            {h.weights1.map((r, ri) => (
+                              <div
+                                key={ri}
+                                style={{ color: "rgb(156, 163, 175)" }}
+                              >
+                                [{r.map((n) => n.toFixed(2)).join(", ")}]
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* L1 Biases */}
+                          <div>
+                            <div
+                              style={{
+                                color: "rgb(16, 185, 129)", // Grün
+                                marginBottom: "0.25rem",
+                                fontWeight: "bold",
+                                opacity: 0.9,
+                              }}
+                            >
+                              {/* Notation: b^[1] (H1) */}b
+                              <sup style={{ fontSize: "0.7em" }}>[1]</sup>{" "}
+                              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
+                                (H1)
+                              </span>
+                            </div>
+                            <div style={{ color: "rgb(156, 163, 175)" }}>
+                              [{h.bias1.map((n) => n.toFixed(2)).join(", ")}]
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <div
-                            style={{
-                              color: "rgb(96, 165, 250)",
-                              marginBottom: "0.25rem",
-                              fontWeight: "bold",
-                              textTransform: "uppercase",
-                            }}
-                          >
-                            <span>L2 Weights (H1→H2)</span>
-                          </div>
-                          {h.weights2.map((r, ri) => (
+
+                        {/* --- SPALTE 2: LAYER 2 (Weights + Biases) --- */}
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "1rem",
+                          }}
+                        >
+                          {/* L2 Weights */}
+                          <div>
                             <div
-                              key={ri}
-                              style={{ color: "rgb(156, 163, 175)" }}
+                              style={{
+                                color: "rgb(96, 165, 250)", // Blau
+                                marginBottom: "0.25rem",
+                                fontWeight: "bold",
+                              }}
                             >
-                              [{r.map((n) => n.toFixed(2)).join(", ")}]
+                              W<sup style={{ fontSize: "0.7em" }}>[2]</sup>{" "}
+                              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
+                                (H1→H2)
+                              </span>
                             </div>
-                          ))}
+                            {h.weights2.map((r, ri) => (
+                              <div
+                                key={ri}
+                                style={{ color: "rgb(156, 163, 175)" }}
+                              >
+                                [{r.map((n) => n.toFixed(2)).join(", ")}]
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* L2 Biases */}
+                          <div>
+                            <div
+                              style={{
+                                color: "rgb(96, 165, 250)", // Blau
+                                marginBottom: "0.25rem",
+                                fontWeight: "bold",
+                                opacity: 0.9,
+                              }}
+                            >
+                              b<sup style={{ fontSize: "0.7em" }}>[2]</sup>{" "}
+                              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
+                                (H2)
+                              </span>
+                            </div>
+                            <div style={{ color: "rgb(156, 163, 175)" }}>
+                              [{h.bias2.map((n) => n.toFixed(2)).join(", ")}]
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <div
-                            style={{
-                              color: "rgb(168, 85, 247)",
-                              marginBottom: "0.25rem",
-                              fontWeight: "bold",
-                              textTransform: "uppercase",
-                            }}
-                          >
-                            <span>L3 Weights (H2→Out)</span>
-                          </div>
-                          {h.weights3.map((r, ri) => (
+
+                        {/* --- SPALTE 3: LAYER 3 (Weights + Biases) --- */}
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "1rem",
+                          }}
+                        >
+                          {/* L3 Weights */}
+                          <div>
                             <div
-                              key={ri}
-                              style={{ color: "rgb(156, 163, 175)" }}
+                              style={{
+                                color: "rgb(168, 85, 247)", // Violett
+                                marginBottom: "0.25rem",
+                                fontWeight: "bold",
+                              }}
                             >
-                              [{r.map((n) => n.toFixed(2)).join(", ")}]
+                              W<sup style={{ fontSize: "0.7em" }}>[3]</sup>{" "}
+                              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
+                                (H2→Out)
+                              </span>
                             </div>
-                          ))}
+                            {h.weights3.map((r, ri) => (
+                              <div
+                                key={ri}
+                                style={{ color: "rgb(156, 163, 175)" }}
+                              >
+                                [{r.map((n) => n.toFixed(2)).join(", ")}]
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* L3 Biases */}
+                          <div>
+                            <div
+                              style={{
+                                color: "rgb(168, 85, 247)", // Violett
+                                marginBottom: "0.25rem",
+                                fontWeight: "bold",
+                                opacity: 0.9,
+                              }}
+                            >
+                              b<sup style={{ fontSize: "0.7em" }}>[3]</sup>{" "}
+                              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
+                                (Out)
+                              </span>
+                            </div>
+                            <div style={{ color: "rgb(156, 163, 175)" }}>
+                              [{h.bias3.map((n) => n.toFixed(2)).join(", ")}]
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
