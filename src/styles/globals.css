@@ -2787,7 +2787,7 @@ PLAYGROUND VISUALIZER STYLES
   font-size: 1.1rem;
   font-weight: 700;
   color: #4ade80; /* Grün */
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   letter-spacing: 0.05em;
 }
 /* Die Beschreibung */
