@@ -121,27 +121,45 @@ const BackpropVisualizer = () => {
   };
 
   // --- Calculations ---
-  const z1 = [0, 1, 2].map(
+  // 1. Live-Berechnung (wird gebraucht, wenn man manuell Regler schiebt oder Step 0 ist)
+  const z1_live = [0, 1, 2].map(
     (j) =>
       network.inputs.reduce((s, x, i) => s + x * network.weights1[i][j], 0) +
       network.bias1[j]
   ) as Vector3;
-  const a1 = z1.map(sigmoid) as Vector3;
-  const z2 = [0, 1, 2].map(
+  const a1_live = z1_live.map(sigmoid) as Vector3;
+
+  const z2_live = [0, 1, 2].map(
     (j) =>
-      a1.reduce((s, h, i) => s + h * network.weights2[i][j], 0) +
+      a1_live.reduce((s, h, i) => s + h * network.weights2[i][j], 0) +
       network.bias2[j]
   ) as Vector3;
-  const a2 = z2.map(sigmoid) as Vector3;
-  const z3 = [0, 1].map(
+  const a2_live = z2_live.map(sigmoid) as Vector3;
+
+  const z3_live = [0, 1].map(
     (k) =>
-      a2.reduce((s, h, i) => s + h * network.weights3[i][k], 0) +
+      a2_live.reduce((s, h, i) => s + h * network.weights3[i][k], 0) +
       network.bias3[k]
   ) as Vector2;
-  const a3 = z3.map(sigmoid) as Vector2;
+  const a3_live = z3_live.map(sigmoid) as Vector2;
 
-  const diffs: Vector2 = [network.target[0] - a3[0], network.target[1] - a3[1]];
-  const error = 0.5 * (Math.pow(diffs[0], 2) + Math.pow(diffs[1], 2));
+  const diffs_live: Vector2 = [
+    network.target[0] - a3_live[0],
+    network.target[1] - a3_live[1],
+  ];
+  const error_live =
+    0.5 * (Math.pow(diffs_live[0], 2) + Math.pow(diffs_live[1], 2));
+
+  // 2. Entscheidung: History-Werte oder Live-Werte?
+  // Wenn eine History existiert (Training lief), nehmen wir die Werte aus dem Log.
+  // Das verhindert die Diskrepanz zwischen Tabelle und Grafik.
+  const useHistory = network.history.length > 0 && network.epoch > 0;
+  const latestEntry = network.history[0];
+
+  const a1 = useHistory ? (latestEntry.activations.l1 as Vector3) : a1_live;
+  const a2 = useHistory ? (latestEntry.activations.l2 as Vector3) : a2_live;
+  const a3 = useHistory ? latestEntry.output : a3_live;
+  const error = useHistory ? latestEntry.error : error_live;
 
   const showValuesL1 = isTraining || network.epoch > 0 || step >= 2;
   const showValuesL2 = isTraining || network.epoch > 0 || step >= 3;
@@ -2209,6 +2227,34 @@ const BackpropVisualizer = () => {
                   ></text>
                 </g>
               ))}
+            {/* --- NEU: TOTAL LOSS DISPLAY --- */}
+            {showLoss && (
+              <g transform="translate(680, 460)">
+                {/* Kleiner Hintergrund-Glow für bessere Lesbarkeit (optional) */}
+                <rect
+                  x="-60"
+                  y="-15"
+                  width="120"
+                  height="24"
+                  rx="4"
+                  fill="#000"
+                  opacity="0.6"
+                />
+                <text
+                  x="0"
+                  y="0"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fill="#a78bfa"
+                  fontSize="14"
+                  fontWeight="bold"
+                  fontFamily="monospace"
+                  style={{ filter: "drop-shadow(0px 0px 2px rgba(0,0,0,1))" }}
+                >
+                  MSE: {error.toFixed(5)}
+                </text>
+              </g>
+            )}
           </svg>
         </div>
       </div>
