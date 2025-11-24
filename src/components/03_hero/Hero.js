@@ -1,9 +1,15 @@
 import { GlobalStateContext } from "../../context/GlobalContextProvider";
 import React, { useEffect, useContext, useState, useRef } from "react";
 import Link from "next/link";
-import Threejsrender from "./Threejs/ThreejsRender";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import dynamic from 'next/dynamic';
+
+const Threejsrender = dynamic(() => import("./Threejs/ThreejsRender"), {
+  ssr: false,
+  loading: () => <div>Loading animation...</div>,
+});
+
 const Hero = () => {
   const svgRef = useRef(null);
 

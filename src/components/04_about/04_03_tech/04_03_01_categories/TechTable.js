@@ -91,7 +91,6 @@ const TechTable = ({ caption, technologies }) => {
     anim();
     return () => {}; // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableCollapsed]);
-
   return (
     <>
       <div className="timeline-flex-header tech-button-wrapper">
@@ -114,79 +113,80 @@ const TechTable = ({ caption, technologies }) => {
           )}
         </div>
       </div>
-      {!tableCollapsed && (
-        <table
-          className={
-            tableCollapsed
-              ? "timeline-legend-table tech-table-collapsed"
-              : "timeline-legend-table tech-table"
-          }
-        >
-          <tbody className="tablebody">
-            <tr>
-              <th>Technology</th>
-              <th>Skills</th>
-              <th>Description</th>
-            </tr>
-            {technologies.map((technology, i) => {
-              return (
-                <tr key={i}>
-                  <td>
-                    <a href={technology.techurl} className="tech-table-anchor">
-                      {/* In case cloudinary fails to serve the images 
+
+      {/* NEU: Der Wrapper steuert jetzt das Auf/Zuklappen */}
+      <div
+        className={
+          tableCollapsed
+            ? "tech-table-grid-wrapper collapsed"
+            : "tech-table-grid-wrapper"
+        }
+      >
+        <div className="tech-table-min-height-fix">
+          <table className="timeline-legend-table tech-table">
+            <tbody className="tablebody">
+              <tr>
+                <th>Technology</th>
+                <th>Skills</th>
+                <th>Description</th>
+              </tr>
+              {technologies.map((technology, i) => {
+                return (
+                  <tr key={i}>
+                    <td>
+                      <a
+                        href={technology.techurl}
+                        className="tech-table-anchor"
+                      >
+                        {/* In case cloudinary fails to serve the images 
                       copy the images in path src/assets/images/technologies to the static folder
                       create your desired path structure there, for instance => assets/img/tech/<filename>
                       and change the src part of the image tag.
                       use the following commented out lines instead*/}
-                      {/* <img
+                        {/* <img
                         // src={`assets/img/tech/${technology.imgfilename}`}
                         alt={technology.skilltitle}
                       /> */}
-                      {/* <SVGImage src={technology.imgurl} alt={technology.skilltitle} height="40px" /> */}
-                      <SVGImage
-                        src={technology.imgurl}
-                        alt={technology.skilltitle}
-                        width="40px"
-                        height="40px"
-                      />
-                      {/* <Image
-                        src={technology.imgurl}
-                        alt={technology.skilltitle}
-                        width="40"
-                        height="40"
-                      /> */}
-                    </a>
-                    <br />
-                    {technology.skilltitle}
-                  </td>
-                  <td>
-                    <div
-                      className={
-                        tableCollapsed
-                          ? "skills-wrapper invisible"
-                          : "skills-wrapper"
-                      }
-                      data-percent={technology.skilllevel}
-                    >
-                      <svg viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="45"></circle>
-                        <circle
-                          className="cbar"
-                          cx="50"
-                          cy="50"
-                          r="45"
-                        ></circle>
-                      </svg>
-                      <small></small>
-                    </div>
-                  </td>
-                  <td>{technology.skilldescription}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
+                        {/* <SVGImage src={technology.imgurl} alt={technology.skilltitle} height="40px" /> */}
+                        <SVGImage
+                          src={technology.imgurl}
+                          alt={technology.skilltitle}
+                          width="40px"
+                          height="40px"
+                        />
+                      </a>
+                      <br />
+                      {technology.skilltitle}
+                    </td>
+                    <td>
+                      <div
+                        className={
+                          tableCollapsed
+                            ? "skills-wrapper invisible"
+                            : "skills-wrapper"
+                        }
+                        data-percent={technology.skilllevel}
+                      >
+                        <svg viewBox="0 0 100 100">
+                          <circle cx="50" cy="50" r="45"></circle>
+                          <circle
+                            className="cbar"
+                            cx="50"
+                            cy="50"
+                            r="45"
+                          ></circle>
+                        </svg>
+                        <small></small>
+                      </div>
+                    </td>
+                    <td>{technology.skilldescription}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </>
   );
 };

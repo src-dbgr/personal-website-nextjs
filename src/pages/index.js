@@ -67,6 +67,7 @@ export async function getStaticProps() {
           featured
         }
         about {
+          documentId
           infomain
         }
         jobs(sort: "id:desc") {
@@ -102,8 +103,7 @@ export async function getStaticProps() {
         jobs: data.jobs
       },
       cookies,
-    },
-    revalidate: 10
+    }
   };
 }
 

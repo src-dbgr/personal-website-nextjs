@@ -5,13 +5,22 @@ import Title from "../components/general/Title";
 import { BsCircleFill } from "react-icons/bs";
 import { IoTriangleSharp } from "react-icons/io5";
 import { MdFileDownload } from "react-icons/md";
-import Technologies from "../components/04_about/04_03_tech/Technologies";
-import Stations from "../components/04_about/04_02_stations/Stations";
-import FadeInSection from "../hooks/FadeInSection";
+const Technologies = dynamic(() => import('../components/04_about/04_03_tech/Technologies'), {
+  loading: () => <div>Loading...</div>
+});
+const Stations = dynamic(() => import('../components/04_about/04_02_stations/Stations'), {
+  loading: () => <div>Loading...</div>
+});
 import Seo from "../components/general/Seo";
 import { gql } from '@apollo/client';
 import apolloClient from '../lib/apolloClient';
 import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
+import dynamic from 'next/dynamic';
+
+const FadeInSection = dynamic(() => import("../hooks/FadeInSection"), {
+  ssr: false,
+  loading: () => <div>Loading ...</div>, // optionaler Fallback
+});
 
 const AboutPage = ({ customData, cookies }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -52,7 +61,16 @@ const AboutPage = ({ customData, cookies }) => {
           <FadeInSection>
             <article key="2" className="about-component about-img-container">
               <div className="about-img" id="paimg">
-                <Image src={about.image.url} width={500} height={427} className="about-default-img" alt={about.title} />
+                <Image
+                  src="/assets/images/about/var_6.png"
+                  alt="about-img"
+                  className="about-default-img"
+                  blurDataURL="/assets/images/about/var_6.png"                  quality={90}
+                  placeholder="blur"
+                  priority
+                  width={500}
+                  height={427}
+                />
               </div>
             </article>
           </FadeInSection>
@@ -85,6 +103,7 @@ export async function getStaticProps() {
     query: gql`
       query {
         about {
+          documentId
           title
           stack {
             id
@@ -176,8 +195,7 @@ export async function getStaticProps() {
         techstacks,
       },
       cookies,
-    },
-    revalidate: 10,
+    }
   };
 }
 

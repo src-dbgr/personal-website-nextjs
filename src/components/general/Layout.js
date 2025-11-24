@@ -1,6 +1,20 @@
+import dynamic from "next/dynamic";
+import Cookies from "js-cookie";
+
+const PageWrapper = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.div),
+  { ssr: false }
+);
+
+const MotionMain = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.main),
+  {
+    ssr: false,
+    loading: () => <main>Loading...</main>,
+  }
+);
+
 import React, { useEffect, useContext } from "react";
-import { motion } from "framer-motion";
-import dynamic from 'next/dynamic';
 import Navbar from "../02_navigation/Navbar";
 import Topbar from "../02_navigation/Topbar";
 import Footer from "../07_footer/Footer";
@@ -10,7 +24,7 @@ import {
   GlobalStateContext,
 } from "../../context/GlobalContextProvider";
 
-const Launch = dynamic(() => import('../01_launch/Launch'), { ssr: false });
+const Launch = dynamic(() => import("../01_launch/Launch"), { ssr: false });
 
 const Layout = ({ children, darkFooter, cookies }) => {
   const isIndexPage = true; // TODO ==> Change, compare to location pathname or slug!
@@ -63,10 +77,19 @@ const Layout = ({ children, darkFooter, cookies }) => {
     };
   }, [state.animation]);
 
-  if (typeof window === 'undefined') {
+  const handleFinishLaunching = () => {
+    // Setze das Cookie 'launch_seen' auf 'true'.
+    // expires: 7 days
+    Cookies.set("launch_seen", "true", { expires: 7 });
+
+    // Originale Dispatch Funktion aufrufen
+    dispatch({ type: "LAUNCH_ANIMATION" });
+  };
+
+  if (typeof window === "undefined") {
     return null; // or a loading placeholder
   }
-  
+
   // disable in production
   // disabling on first render
   // useEffect(() => {
@@ -104,16 +127,16 @@ const Layout = ({ children, darkFooter, cookies }) => {
     <>
       {state.cookieconsentopen && <CookieConsent cookies={cookies} />}
       {isIndexPage && state.animation ? (
-        <Launch
-          finishLaunching={() => {
-            dispatch({ type: "LAUNCH_ANIMATION" });
-          }}
-        />
+        <Launch finishLaunching={handleFinishLaunching} />
       ) : (
-        <>
+        <PageWrapper
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.1 }}
+        >
           <Navbar />
           <Topbar />
-          <motion.main
+          <MotionMain
             initial={{ opacity: 0, x: 0 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 0 }}
@@ -125,9 +148,9 @@ const Layout = ({ children, darkFooter, cookies }) => {
             }}
           >
             {children}
-          </motion.main>
+          </MotionMain>
           <Footer darkFooter={darkFooter} />
-        </>
+        </PageWrapper>
       )}
     </>
   );
