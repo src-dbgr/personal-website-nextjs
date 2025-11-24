@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 export const GlobalStateContext = React.createContext();
 export const GlobalDispatchContext = React.createContext();
 
 const getInitialTheme = () => {
-  if (typeof window !== 'undefined') {
-    const savedTheme = localStorage.getItem('theme');
+  if (typeof window !== "undefined") {
+    const savedTheme = localStorage.getItem("theme");
     return savedTheme || "dark";
   }
   return "dark";
@@ -25,8 +26,8 @@ function reducer(state, action) {
   switch (action.type) {
     case "TOGGLE_THEME": {
       const newTheme = state.theme === "light" ? "dark" : "light";
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('theme', newTheme);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("theme", newTheme);
       }
       return {
         ...state,
@@ -73,17 +74,28 @@ const GlobalContextProvider = ({ children }) => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    const launchSeen = Cookies.get("launch_seen");
+    if (launchSeen) {
+      // Wenn das Cookie existiert, Animation sofort ausschalten
+      dispatch({ type: "LAUNCH_ANIMATION" });
+    }
+  }, []);
+
+  useEffect(() => {
     setIsClient(true);
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem("theme");
     if (savedTheme && savedTheme !== state.theme) {
       dispatch({ type: "TOGGLE_THEME" });
     }
   }, [dispatch, state.theme]);
-  
+
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       document.body.classList.toggle("dark-theme", state.theme === "dark");
-      document.documentElement.classList.toggle("htmlScrollbarDarkMode", state.theme === "dark");
+      document.documentElement.classList.toggle(
+        "htmlScrollbarDarkMode",
+        state.theme === "dark"
+      );
     }
   }, [state.theme]);
 

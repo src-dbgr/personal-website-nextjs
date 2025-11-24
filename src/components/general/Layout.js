@@ -1,4 +1,6 @@
 import dynamic from "next/dynamic";
+import Cookies from "js-cookie";
+
 const PageWrapper = dynamic(
   () => import("framer-motion").then((mod) => mod.motion.div),
   { ssr: false }
@@ -28,7 +30,7 @@ const Layout = ({ children, darkFooter, cookies }) => {
   const isIndexPage = true; // TODO ==> Change, compare to location pathname or slug!
 
   const state = useContext(GlobalStateContext);
-  const dispatch = useContext(GlobalDispatchContext); 
+  const dispatch = useContext(GlobalDispatchContext);
 
   const disableCookieConsent = React.useCallback(() => {
     dispatch({ type: "COOKIE_CONSENT" });
@@ -75,6 +77,15 @@ const Layout = ({ children, darkFooter, cookies }) => {
     };
   }, [state.animation]);
 
+  const handleFinishLaunching = () => {
+    // Setze das Cookie 'launch_seen' auf 'true'.
+    // expires: 7 days
+    Cookies.set("launch_seen", "true", { expires: 7 });
+
+    // Originale Dispatch Funktion aufrufen
+    dispatch({ type: "LAUNCH_ANIMATION" });
+  };
+
   if (typeof window === "undefined") {
     return null; // or a loading placeholder
   }
@@ -116,11 +127,7 @@ const Layout = ({ children, darkFooter, cookies }) => {
     <>
       {state.cookieconsentopen && <CookieConsent cookies={cookies} />}
       {isIndexPage && state.animation ? (
-        <Launch
-          finishLaunching={() => {
-            dispatch({ type: "LAUNCH_ANIMATION" });
-          }}
-        />
+        <Launch finishLaunching={handleFinishLaunching} />
       ) : (
         <PageWrapper
           initial={{ opacity: 0 }}
