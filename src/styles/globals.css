@@ -2563,7 +2563,9 @@ PLAYGROUND VISUALIZER STYLES
 ==================================================
 */
 
-/* --- Hauptcontainer und Layout --- */
+.tool-content-wrapper {
+  overflow: hidden;
+}
 
 .backprop-visualizer-container {
   /* Verwenden Sie Ihre Haupt-Hintergrundfarbe */
@@ -2699,40 +2701,118 @@ PLAYGROUND VISUALIZER STYLES
   position: relative;
   cursor: help;
 }
-.legend-tooltip {
-  visibility: hidden;
-  position: absolute;
-  bottom: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1a1a1a;
-  border: 1px solid #444;
-  color: #eee;
-  padding: 0.75rem;
-  border-radius: 6px;
-  width: 260px;
-  font-size: 0.75rem;
-  z-index: 50;
-  text-align: left;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
-  opacity: 0;
-  transition: opacity 0.2s;
-  pointer-events: none;
+
+/* Base Trigger Style */
+.legend-trigger {
+  position: relative;
+  cursor: pointer; /* Changed from help to pointer */
+  display: inline-block;
+  user-select: none;
 }
-.legend-item:hover .legend-tooltip {
+
+.legend-trigger > span {
+  transition: transform 0.1s, border-color 0.1s;
+}
+
+/* Active State (Green Border + Scale) */
+.legend-trigger.active > span {
+  transform: scale(1.05);
+  border-color: #4ade80 !important;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.3); /* Optional: adds a glow */
+}
+
+/* Tooltip Visibility based on .active class */
+.legend-trigger.active .legend-tooltip {
   visibility: visible;
   opacity: 1;
+  pointer-events: auto; /* Re-enable clicks inside the tooltip */
 }
-.legend-tooltip::after {
-  content: "";
-  position: absolute;
-  top: 100%;
+
+.legend-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s, visibility 0.2s;
+
+  /* Positionierung (Zentriertes Overlay) */
+  position: fixed;
+  top: 50%;
   left: 50%;
-  margin-left: -120px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #1a1a1a transparent transparent transparent;
-  border-top-color: #444;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+
+  /* Größe & Optik */
+  width: max-content;
+  max-width: 1100px;
+  width: 90vw;
+
+  background-color: rgba(20, 20, 20, 0.98);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgb(75, 85, 99);
+  border-radius: 12px;
+  padding: 1.5rem;
+
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Alles mittig */
+  gap: 1rem; /* Abstand zwischen Icon und Text */
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Das Icon im Tooltip (Kopie des Listen-Styles, aber etwas größer) */
+.tooltip-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(31, 41, 55); /* Gleiche Farbe wie in der Legende */
+  color: #fff;
+  border-radius: 6px;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Leichter Border für Kontrast */
+}
+
+/* Der Titel Text */
+.tooltip-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #4ade80; /* Grün */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+/* Die Beschreibung */
+.tooltip-desc {
+  font-size: 0.9rem;
+  color: #d1d5db; /* Helles Grau */
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* 3. Text-Styles im Tooltip anpassen */
+.legend-tooltip strong {
+  display: block;
+  font-size: 1rem;
+  color: #4ade80; /* Grün für den Titel */
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+}
+
+.legend-tooltip div,
+.legend-tooltip span {
+  font-size: 0.85rem;
+  color: #e5e7eb;
+  line-height: 1.5;
 }
 
 /* --- SVG Styles --- */
@@ -2857,7 +2937,6 @@ PLAYGROUND VISUALIZER STYLES
 
 .backprop-training-btn {
   width: auto !important;
-  min-width: 250px;
   padding: 0.75rem 2rem;
   border-radius: 8px;
   font-size: 0.875rem;
@@ -2866,6 +2945,14 @@ PLAYGROUND VISUALIZER STYLES
   transition: all 0.2s;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
   cursor: pointer;
+}
+
+.backprop-action-btns-wrapper {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(34, 34, 34);
 }
 
 .backprop-action-btn-main {
@@ -2901,8 +2988,47 @@ PLAYGROUND VISUALIZER STYLES
   background-color: rgb(16, 185, 129) !important;
 }
 
-.backprop-reset-btn:hover:not(:disabled) {
-  background-color: rgb(34, 34, 34);
+/* Standard Zustand (Dunkel/Inaktiv) */
+.backprop-reset-btn {
+  background-color: rgba(34, 34, 34, 0.5);
+  color: rgb(156, 163, 175);
+  border: 1px solid rgb(51, 51, 51);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.6;
+}
+
+.backprop-reset-btn:hover {
+  background-color: rgb(40, 40, 40);
+  opacity: 1;
+}
+
+/* AKTIVER ZUSTAND (Wenn Daten geändert wurden -> ROT) */
+.backprop-reset-btn.active {
+  background-color: rgba(239, 68, 68, 0.15); /* Rötlicher Hintergrund */
+  color: #f87171; /* Rote Schrift */
+  border: 1px solid #ef4444; /* Roter Rand */
+  opacity: 1;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); /* Leichter Glow */
+  animation: pulse-red 2s infinite;
+}
+
+.backprop-reset-btn.active:hover {
+  background-color: #ef4444; /* Voll Rot beim Hover */
+  color: white;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); /* Starker Glow */
+  transform: translateY(-1px);
+}
+
+@keyframes pulse-red {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
 }
 
 @keyframes slideInFromTop {
@@ -2917,6 +3043,143 @@ PLAYGROUND VISUALIZER STYLES
 }
 .animate-in {
   animation: slideInFromTop 0.3s ease-out;
+}
+
+/* 1. Container für Targets & Learning Rate */
+.config-row-group {
+  display: flex;
+  flex-wrap: wrap; /* Erlaubt Umbruch auf Handys */
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Damit die beiden Blöcke (Targets / Rate) Platz haben, aber nicht quetschen */
+.config-item-wrapper {
+  flex: 1;
+  min-width: 140px; /* Mindestbreite, sonst Umbruch */
+}
+
+/* 2. Header Zeile bei den Parametern (Tabs & Randomize Button) */
+.params-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 1. Sicherheits-Wrapper für die Matrix: 
+   Falls es trotz allem zu eng wird, bricht das Layout nicht, 
+   sondern man kann die Zahlen leicht seitlich wischen. */
+.matrix-overflow-wrapper {
+  width: 100%;
+  overflow-x: auto; /* Wichtigster Teil: Scrollen statt Brechen */
+  padding-bottom: 5px; /* Platz für Scrollbar (falls sichtbar) */
+  -webkit-overflow-scrolling: touch; /* Smoothes Scrollen auf iOS */
+}
+
+/* Auf sehr kleinen Screens (Handy) den Randomize Button volle Breite machen */
+@media (max-width: 480px) {
+  .backprop-randomize-btn {
+    width: 100%;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.05);
+    margin-top: 4px;
+  }
+  /* Karte: Weniger Randabstand */
+  .backprop-card {
+    padding: 10px !important;
+  }
+
+  /* Parameter-Box: Weniger Rand */
+  .backprop-params-area {
+    padding: 8px !important;
+  }
+
+  /* Inputs: Kleiner und enger */
+  .matrix-input {
+    font-size: 11px !important; /* Kleinerer Text */
+    padding: 6px 0 !important; /* Kein seitliches Padding */
+  }
+
+  /* Labels (x1, x2): Schmaler machen */
+  .matrix-input-row > span.backprop-small-label {
+    width: 1.25rem !important; /* War 2rem */
+    font-size: 11px !important;
+    margin-right: 2px !important;
+  }
+
+  /* Placeholder Label unten anpassen */
+  .matrix-labels-row > span.placeholder {
+    width: 1.25rem !important;
+    margin-right: 2px !important;
+  }
+  .backprop-flex-gap-2 {
+    display: grid;
+  }
+
+  .backprop-action-btns-wrapper {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgb(34, 34, 34);
+  }
+
+  /* .matrix-input-row {
+    display: unset !important;
+  } */
+}
+
+/* 3. DAS WICHTIGSTE: Die Matrix Inputs flexibel machen */
+.matrix-input-row {
+  display: flex;
+  width: 100%; /* Nimm volle Breite */
+  gap: 4px; /* Kleinerer Abstand */
+  align-items: center;
+  justify-content: center;
+}
+
+/* Das Label (x1, x2...) behält seine Breite */
+.matrix-input-row > span.backprop-small-label {
+  width: 2rem;
+  flex-shrink: 0;
+  text-align: right;
+  margin-right: 4px;
+}
+
+/* Die Inputs selbst: Überschreibe die harten 70px */
+.matrix-input {
+  width: auto !important; /* WICHTIG */
+  flex: 1; /* Nimm den Platz, der da ist */
+  min-width: 55px; /* Aber nicht kleiner als das */
+  max-width: 80px; /* Und nicht riesig auf Desktop */
+  padding: 6px 2px; /* Weniger Padding seitlich */
+}
+
+/* Die Labels unter den Inputs (a1_1, a1_2...) müssen sich genauso verhalten */
+.matrix-labels-row {
+  display: flex;
+  width: 100%;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.matrix-labels-row > span.placeholder {
+  width: 2rem; /* Platzhalter links muss so breit sein wie das Label darüber */
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+.matrix-labels-row > span.backprop-small-label {
+  width: auto !important;
+  flex: 1;
+  min-width: 45px;
+  max-width: 80px;
+  text-align: center;
+  display: inline-block;
 }
 
 /*

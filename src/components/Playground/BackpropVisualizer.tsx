@@ -106,6 +106,20 @@ const BackpropVisualizer = () => {
   const [activeTab, setActiveTab] = useState<"L1" | "L2" | "L3">("L1");
   const [expandedLogs, setExpandedLogs] = useState<number[]>([]);
 
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+
+  // Close tooltip when clicking anywhere else
+  useEffect(() => {
+    const handleGlobalClick = () => setActiveTooltip(null);
+    window.addEventListener("click", handleGlobalClick);
+    return () => window.removeEventListener("click", handleGlobalClick);
+  }, []);
+
+  const handleTriggerClick = (e: React.MouseEvent, symbol: string) => {
+    e.stopPropagation(); // Prevents the window click listener from firing immediately
+    setActiveTooltip((prev) => (prev === symbol ? null : symbol));
+  };
+
   // --- Calculations ---
   const z1 = [0, 1, 2].map(
     (j) =>
@@ -145,6 +159,23 @@ const BackpropVisualizer = () => {
   const backPropL1 = isBackprop && step >= 8; // H1 Gradients
 
   const inputsLocked = step > 0 || isTraining || network.epoch > 0;
+
+  // Prüfen, ob sich Daten geändert haben
+  const isModified = React.useMemo(() => {
+    if (network.epoch > 0) return true; // Training lief bereits
+    const s = JSON.stringify;
+    return (
+      network.learningRate !== INITIAL_STATE.learningRate ||
+      s(network.inputs) !== s(INITIAL_STATE.inputs) ||
+      s(network.target) !== s(INITIAL_STATE.target) ||
+      s(network.weights1) !== s(INITIAL_STATE.weights1) ||
+      s(network.bias1) !== s(INITIAL_STATE.bias1) ||
+      s(network.weights2) !== s(INITIAL_STATE.weights2) ||
+      s(network.bias2) !== s(INITIAL_STATE.bias2) ||
+      s(network.weights3) !== s(INITIAL_STATE.weights3) ||
+      s(network.bias3) !== s(INITIAL_STATE.bias3)
+    );
+  }, [network]);
 
   // --- Steps Definition ---
   const steps = [
@@ -502,56 +533,266 @@ const BackpropVisualizer = () => {
   const legendItems = [
     {
       symbol: "Z",
-      name: "Pre-activation",
-      desc: "The weighted sum of inputs plus bias.",
+      name: (
+        <>
+          Pre-activation Z<sup>[l]</sup>
+        </>
+      ),
+      desc: (
+        <>
+          <code>
+            Z<sup>[l]</sup>
+          </code>{" "}
+          is the pre-activation vector for layer <code>l</code>. Computed as{" "}
+          <code>
+            A<sup>[l-1]</sup> · W<sup>[l]</sup> + b<sup>[l]</sup>
+          </code>
+          , one scalar per neuron in layer <code>l</code> (same shape as{" "}
+          <code>
+            A<sup>[l]</sup>
+          </code>
+          ).
+        </>
+      ),
     },
     {
       symbol: "A",
-      name: "Activation",
-      desc: "A^[l] (or a^[l]) – the activations of layer l.",
+      name: (
+        <>
+          Activation A<sup>[l]</sup>
+        </>
+      ),
+      desc: (
+        <>
+          <code>
+            A<sup>[l]</sup>
+          </code>{" "}
+          is the activation vector of layer <code>l</code> after applying{" "}
+          <code>σ</code> element-wise to{" "}
+          <code>
+            Z<sup>[l]</sup>
+          </code>
+          . Its length equals the number of neurons in that layer (
+          <code>
+            A<sup>[0]</sup> = X
+          </code>
+          ,{" "}
+          <code>
+            A<sup>[3]</sup> = ŷ
+          </code>{" "}
+          in this demo).
+        </>
+      ),
     },
     {
       symbol: "W",
-      name: "Weights (Matrix)",
-      desc: "Matrix of connection strengths between neurons.",
+      name: (
+        <>
+          Weight matrix W<sup>[l]</sup>
+        </>
+      ),
+      desc: (
+        <>
+          <code>
+            W<sup>[l]</sup>
+          </code>{" "}
+          is the weight matrix connecting layer <code>l−1</code> to{" "}
+          <code>l</code>. Its shape is{" "}
+          <code>
+            (n<sub>l-1</sub> × n<sub>l</sub>)
+          </code>
+          , where <code>n</code>
+          <sub>l-1</sub> is the number of neurons in the previous layer and{" "}
+          <code>n</code>
+          <sub>l</sub> is the number of neurons in the current layer. Each entry{" "}
+          <code>
+            w<sub>ij</sub>
+          </code>{" "}
+          is the connection strength from neuron <code>i</code> in layer{" "}
+          <code>l−1</code> to neuron <code>j</code> in layer <code>l</code>. In
+          this demo:{" "}
+          <code>
+            W<sup>[1]</sup>, W<sup>[2]</sup> ∈ ℝ<sup>3×3</sup>, W<sup>[3]</sup>{" "}
+            ∈ ℝ<sup>3×2</sup>.
+          </code>
+        </>
+      ),
     },
     {
       symbol: "b",
-      name: "Biases",
-      desc: "Shift parameter allowing the node to fire even with zero input.",
+      name: (
+        <>
+          Bias vector b<sup>[l]</sup>
+        </>
+      ),
+      desc: (
+        <>
+          <code>
+            b<sup>[l]</sup>
+          </code>{" "}
+          is the bias vector for layer <code>l</code>, added to{" "}
+          <code>
+            Z<sup>[l]</sup>
+          </code>{" "}
+          before applying <code>σ</code>. Biases control the effective
+          “threshold” of each neuron: a more positive bias shifts{" "}
+          <code>
+            Z<sup>[l]</sup>
+          </code>{" "}
+          upwards and makes the neuron easier to activate; a more negative bias
+          shifts it downwards and makes activation less likely. Without biases,
+          all learned decision boundaries would tend to pass through the origin.
+          In this visualizer the bias length equals the number of neurons in the
+          layer (3 for H1, 3 for H2, 2 for the output layer).
+        </>
+      ),
     },
     {
       symbol: "σ",
-      name: "Sigmoid",
-      desc: "Activation function 1/(1+e^-x) mapping to (0,1).",
+      name: <>Sigmoid σ</>,
+      desc: (
+        <>
+          <code>σ(x)</code> is the sigmoid activation function{" "}
+          <code>
+            1 / (1 + e<sup>−x</sup>)
+          </code>{" "}
+          mapping any real value to <code>(0, 1)</code>. Its derivative{" "}
+          <code>σ'(x)</code> is used during backpropagation.
+        </>
+      ),
     },
     {
       symbol: "δ",
-      name: "Error signal (delta)",
-      desc: "Local error term used to compute weight gradients.",
+      name: (
+        <>
+          Error signal δ<sup>[l]</sup>
+        </>
+      ),
+      desc: (
+        <>
+          <code>
+            δ<sup>[l]</sup>
+          </code>{" "}
+          is the delta/error vector for layer <code>l</code>. It has one scalar
+          per neuron and measures how much the loss changes with that neuron’s
+          pre-activation. It is used to compute gradients for{" "}
+          <code>
+            W<sup>[l]</sup>
+          </code>{" "}
+          and{" "}
+          <code>
+            b<sup>[l]</sup>
+          </code>
+          .
+        </>
+      ),
     },
     {
       symbol: "η",
-      name: "Learning Rate (Eta)",
-      desc: "Step size for gradient descent.",
+      name: <>Learning rate η</>,
+      desc: (
+        <>
+          <code>η</code> (eta) is a scalar learning rate that scales the
+          gradient step in gradient descent. Larger <code>η</code> speeds up
+          learning but can cause divergence; smaller <code>η</code> is more
+          stable but slower.
+        </>
+      ),
     },
     {
       symbol: "∇",
-      name: "Nabla",
-      desc: "Vector differential operator (Gradient vector). Points in the direction of steepest ascent.",
+      name: <>Gradient ∇E</>,
+      desc: (
+        <>
+          <code>∇E</code> is the gradient of the loss function <code>E</code>{" "}
+          with respect to a parameter (for example <code>W</code> or{" "}
+          <code>b</code>). In this visualizer <code>E = ½ · Σ (y − ŷ)²</code>{" "}
+          (mean squared error over the outputs). The gradient has the same shape
+          as the parameter and tells us how much a small change in that
+          parameter will change the loss. It points in the direction of steepest
+          increase of <code>E</code>, so we update in the opposite direction{" "}
+          <code>−∇E</code>.
+        </>
+      ),
     },
-    { symbol: "[l]", name: "Layer Index", desc: "Layer number [0]..[L]." },
+    {
+      symbol: "[l]",
+      name: <>Layer index [l]</>,
+      desc: (
+        <>
+          <code>[l]</code> denotes the layer index.{" "}
+          <code>
+            [0] = input X, [1], [2] = hidden layers H1, H2, [3] = output layer
+            (ŷ)
+          </code>{" "}
+          in this visualization.
+        </>
+      ),
+    },
     {
       symbol: "T",
-      name: "Transpose",
-      desc: "Matrix transposition (swap rows/cols).",
+      name: (
+        <>
+          Transpose (·)<sup>T</sup>
+        </>
+      ),
+      desc: (
+        <>
+          <code>M</code>
+          <sup>T</sup> is the transpose of a matrix <code>M</code>, obtained by
+          swapping rows and columns. It is used to match dimensions when
+          propagating gradients between layers (e.g.{" "}
+          <code>
+            W<sup>[l+1]</sup>
+          </code>
+          <sup>T</sup> · <code>δ</code>).
+        </>
+      ),
     },
-    { symbol: "ŷ", name: "Prediction", desc: "Network output." },
-    { symbol: "y", name: "Target", desc: "True value." },
+    {
+      symbol: "ŷ",
+      name: <>Prediction vector ŷ</>,
+      desc: (
+        <>
+          <code>ŷ</code> is the network output vector for the current input{" "}
+          <code>X</code>. In this demo it is 2-dimensional:{" "}
+          <code>
+            ŷ = (ŷ<sub>1</sub>, ŷ<sub>2</sub>)
+          </code>
+          , produced by the output layer{" "}
+          <code>
+            A<sup>[3]</sup>
+          </code>
+          .
+        </>
+      ),
+    },
+    {
+      symbol: "y",
+      name: <>Target vector y</>,
+      desc: (
+        <>
+          <code>y</code> is the ground-truth target vector from the training
+          data that <code>ŷ</code> should approximate. In this demo it is also
+          2-dimensional:{" "}
+          <code>
+            y = (y<sub>1</sub>, y<sub>2</sub>)
+          </code>
+          .
+        </>
+      ),
+    },
     {
       symbol: "λ",
-      name: "Regularization",
-      desc: "Penalty term (L2) to prevent overfitting. (Assumed 0 here).",
+      name: <>Regularization λ</>,
+      desc: (
+        <>
+          <code>λ</code> (lambda) is the regularization strength for L2 weight
+          decay. It scales the penalty term <code>(λ / 2m) · Σ‖W‖²</code> to
+          discourage large weights and reduce overfitting. In this visualizer we
+          assume <code>λ = 0</code>.
+        </>
+      ),
     },
   ];
 
@@ -746,38 +987,53 @@ const BackpropVisualizer = () => {
                       display: "flex",
                       alignItems: "center",
                       gap: "0.5rem",
-                      position: "relative",
-                      cursor: "help",
                     }}
                   >
-                    <span
-                      style={{
-                        width: "2rem",
-                        height: "1.5rem",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderRadius: "0.15rem",
-                        fontSize: "14px",
-                        color: "#fff",
-                        backgroundColor: "rgb(31, 41, 55)",
-                      }}
+                    {/* --- UPDATED TRIGGER WRAPPER --- */}
+                    <div
+                      className={`legend-trigger ${
+                        activeTooltip === item.symbol ? "active" : ""
+                      }`}
+                      onClick={(e) => handleTriggerClick(e, item.symbol)}
                     >
-                      {item.symbol}
-                    </span>
-                    <span>{item.name}</span>
-                    <div className="legend-tooltip">
-                      <strong
+                      {/* The Symbol Box */}
+                      <span
                         style={{
+                          width: "2rem",
+                          height: "1.5rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: "0.15rem",
+                          fontSize: "14px",
                           color: "#fff",
-                          display: "block",
-                          marginBottom: "0.25rem",
+                          backgroundColor: "rgb(31, 41, 55)",
+                          fontFamily: "monospace",
+                          fontWeight: "bold",
+                          border: "1px solid rgb(75, 85, 99)",
+                          // The border color transition is handled by CSS now
                         }}
                       >
-                        {item.name}
-                      </strong>
-                      {item.desc}
+                        {item.symbol}
+                      </span>
+
+                      {/* The Tooltip */}
+                      <div
+                        className="legend-tooltip"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="tooltip-header">
+                          <span className="tooltip-icon">{item.symbol}</span>
+                          <span className="tooltip-title">{item.name}</span>
+                        </div>
+                        <div className="tooltip-desc">{item.desc}</div>
+                      </div>
                     </div>
+
+                    {/* The Name label */}
+                    <span style={{ color: "rgb(156, 163, 175)" }}>
+                      {item.name}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -821,6 +1077,7 @@ const BackpropVisualizer = () => {
       {/* SECTION 3: CONFIG & STEP */}
       <div className="backprop-section">
         <div className="backprop-grid-2" style={{ gap: "1.5rem" }}>
+          {/* --- LINKE KARTE: CONFIGURATION & PARAMETERS --- */}
           <div
             className="backprop-card"
             style={{
@@ -832,85 +1089,82 @@ const BackpropVisualizer = () => {
             <div className="backprop-header">
               <Settings size={14} /> Configuration
             </div>
-            {/* ... INPUTS & TARGETS & RATE ... */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1.5rem",
-              }}
-            >
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "1rem",
-                }}
-              >
-                <div>
-                  <label className="backprop-input-label">
-                    TARGETS y = (y_1, y_2)
-                  </label>
-                  <div className="backprop-flex-gap-2">
-                    <input
-                      type="number"
-                      step="0.1"
-                      min="0"
-                      max="1"
-                      className="matrix-input"
-                      style={{ width: "100%" }}
-                      value={network.target[0]}
-                      onChange={(e) => handleTargetChange(0, e.target.value)}
-                      disabled={inputsLocked}
-                    />
-                    <input
-                      type="number"
-                      step="0.1"
-                      min="0"
-                      max="1"
-                      className="matrix-input"
-                      style={{ width: "100%" }}
-                      value={network.target[1]}
-                      onChange={(e) => handleTargetChange(1, e.target.value)}
-                      disabled={inputsLocked}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="backprop-input-label">
-                    Learning Rate η (0-1)
-                  </label>
+
+            {/* NEUE STRUKTUR: TARGETS & LEARNING RATE */}
+            <div className="config-row-group">
+              {/* TARGETS INPUTS */}
+              <div className="config-item-wrapper">
+                <label className="backprop-input-label">
+                  TARGETS y = (y_1, y_2)
+                </label>
+                <div className="backprop-flex-gap-2">
                   <input
                     type="number"
-                    step="0.01"
-                    min="0.001"
+                    step="0.1"
+                    min="0"
                     max="1"
                     className="matrix-input"
-                    style={{ width: "100%" }}
-                    value={network.learningRate}
-                    onChange={(e) => handleRateChange(e.target.value)}
+                    // style={{ width: "100%" }} <- Entfernt, macht CSS (flex:1)
+                    value={network.target[0]}
+                    onChange={(e) => handleTargetChange(0, e.target.value)}
+                    disabled={inputsLocked}
+                  />
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="1"
+                    className="matrix-input"
+                    value={network.target[1]}
+                    onChange={(e) => handleTargetChange(1, e.target.value)}
                     disabled={inputsLocked}
                   />
                 </div>
               </div>
-              <div>
+
+              {/* LEARNING RATE INPUT */}
+              <div className="config-item-wrapper" style={{ flexGrow: 0.5 }}>
+                <label className="backprop-input-label">
+                  Learning Rate η (0-1)
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.001"
+                  max="1"
+                  className="matrix-input"
+                  style={{
+                    width: "100%",
+                  }} /* Hier okay, da einzelnes Element */
+                  value={network.learningRate}
+                  onChange={(e) => handleRateChange(e.target.value)}
+                  disabled={inputsLocked}
+                />
+              </div>
+            </div>
+
+            {/* NEUE STRUKTUR: PARAMETERS HEADER */}
+            <div>
+              <div className="params-header">
+                <label
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "rgb(156, 163, 175)",
+                    fontWeight: "bold",
+                  }}
+                >
+                  PARAMETERS
+                </label>
+
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    gap: "0.5rem",
                     alignItems: "center",
-                    marginBottom: "0.5rem",
+                    flexWrap: "wrap",
+                    width: "100%",
                   }}
                 >
-                  <label
-                    style={{
-                      fontSize: "0.75rem",
-                      color: "rgb(156, 163, 175)",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    PARAMETERS
-                  </label>
                   <div className="backprop-tab-group">
                     {(["INPUTS", "WEIGHTS", "BIASES"] as const).map((m) => (
                       <button
@@ -924,6 +1178,7 @@ const BackpropVisualizer = () => {
                       </button>
                     ))}
                   </div>
+
                   <button
                     onClick={randomizeSelection}
                     disabled={inputsLocked}
@@ -931,99 +1186,112 @@ const BackpropVisualizer = () => {
                     title="Randomize Values"
                     style={{ opacity: inputsLocked ? 0.6 : 1 }}
                   >
-                    <Shuffle size={12} /> Randomize Values
+                    <Shuffle size={12} /> Randomize
                   </button>
                 </div>
-                {/* --- PARAMETERS BOX --- */}
-                <div className="backprop-params-area">
-                  {editMode !== "INPUTS" && (
-                    <div
-                      className="backprop-flex-gap-2"
-                      style={{ marginBottom: "1rem" }}
-                    >
-                      {(["L1", "L2", "L3"] as const).map((l) => {
-                        // Label Logik hier inline oder in Funktion
-                        let mainLabel = "";
-                        let subLabel = "";
+              </div>
 
-                        if (l === "L1") {
-                          mainLabel =
-                            editMode === "WEIGHTS"
-                              ? "W"
-                              : editMode === "BIASES"
-                              ? "b"
-                              : "A";
-                          subLabel =
-                            editMode === "WEIGHTS" ? "(In → H1)" : "(H1)";
-                        } else if (l === "L2") {
-                          mainLabel =
-                            editMode === "WEIGHTS"
-                              ? "W"
-                              : editMode === "BIASES"
-                              ? "b"
-                              : "A";
-                          subLabel =
-                            editMode === "WEIGHTS" ? "(H1 → H2)" : "(H2)";
-                        } else {
-                          mainLabel =
-                            editMode === "WEIGHTS"
-                              ? "W"
-                              : editMode === "BIASES"
-                              ? "b"
-                              : "ŷ";
-                          subLabel =
-                            editMode === "WEIGHTS" ? "(H2 → Out)" : "(Out)";
-                        }
+              <div className="backprop-params-area">
+                {editMode !== "INPUTS" && (
+                  <div
+                    className="backprop-flex-gap-2"
+                    style={{ marginBottom: "1rem" }}
+                  >
+                    {(["L1", "L2", "L3"] as const).map((l) => {
+                      // Label Logik hier inline oder in Funktion
+                      let mainLabel = "";
+                      let subLabel = "";
 
-                        // Index Zahl (1, 2, 3)
-                        const idx = l === "L1" ? "1" : l === "L2" ? "2" : "3";
+                      if (l === "L1") {
+                        mainLabel =
+                          editMode === "WEIGHTS"
+                            ? "W"
+                            : editMode === "BIASES"
+                            ? "b"
+                            : "A";
+                        subLabel =
+                          editMode === "WEIGHTS" ? "(In → H1)" : "(H1)";
+                      } else if (l === "L2") {
+                        mainLabel =
+                          editMode === "WEIGHTS"
+                            ? "W"
+                            : editMode === "BIASES"
+                            ? "b"
+                            : "A";
+                        subLabel =
+                          editMode === "WEIGHTS" ? "(H1 → H2)" : "(H2)";
+                      } else {
+                        mainLabel =
+                          editMode === "WEIGHTS"
+                            ? "W"
+                            : editMode === "BIASES"
+                            ? "b"
+                            : "ŷ";
+                        subLabel =
+                          editMode === "WEIGHTS" ? "(H2 → Out)" : "(Out)";
+                      }
 
-                        return (
-                          <button
-                            key={l}
-                            onClick={() => setActiveTab(l)}
-                            className={`backprop-tab-btn ${
-                              activeTab === l ? "active" : "inactive"
-                            }`}
+                      // Index Zahl (1, 2, 3)
+                      const idx = l === "L1" ? "1" : l === "L2" ? "2" : "3";
+                      return (
+                        <button
+                          key={l}
+                          onClick={() => setActiveTab(l)}
+                          className={`backprop-tab-btn ${
+                            activeTab === l ? "active" : "inactive"
+                          }`}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            fontFamily: "monospace", // Wichtig für math look
+                            fontSize: "11px", // Etwas größer damit man sup lesen kann
+                          }}
+                        >
+                          {/* Hauptsymbol: W^[1] */}
+                          <span>
+                            {mainLabel}
+                            <sup style={{ fontSize: "9px" }}>[{idx}]</sup>
+                          </span>
+
+                          {/* Erklärung: (In->H1) - etwas blasser */}
+                          <span
                             style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px",
-                              fontFamily: "monospace", // Wichtig für math look
-                              fontSize: "11px", // Etwas größer damit man sup lesen kann
+                              opacity: 0.6,
+                              fontSize: "9px",
+                              marginLeft: "2px",
                             }}
                           >
-                            {/* Hauptsymbol: W^[1] */}
-                            <span>
-                              {mainLabel}
-                              <sup style={{ fontSize: "9px" }}>[{idx}]</sup>
-                            </span>
-
-                            {/* Erklärung: (In->H1) - etwas blasser */}
-                            <span
-                              style={{
-                                opacity: 0.6,
-                                fontSize: "9px",
-                                marginLeft: "2px",
-                              }}
-                            >
-                              {subLabel}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {/* Inputs */}
+                            {subLabel}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+                {/* === HIER IST DIE ÄNDERUNG: DER SCROLL WRAPPER === */}
+                <div className="matrix-overflow-wrapper">
+                  {/* Inputs Mode */}
                   {editMode === "INPUTS" && (
-                    <div className="backprop-flex-col-1">
+                    <div
+                      className="backprop-flex-col-1"
+                      style={{ width: "100%", minWidth: "200px" }}
+                    >
+                      {/* minWidth sorgt dafür, dass der Scroll-Wrapper greift, wenn es zu eng wird */}
                       <div
-                        className="backprop-flex-gap-2"
+                        className="matrix-input-row"
                         style={{ justifyContent: "center" }}
                       >
                         {network.inputs.map((v, i) => (
-                          <div key={i} style={{ textAlign: "center" }}>
+                          <div
+                            key={i}
+                            style={{
+                              flex: 1,
+                              minWidth: "35px",
+                              maxWidth: "80px",
+                              textAlign: "center",
+                            }}
+                          >
                             <div className="backprop-small-label">x{i + 1}</div>
                             <input
                               type="number"
@@ -1031,6 +1299,7 @@ const BackpropVisualizer = () => {
                               min="0"
                               max="1"
                               className="matrix-input"
+                              style={{ width: "100%" }}
                               value={formatNum(v)}
                               onChange={(e) =>
                                 handleParamChange("L1", 0, i, e.target.value)
@@ -1043,13 +1312,18 @@ const BackpropVisualizer = () => {
                     </div>
                   )}
 
-                  {/* Weights */}
+                  {/* Weights Mode */}
                   {editMode === "WEIGHTS" && (
                     <div
                       className="backprop-flex-col-1"
-                      style={{ alignItems: "flex-start" }}
+                      style={{
+                        alignItems: "center",
+                        width: "100%",
+                        minWidth: "220px",
+                      }}
                     >
-                      {/* 1. Die Matrix-Reihen (Inputs) */}
+                      {/* minWidth hier erzwingt das Scrollen, falls Screen < 220px Restplatz hat */}
+
                       {(activeTab === "L1"
                         ? network.weights1
                         : activeTab === "L2"
@@ -1057,23 +1331,13 @@ const BackpropVisualizer = () => {
                         : network.weights3
                       ).map((r, i) => (
                         <div key={i} className="matrix-input-row">
-                          {/* Zeilen-Label (z.B. x1) */}
-                          <span
-                            className="backprop-small-label"
-                            style={{
-                              width: "2rem",
-                              textAlign: "right",
-                              marginTop: "4px", // Leichte Korrektur für vertikale Zentrierung
-                            }}
-                          >
+                          <span className="backprop-small-label">
                             {activeTab === "L1"
                               ? `x${i + 1}`
                               : activeTab === "L2"
                               ? `a1_${i + 1}`
                               : `a2_${i + 1}`}
                           </span>
-
-                          {/* Die Input Felder */}
                           {r.map((v, j) => (
                             <input
                               key={j}
@@ -1095,27 +1359,16 @@ const BackpropVisualizer = () => {
                         </div>
                       ))}
 
-                      {/* 2. NEU: Die Spalten-Beschriftung darunter */}
-                      <div className="matrix-input-row">
-                        {/* Platzhalter links (entspricht Breite des Zeilen-Labels) */}
-                        <span style={{ width: "2rem" }}></span>
-
-                        {/* Labels generieren basierend auf Tab */}
+                      {/* Spalten-Labels */}
+                      <div className="matrix-labels-row">
+                        <span className="placeholder"></span>
                         {(activeTab === "L1"
                           ? ["a1_1", "a1_2", "a1_3"]
                           : activeTab === "L2"
                           ? ["a2_1", "a2_2", "a2_3"]
                           : ["y1", "y2"]
                         ).map((label, idx) => (
-                          <span
-                            key={idx}
-                            className="backprop-small-label"
-                            style={{
-                              width: "70px", // WICHTIG: Muss exakt der Breite von .matrix-input im CSS entsprechen
-                              textAlign: "center",
-                              display: "inline-block",
-                            }}
-                          >
+                          <span key={idx} className="backprop-small-label">
                             {label}
                           </span>
                         ))}
@@ -1123,16 +1376,27 @@ const BackpropVisualizer = () => {
                     </div>
                   )}
 
-                  {/* Biases */}
+                  {/* Biases Mode */}
                   {editMode === "BIASES" && (
-                    <div className="backprop-flex-gap-2">
+                    <div
+                      className="matrix-input-row"
+                      style={{ justifyContent: "center", minWidth: "200px" }}
+                    >
                       {(activeTab === "L1"
                         ? network.bias1
                         : activeTab === "L2"
                         ? network.bias2
                         : network.bias3
                       ).map((v, i) => (
-                        <div key={i} style={{ textAlign: "center" }}>
+                        <div
+                          key={i}
+                          style={{
+                            flex: 1,
+                            minWidth: "35px",
+                            maxWidth: "80px",
+                            textAlign: "center",
+                          }}
+                        >
                           <div className="backprop-small-label">
                             {activeTab === "L3" ? `y${i + 1}` : `h${i + 1}`}
                           </div>
@@ -1140,6 +1404,7 @@ const BackpropVisualizer = () => {
                             type="number"
                             step="0.1"
                             className="matrix-input"
+                            style={{ width: "100%" }}
                             value={formatNum(v)}
                             onChange={(e) =>
                               handleParamChange(activeTab, 0, i, e.target.value)
@@ -1150,25 +1415,32 @@ const BackpropVisualizer = () => {
                       ))}
                     </div>
                   )}
-                </div>
+                </div>{" "}
+                {/* ENDE MATRIX OVERFLOW WRAPPER */}
               </div>
-              <button
-                onClick={() => {
-                  setNetwork(INITIAL_STATE);
-                  setStep(0);
-                }}
-                className="backprop-action-btn-main backprop-reset-btn"
-                style={{
-                  width: "100%",
-                  marginTop: "1.5rem",
-                  backgroundColor: "rgba(34, 34, 34, 0.5)",
-                }}
-              >
-                <RotateCcw size={16} /> Reset Everything
-              </button>
             </div>
+
+            <button
+              onClick={() => {
+                setNetwork(INITIAL_STATE);
+                setStep(0);
+                setIsTraining(false); // Sicherstellen, dass Training stoppt
+              }}
+              className={`backprop-action-btn-main backprop-reset-btn ${
+                isModified ? "active" : ""
+              }`}
+              style={{
+                width: "100%",
+                marginTop: "1.5rem",
+                // Wir entfernen hier die Hintergrundfarbe, damit CSS greift!
+              }}
+            >
+              <RotateCcw size={16} />
+              {isModified ? "Reset Changes" : "Reset Everything"}
+            </button>
           </div>
 
+          {/* --- RECHTE KARTE: STEP INFO & PLAY CONTROLS --- */}
           <div
             className="backprop-card"
             style={{
@@ -1215,15 +1487,8 @@ const BackpropVisualizer = () => {
               </p>
               <div className="backprop-math">{currentInfo.mathHTML}</div>
             </div>
-            <div
-              style={{
-                display: "flex",
-                gap: "0.75rem",
-                marginTop: "1.5rem",
-                paddingTop: "1.5rem",
-                borderTop: "1px solid rgb(34, 34, 34)",
-              }}
-            >
+
+            <div className="backprop-action-btns-wrapper">
               <button
                 className="backprop-action-btn-main"
                 style={{ flexShrink: 0 }}
