@@ -3101,6 +3101,14 @@ PLAYGROUND VISUALIZER STYLES
   .matrix-input {
     font-size: 11px !important; /* Kleinerer Text */
     padding: 6px 0 !important; /* Kein seitliches Padding */
+    max-width: 50px !important;
+    min-width: 40px !important;
+  }
+
+  .backprop-small-label {
+    max-width: 40px !important;
+    min-width: 40px !important;
+    padding-left: 20px;
   }
 
   /* Labels (x1, x2): Schmaler machen */
