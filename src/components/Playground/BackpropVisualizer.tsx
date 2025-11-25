@@ -1889,7 +1889,7 @@ const BackpropVisualizer = () => {
                     </div>
                   )}
 
-                  {/* Biases Mode */}
+                  {/* Biases Mode (b^[l]_i) */}
                   {editMode === "BIASES" && (
                     <div
                       className="matrix-input-row"
@@ -1904,60 +1904,82 @@ const BackpropVisualizer = () => {
                         : activeTab === "L2"
                         ? network.bias2
                         : network.bias3
-                      ).map((v, i) => (
-                        <div
-                          key={i}
-                          style={{
-                            flex: 1,
-                            minWidth: "35px",
-                            maxWidth: "80px",
-                            textAlign: "center",
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            gap: "4px",
-                          }}
-                        >
-                          {/* Label: b mit Index */}
+                      ).map((v, i) => {
+                        // Helper für den Layer-Index String (z.B. "[1]")
+                        const layerIdx =
+                          activeTab === "L1"
+                            ? "[1]"
+                            : activeTab === "L2"
+                            ? "[2]"
+                            : "[3]";
+
+                        return (
                           <div
-                            className="backprop-small-label"
+                            key={i}
                             style={{
-                              marginBottom: 0,
-                              fontFamily: "serif",
-                              fontStyle: "italic",
-                              fontSize: "1rem",
-                              color: "#ddd",
+                              flex: 1,
+                              minWidth: "35px",
+                              maxWidth: "80px",
+                              textAlign: "center",
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              gap: "4px",
                             }}
                           >
-                            b
-                            <sub
+                            {/* Label: b^[l]_i */}
+                            <div
+                              className="backprop-small-label"
                               style={{
-                                fontSize: "0.7em",
-                                fontStyle: "normal",
-                                marginLeft: "1px",
+                                marginBottom: 0,
+                                fontFamily: "serif",
+                                fontStyle: "italic",
+                                fontSize: "1rem",
+                                color: "#ddd",
                               }}
                             >
-                              {i + 1}
-                            </sub>
-                          </div>
+                              b{/* Layer Index (hochgestellt) */}
+                              <sup
+                                style={{
+                                  fontSize: "0.6em",
+                                  fontStyle: "normal",
+                                  marginRight: "1px",
+                                }}
+                              >
+                                {layerIdx}
+                              </sup>
+                              {/* Neuron Index (tiefgestellt) */}
+                              <sub
+                                style={{
+                                  fontSize: "0.7em",
+                                  fontStyle: "normal",
+                                  marginLeft: "0px",
+                                }}
+                              >
+                                {i + 1}
+                              </sub>
+                            </div>
 
-                          <SmartNumberInput
-                            type="number"
-                            step="0.1"
-                            className="matrix-input"
-                            style={{
-                              width: "100%",
-                              height: "40px",
-                            }}
-                            value={v}
-                            formatter={formatNum}
-                            onValueChange={(val) =>
-                              handleParamChange(activeTab, 0, i, val)
-                            }
-                            disabled={inputsLocked}
-                          />
-                        </div>
-                      ))}
+                            <SmartNumberInput
+                              type="number"
+                              step="0.1"
+                              className="matrix-input"
+                              style={{
+                                width: "100%",
+                                height: "40px",
+                                fontSize: "0.9rem",
+                                fontWeight: "bold",
+                              }}
+                              value={v}
+                              formatter={formatNum}
+                              onValueChange={(val) =>
+                                handleParamChange(activeTab, 0, i, val)
+                              }
+                              disabled={inputsLocked}
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>{" "}
@@ -2177,7 +2199,15 @@ const BackpropVisualizer = () => {
 
           <svg
             viewBox="0 0 800 500"
-            style={{ width: "100%", height: "100%", userSelect: "none" }}
+            style={{
+              width: "100%",
+
+              height: "100%",
+
+              userSelect: "none",
+
+              fontFamily: "var(--ff-primary)",
+            }}
           >
             <defs>
               <marker
@@ -2190,6 +2220,7 @@ const BackpropVisualizer = () => {
               >
                 <path d="M0,0 L0,6 L9,3 z" fill="#4ade80" />
               </marker>
+
               <marker
                 id="arrow-back"
                 markerWidth="10"
@@ -2200,53 +2231,106 @@ const BackpropVisualizer = () => {
               >
                 <path d="M0,0 L0,6 L9,3 z" fill="#a78bfa" />
               </marker>
-              <marker
-                id="arrow-idle"
-                markerWidth="10"
-                markerHeight="10"
-                refX="9"
-                refY="3"
-                orient="auto"
-              >
-                <path d="M0,0 L0,6 L9,3 z" fill="#aaa" />
-              </marker>
             </defs>
 
-            {/* LAYER BOXES */}
+            {/* --- LAYER LABELS (Unten) --- */}
+
+            {/* Input Layer */}
+
             <rect
-              x="45"
+              x="40"
               y="45"
-              width="70"
+              width="80"
               height="360"
               rx="8"
               className="layer-box"
             />
-            <text x="80" y="430" className="layer-label">
+
+            <text
+              x="80"
+              y="430"
+              className="layer-label"
+              style={{ fill: "#fff", fontWeight: "bold", fontSize: "14px" }}
+            >
               X (Input)
             </text>
+
+            {/* Hidden 1 */}
+
             <rect
-              x="245"
+              x="240"
               y="45"
-              width="70"
+              width="80"
               height="360"
               rx="8"
               className="layer-box"
             />
-            <text x="280" y="430" className="layer-label">
-              A^[1] (H1)
+
+            <text
+              x="280"
+              y="430"
+              className="layer-label"
+              style={{
+                fill: "#fff",
+
+                fontWeight: "bold",
+
+                fontSize: "14px",
+
+                fontFamily: "serif",
+
+                fontStyle: "italic",
+              }}
+            >
+              A
+              <tspan dy="-5" fontSize="10" fontStyle="normal">
+                [1]
+              </tspan>
+              <tspan dy="5" fontStyle="normal" fontFamily="var(--ff-primary)">
+                {" "}
+                (H1)
+              </tspan>
             </text>
+
+            {/* Hidden 2 */}
+
             <rect
-              x="445"
+              x="440"
               y="45"
-              width="70"
+              width="80"
               height="360"
               rx="8"
               className="layer-box"
             />
-            <text x="480" y="430" className="layer-label">
-              A^[2] (H2)
+
+            <text
+              x="480"
+              y="430"
+              className="layer-label"
+              style={{
+                fill: "#fff",
+
+                fontWeight: "bold",
+
+                fontSize: "14px",
+
+                fontFamily: "serif",
+
+                fontStyle: "italic",
+              }}
+            >
+              A
+              <tspan dy="-5" fontSize="10" fontStyle="normal">
+                [2]
+              </tspan>
+              <tspan dy="5" fontStyle="normal" fontFamily="var(--ff-primary)">
+                {" "}
+                (H2)
+              </tspan>
             </text>
-            {/* FIX: Output Layer Box verbreitert auf 90 und Position angepasst (635 statt 650) */}
+
+            {/* Output */}
+
             <rect
               x="635"
               y="80"
@@ -2255,109 +2339,81 @@ const BackpropVisualizer = () => {
               rx="8"
               className="layer-box"
             />
-            <text x="680" y="400" className="layer-label">
-              A^[3] (Output)
-            </text>
-            {/* Input Layer */}
-            <text
-              x="80"
-              y="430"
-              className="layer-label"
-              style={{ fill: "#fff", fontWeight: "bold" }}
-            >
-              X (Input)
-            </text>
-            <text
-              x="80"
-              y="450"
-              className="layer-label"
-              style={{ fontSize: "10px", fill: "#666" }}
-            >
-              Input Layer
-            </text>
 
-            {/* Hidden 1 */}
-            <text
-              x="280"
-              y="430"
-              className="layer-label"
-              style={{ fill: "#fff", fontWeight: "bold" }}
-            >
-              A^[1] (H1)
-            </text>
-            <text
-              x="280"
-              y="450"
-              className="layer-label"
-              style={{ fontSize: "10px", fill: "#666" }}
-            >
-              Hidden Layer 1
-            </text>
-
-            {/* Hidden 2 */}
-            <text
-              x="480"
-              y="430"
-              className="layer-label"
-              style={{ fill: "#fff", fontWeight: "bold" }}
-            >
-              A^[2] (H2)
-            </text>
-            <text
-              x="480"
-              y="450"
-              className="layer-label"
-              style={{ fontSize: "10px", fill: "#666" }}
-            >
-              Hidden Layer 2
-            </text>
-
-            {/* Output */}
-            {/* Positionierung für Output war y=400 in deinem Screenshot, ich habe es angepasst damit es auf einer Linie liegt,
-                falls die Box kürzer ist, musst du evtl. y anpassen. 
-                Basierend auf deinem Screenshot ist Output etwas höher. Ich setze es passend dazu. */}
             <text
               x="680"
               y="400"
               className="layer-label"
-              style={{ fill: "#fff", fontWeight: "bold" }}
+              style={{
+                fill: "#fff",
+
+                fontWeight: "bold",
+
+                fontSize: "14px",
+
+                fontFamily: "serif",
+
+                fontStyle: "italic",
+              }}
             >
-              A^[3] (Output)
+              A
+              <tspan dy="-5" fontSize="10" fontStyle="normal">
+                [3]
+              </tspan>
+              <tspan dy="5" fontStyle="normal" fontFamily="var(--ff-primary)">
+                {" "}
+                (Output)
+              </tspan>
             </text>
-            <text
-              x="680"
-              y="420"
-              className="layer-label"
-              style={{ fontSize: "10px", fill: "#666" }}
-            >
-              Output Layer
-            </text>
-            {/* CONNECTIONS */}
+
+            {/* --- CONNECTIONS (Lines & Weights) --- */}
+
+            {/* W1 */}
+
             {[0, 1, 2].map((_, i) =>
               [0, 1, 2].map((j) => {
                 let { x1, y1, x2, y2, lx, ly } = getLineCoords(
                   80,
+
                   100 + i * 120,
-                  280,
+
+                  288,
+
                   100 + j * 120,
+
                   28,
+
                   130
                 );
+
                 const back = isBackprop && step >= 7;
+
                 if (back) {
                   let t = { x: x1, y: y1 };
+
                   x1 = x2;
+
                   y1 = y2;
+
                   x2 = t.x;
+
                   y2 = t.y;
                 }
+
                 const fwd = flowL1;
+
                 const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#aaa";
+
+                const opacity = back || fwd ? 1 : 0.3;
+
+                // KORREKTUR: Kein Marker im Idle-Zustand
+
                 const markerEnd = back
                   ? "url(#arrow-back)"
                   : fwd
                   ? "url(#arrow-fwd)"
-                  : "url(#arrow-idle)";
+                  : "";
+
                 return (
                   <g key={`w1-${i}-${j}`}>
                     <line
@@ -2367,11 +2423,12 @@ const BackpropVisualizer = () => {
                       y2={y2}
                       stroke={stroke}
                       strokeWidth={back || fwd ? 1.5 : 1}
-                      opacity={back || fwd ? 1 : 0.5}
+                      opacity={opacity}
                       markerEnd={markerEnd}
                     />
+
                     <rect
-                      x={lx - 18}
+                      x={lx - 10}
                       y={ly - 7}
                       width="35"
                       height="14"
@@ -2380,8 +2437,9 @@ const BackpropVisualizer = () => {
                       stroke={stroke}
                       strokeWidth="0.5"
                     />
+
                     <text
-                      x={lx}
+                      x={lx + 8}
                       y={ly + 3}
                       textAnchor="middle"
                       fontSize="10"
@@ -2394,31 +2452,53 @@ const BackpropVisualizer = () => {
                 );
               })
             )}
+
+            {/* W2 */}
+
             {[0, 1, 2].map((i) =>
               [0, 1, 2].map((j) => {
                 let { x1, y1, x2, y2, lx, ly } = getLineCoords(
                   280,
+
                   100 + i * 120,
-                  480,
+
+                  488,
+
                   100 + j * 120,
+
                   28,
+
                   330
                 );
+
                 const back = isBackprop && step >= 6;
+
                 if (back) {
                   let t = { x: x1, y: y1 };
+
                   x1 = x2;
+
                   y1 = y2;
+
                   x2 = t.x;
+
                   y2 = t.y;
                 }
+
                 const fwd = flowL2;
+
                 const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#aaa";
+
+                const opacity = back || fwd ? 1 : 0.3;
+
+                // KORREKTUR: Kein Marker im Idle-Zustand
+
                 const markerEnd = back
                   ? "url(#arrow-back)"
                   : fwd
                   ? "url(#arrow-fwd)"
-                  : "url(#arrow-idle)";
+                  : "";
+
                 return (
                   <g key={`w2-${i}-${j}`}>
                     <line
@@ -2428,11 +2508,12 @@ const BackpropVisualizer = () => {
                       y2={y2}
                       stroke={stroke}
                       strokeWidth={back || fwd ? 1.5 : 1}
-                      opacity={back || fwd ? 1 : 0.5}
+                      opacity={opacity}
                       markerEnd={markerEnd}
                     />
+
                     <rect
-                      x={lx - 18}
+                      x={lx - 10}
                       y={ly - 7}
                       width="35"
                       height="14"
@@ -2441,8 +2522,9 @@ const BackpropVisualizer = () => {
                       stroke={stroke}
                       strokeWidth="0.5"
                     />
+
                     <text
-                      x={lx}
+                      x={lx + 8}
                       y={ly + 3}
                       textAnchor="middle"
                       fontSize="10"
@@ -2455,31 +2537,53 @@ const BackpropVisualizer = () => {
                 );
               })
             )}
+
+            {/* W3 */}
+
             {[0, 1, 2].map((i) =>
               [0, 1].map((k) => {
                 let { x1, y1, x2, y2, lx, ly } = getLineCoords(
                   480,
+
                   100 + i * 120,
-                  680,
+
+                  688,
+
                   160 + k * 120,
+
                   36,
+
                   530
                 );
+
                 const back = isBackprop && step >= 5;
+
                 if (back) {
                   let t = { x: x1, y: y1 };
+
                   x1 = x2;
+
                   y1 = y2;
+
                   x2 = t.x;
+
                   y2 = t.y;
                 }
+
                 const fwd = flowOut;
+
                 const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#aaa";
+
+                const opacity = back || fwd ? 1 : 0.3;
+
+                // KORREKTUR: Kein Marker im Idle-Zustand
+
                 const markerEnd = back
                   ? "url(#arrow-back)"
                   : fwd
                   ? "url(#arrow-fwd)"
-                  : "url(#arrow-idle)";
+                  : "";
+
                 return (
                   <g key={`w3-${i}-${k}`}>
                     <line
@@ -2489,11 +2593,12 @@ const BackpropVisualizer = () => {
                       y2={y2}
                       stroke={stroke}
                       strokeWidth={back || fwd ? 2 : 1}
-                      opacity={back || fwd ? 1 : 0.5}
+                      opacity={opacity}
                       markerEnd={markerEnd}
                     />
+
                     <rect
-                      x={lx - 18}
+                      x={lx - 10}
                       y={ly - 7}
                       width="35"
                       height="14"
@@ -2502,8 +2607,9 @@ const BackpropVisualizer = () => {
                       stroke={stroke}
                       strokeWidth="0.5"
                     />
+
                     <text
-                      x={lx}
+                      x={lx + 8}
                       y={ly + 3}
                       textAnchor="middle"
                       fontSize="10"
@@ -2517,40 +2623,57 @@ const BackpropVisualizer = () => {
               })
             )}
 
-            {/* NODES */}
+            {/* --- NODES --- */}
+
+            {/* Input Nodes (x_i) */}
+
             {[0, 1, 2].map((i) => (
               <g key={"in" + i} transform={`translate(80, ${100 + i * 120})`}>
-                <circle r="24" fill="#151515" stroke="#333" strokeWidth="2" />
+                <circle r="26" fill="#151515" stroke="#333" strokeWidth="2" />
+
+                {/* Label: x_i */}
+
                 <text
-                  y="0"
+                  y="-7"
                   textAnchor="middle"
                   fill="#fff"
-                  fontSize="12"
+                  fontSize="14"
                   fontWeight="bold"
-                  dominantBaseline="middle"
+                  fontFamily="serif"
+                  fontStyle="italic"
                 >
-                  x{i + 1}
+                  x
+                  <tspan dy="6" fontSize="10" fontStyle="normal">
+                    {i + 1}
+                  </tspan>
                 </text>
+
+                {/* Value */}
+
                 <text
-                  y="35"
+                  y="16"
                   textAnchor="middle"
-                  fill="#888"
-                  fontSize="11"
+                  fill="#aaa"
+                  fontSize="10"
                   fontFamily="monospace"
+                  fontWeight="bold"
                 >
                   {network.inputs[i]}
                 </text>
               </g>
             ))}
+
+            {/* Hidden 1 Nodes (a^[1]_j) - MIT LAYER INFO */}
+
             {[0, 1, 2].map((j) => (
               <g key={"a1" + j} transform={`translate(280, ${100 + j * 120})`}>
                 <circle r="28" fill="#151515" />
-                {/* FIX: Färbt sich nun bei step >= 7 (synchron zu L1 Arrows) */}
+
                 <circle
                   r="28"
                   fill={
                     isBackprop && step >= 7
-                      ? "rgba(167, 139, 250, 0.1)"
+                      ? "rgba(167, 139, 250, 0.15)"
                       : flowL1
                       ? "rgba(74,222,128,0.1)"
                       : "transparent"
@@ -2564,46 +2687,82 @@ const BackpropVisualizer = () => {
                   }
                   strokeWidth="2"
                 />
+
+                {/* Label: a^[1]_j */}
+
                 <text
-                  y="-8"
+                  y="-7"
                   textAnchor="middle"
                   fill="#fff"
-                  fontSize="12"
+                  fontSize="14"
                   fontWeight="bold"
+                  fontFamily="serif"
+                  fontStyle="italic"
                 >
-                  a1_{j + 1}
+                  a{/* Superscript [1] - schön kompakt */}
+                  <tspan dy="-6" fontSize="9" fontStyle="normal">
+                    [1]
+                  </tspan>
+                  {/* Subscript j - wieder runter */}
+                  <tspan dy="9" fontSize="9" fontStyle="normal">
+                    {j + 1}
+                  </tspan>
                 </text>
+
+                {/* Bias */}
+
                 <text
-                  y="-38"
+                  y="-35"
                   textAnchor="middle"
                   fill="#aaa"
-                  fontSize="11"
-                  fontFamily="monospace"
+                  fontSize="10"
+                  stroke="#151515"
+                  paintOrder="stroke"
+                  strokeWidth="4px"
                 >
-                  b:{network.bias1[j].toFixed(2)}
+                  <tspan fontFamily="serif" fontStyle="italic">
+                    b
+                  </tspan>
+                  <tspan dy="-4" fontSize="8" fontStyle="normal">
+                    [1]
+                  </tspan>{" "}
+                  {/* Bias Layer Info */}
+                  <tspan dy="4" fontSize="8">
+                    {j + 1}
+                  </tspan>
+                  <tspan dy="-2" fontFamily="monospace">
+                    : {network.bias1[j].toFixed(2)}
+                  </tspan>
                 </text>
+
+                {/* Value */}
+
                 {showValuesL1 && (
                   <text
-                    y="12"
+                    y="15"
                     textAnchor="middle"
                     fill="#4ade80"
                     fontSize="11"
                     fontFamily="monospace"
+                    fontWeight="bold"
                   >
                     {a1[j].toFixed(2)}
                   </text>
                 )}
               </g>
             ))}
+
+            {/* Hidden 2 Nodes (a^[2]_j) - MIT LAYER INFO */}
+
             {[0, 1, 2].map((j) => (
               <g key={"a2" + j} transform={`translate(480, ${100 + j * 120})`}>
                 <circle r="28" fill="#151515" />
-                {/* FIX: Färbt sich nun bei step >= 6 (synchron zu L2 Arrows) */}
+
                 <circle
                   r="28"
                   fill={
                     isBackprop && step >= 6
-                      ? "rgba(167, 139, 250, 0.1)"
+                      ? "rgba(167, 139, 250, 0.15)"
                       : flowL2
                       ? "rgba(74,222,128,0.1)"
                       : "transparent"
@@ -2617,67 +2776,135 @@ const BackpropVisualizer = () => {
                   }
                   strokeWidth="2"
                 />
+
+                {/* Label: a^[2]_j */}
+
                 <text
-                  y="-8"
+                  y="-7"
                   textAnchor="middle"
                   fill="#fff"
-                  fontSize="12"
+                  fontSize="14"
                   fontWeight="bold"
+                  fontFamily="serif"
+                  fontStyle="italic"
                 >
-                  a2_{j + 1}
+                  a
+                  <tspan dy="-6" fontSize="9" fontStyle="normal">
+                    [2]
+                  </tspan>
+                  <tspan dy="9" fontSize="9" fontStyle="normal">
+                    {j + 1}
+                  </tspan>
                 </text>
+
+                {/* Bias */}
+
                 <text
-                  y="-38"
+                  y="-35"
                   textAnchor="middle"
                   fill="#aaa"
-                  fontSize="11"
-                  fontFamily="monospace"
+                  fontSize="10"
+                  stroke="#151515"
+                  paintOrder="stroke"
+                  strokeWidth="4px"
                 >
-                  b:{network.bias2[j].toFixed(2)}
+                  <tspan fontFamily="serif" fontStyle="italic">
+                    b
+                  </tspan>
+
+                  <tspan dy="-4" fontSize="8" fontStyle="normal">
+                    [2]
+                  </tspan>
+
+                  <tspan dy="4" fontSize="8">
+                    {j + 1}
+                  </tspan>
+
+                  <tspan dy="-2" fontFamily="monospace">
+                    : {network.bias2[j].toFixed(2)}
+                  </tspan>
                 </text>
+
+                {/* Value */}
+
                 {showValuesL2 && (
                   <text
-                    y="12"
+                    y="15"
                     textAnchor="middle"
                     fill="#4ade80"
                     fontSize="11"
                     fontFamily="monospace"
+                    fontWeight="bold"
                   >
                     {a2[j].toFixed(2)}
                   </text>
                 )}
               </g>
             ))}
+
+            {/* Output Nodes (ŷ_k) */}
+
             {[0, 1].map((k) => (
               <g key={"out" + k} transform={`translate(680, ${160 + k * 120})`}>
                 <circle r="36" fill="#151515" />
+
                 <circle
                   r="36"
                   fill={flowOut ? "rgba(74,222,128,0.1)" : "transparent"}
                   stroke={isBackprop ? "#a78bfa" : flowOut ? "#4ade80" : "#333"}
                   strokeWidth="3"
                 />
+
+                {/* Label: ŷ_k */}
+
                 <text
-                  y="-10"
+                  y="-8"
                   textAnchor="middle"
                   fill="#fff"
-                  fontSize="14"
+                  fontSize="16"
                   fontWeight="bold"
+                  fontFamily="serif"
+                  fontStyle="italic"
                 >
-                  ŷ_{k + 1}
+                  ŷ
+                  <tspan dy="6" fontSize="11" fontStyle="normal">
+                    {k + 1}
+                  </tspan>
                 </text>
+
+                {/* Bias */}
+
                 <text
-                  y="-48"
+                  y="-45"
                   textAnchor="middle"
                   fill="#aaa"
-                  fontSize="11"
-                  fontFamily="monospace"
+                  fontSize="10"
+                  stroke="#151515"
+                  paintOrder="stroke"
+                  strokeWidth="4px"
                 >
-                  b:{network.bias3[k].toFixed(2)}
+                  <tspan fontFamily="serif" fontStyle="italic">
+                    b
+                  </tspan>
+
+                  <tspan dy="-4" fontSize="8" fontStyle="normal">
+                    [3]
+                  </tspan>
+
+                  <tspan dy="4" fontSize="8">
+                    {k + 1}
+                  </tspan>
+
+                  <tspan dy="-2" fontFamily="monospace">
+                    : {network.bias3[k].toFixed(2)}
+                  </tspan>
                 </text>
+
+                {/* Value */}
+
                 {showValuesOut && (
                   <text
-                    y="15"
+                    y="18"
                     textAnchor="middle"
                     fill="#4ade80"
                     fontSize="13"
@@ -2687,23 +2914,27 @@ const BackpropVisualizer = () => {
                     {formatNum(a3[k])}
                   </text>
                 )}
+
+                {/* Error Label */}
+
                 {showLoss && (
-                  <g>
-                    <text
-                      x="0"
-                      y="58"
-                      textAnchor="middle"
-                      fill="#ef4444"
-                      fontSize="11"
-                      fontWeight="bold"
-                      fontFamily="monospace"
-                    >
-                      Err: {Math.abs(network.target[k] - a3[k]).toFixed(3)}
-                    </text>
-                  </g>
+                  <text
+                    x="0"
+                    y="53"
+                    textAnchor="middle"
+                    fill="#ef4444"
+                    fontSize="10"
+                    fontWeight="bold"
+                    fontFamily="monospace"
+                  >
+                    Err: {Math.abs(network.target[k] - a3[k]).toFixed(3)}
+                  </text>
                 )}
               </g>
             ))}
+
+            {/* Target Boxes */}
+
             {showLoss &&
               [0, 1].map((k) => (
                 <g key={"t" + k} transform={`translate(0, ${k * 120})`}>
@@ -2712,71 +2943,72 @@ const BackpropVisualizer = () => {
                     y1="160"
                     x2="760"
                     y2="160"
-                    stroke="#aaa"
+                    stroke="#444"
                     strokeDasharray="4"
                   />
+
                   <rect
                     x="730"
                     y="135"
-                    width="60"
+                    width="50"
                     height="50"
                     rx="4"
-                    fill="#1a1a1a"
-                    stroke="#444"
+                    fill="#111"
+                    stroke="#333"
                   />
+
                   <text
-                    x="760"
-                    y="155"
+                    x="755"
+                    y="152"
                     textAnchor="middle"
-                    fill="#aaa"
-                    fontSize="12"
+                    fill="#888"
+                    fontSize="20"
+                    fontFamily="serif"
+                    fontStyle="italic"
                   >
-                    Target y_{k + 1}
+                    y
+                    <tspan dy="4" fontSize="12" fontStyle="normal">
+                      {k + 1}
+                    </tspan>
                   </text>
+
                   <text
-                    x="760"
+                    x="755"
                     y="175"
                     textAnchor="middle"
                     fill="#fff"
                     fontSize="12"
                     fontWeight="bold"
+                    fontFamily="monospace"
                   >
                     {network.target[k]}
                   </text>
-                  <text
-                    x="740"
-                    y="100"
-                    textAnchor="middle"
-                    fill="#fff"
-                    fontSize="10"
-                    fontWeight="bold"
-                    opacity="0.5"
-                  ></text>
                 </g>
               ))}
-            {/* --- NEU: TOTAL LOSS DISPLAY --- */}
+
+            {/* Total Loss */}
+
             {showLoss && (
               <g transform="translate(680, 460)">
-                {/* Kleiner Hintergrund-Glow für bessere Lesbarkeit (optional) */}
                 <rect
-                  x="-60"
+                  x="-70"
                   y="-15"
-                  width="120"
-                  height="24"
-                  rx="4"
-                  fill="#000"
-                  opacity="0.6"
+                  width="140"
+                  height="26"
+                  rx="6"
+                  fill="#0f0f0f"
+                  stroke="#333"
                 />
+
                 <text
                   x="0"
-                  y="0"
+                  y="1"
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill="#a78bfa"
-                  fontSize="14"
+                  fontSize="13"
                   fontWeight="bold"
                   fontFamily="monospace"
-                  style={{ filter: "drop-shadow(0px 0px 2px rgba(0,0,0,1))" }}
                 >
                   MSE: {error.toFixed(5)}
                 </text>
