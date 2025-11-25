@@ -480,7 +480,7 @@ const BackpropVisualizer = () => {
             setIsTraining(false);
             return prev;
           }
-          if (prev.epoch >= 100000) {
+          if (prev.epoch >= 1000000) {
             setIsTraining(false);
             return prev;
           }
@@ -541,7 +541,7 @@ const BackpropVisualizer = () => {
     if (isNaN(v)) return;
 
     if (editMode === "INPUTS") v = clamp(v, 0, 1);
-    else v = clamp(v, -2.5, 2.5);
+    else v = clamp(v, -2, 2);
 
     if (editMode === "WEIGHTS") {
       if (layer === "L1") {
@@ -1366,8 +1366,8 @@ const BackpropVisualizer = () => {
                                 fontSize: "0.8rem",
                               }}
                             >
-                              Weights are clamped to{" "}
-                              <strong>[-2.5, 2.5]</strong> to prevent{" "}
+                              Weights are clamped to <strong>[-2, 2]</strong> to
+                              prevent{" "}
                               <span
                                 style={{
                                   color: "#f87171",
