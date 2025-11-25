@@ -94,6 +94,63 @@ const randIn = () => parseFloat(Math.random().toFixed(2)); // 0 to 1
 const clamp = (val: number, min: number, max: number) =>
   Math.min(Math.max(val, min), max);
 
+// --- New Helper Component for Inputs ---
+// This solves the cursor jumping and editing issues
+interface SmartInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  value: number;
+  onValueChange: (val: string) => void;
+  formatter?: (val: number) => string;
+}
+
+const SmartNumberInput: React.FC<SmartInputProps> = ({
+  value,
+  onValueChange,
+  formatter,
+  ...props
+}) => {
+  // If no formatter is provided, just use String conversion
+  const formatValue = (v: number) => (formatter ? formatter(v) : String(v));
+
+  const [localVal, setLocalVal] = useState(formatValue(value));
+  const [isFocused, setIsFocused] = useState(false);
+
+  // Sync with parent value (e.g. from Backprop algorithm),
+  // BUT ONLY if we are not currently editing it (to avoid fighting the cursor).
+  useEffect(() => {
+    if (!isFocused) {
+      setLocalVal(formatValue(value));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, isFocused]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalVal(e.target.value);
+    onValueChange(e.target.value);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(false);
+    // On blur, clean up the formatting based on the actual number in state
+    setLocalVal(formatValue(value));
+    if (props.onBlur) props.onBlur(e);
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(true);
+    if (props.onFocus) props.onFocus(e);
+  };
+
+  return (
+    <input
+      {...props}
+      value={localVal}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      onFocus={handleFocus}
+    />
+  );
+};
+
 const BackpropVisualizer = () => {
   const [network, setNetwork] = useState<NetworkState>(INITIAL_STATE);
   const [step, setStep] = useState(0);
@@ -423,7 +480,7 @@ const BackpropVisualizer = () => {
             setIsTraining(false);
             return prev;
           }
-          if (prev.epoch >= 10000) {
+          if (prev.epoch >= 100000) {
             setIsTraining(false);
             return prev;
           }
@@ -484,7 +541,7 @@ const BackpropVisualizer = () => {
     if (isNaN(v)) return;
 
     if (editMode === "INPUTS") v = clamp(v, 0, 1);
-    else v = clamp(v, -5, 5);
+    else v = clamp(v, -2.5, 2.5);
 
     if (editMode === "WEIGHTS") {
       if (layer === "L1") {
@@ -1116,25 +1173,24 @@ const BackpropVisualizer = () => {
                   TARGETS y = (y_1, y_2)
                 </label>
                 <div className="backprop-flex-gap-2">
-                  <input
+                  <SmartNumberInput
                     type="number"
                     step="0.1"
                     min="0"
                     max="1"
                     className="matrix-input"
-                    // style={{ width: "100%" }} <- Entfernt, macht CSS (flex:1)
                     value={network.target[0]}
-                    onChange={(e) => handleTargetChange(0, e.target.value)}
+                    onValueChange={(val) => handleTargetChange(0, val)}
                     disabled={inputsLocked}
                   />
-                  <input
+                  <SmartNumberInput
                     type="number"
                     step="0.1"
                     min="0"
                     max="1"
                     className="matrix-input"
                     value={network.target[1]}
-                    onChange={(e) => handleTargetChange(1, e.target.value)}
+                    onValueChange={(val) => handleTargetChange(1, val)}
                     disabled={inputsLocked}
                   />
                 </div>
@@ -1145,7 +1201,7 @@ const BackpropVisualizer = () => {
                 <label className="backprop-input-label">
                   Learning Rate η (0-1)
                 </label>
-                <input
+                <SmartNumberInput
                   type="number"
                   step="0.01"
                   min="0.001"
@@ -1155,7 +1211,7 @@ const BackpropVisualizer = () => {
                     width: "100%",
                   }} /* Hier okay, da einzelnes Element */
                   value={network.learningRate}
-                  onChange={(e) => handleRateChange(e.target.value)}
+                  onValueChange={handleRateChange}
                   disabled={inputsLocked}
                 />
               </div>
@@ -1195,6 +1251,143 @@ const BackpropVisualizer = () => {
                         {m}
                       </button>
                     ))}
+                    {/* --- START INFO BUTTON (Mobile & Active State Fix) --- */}
+                    {editMode === "WEIGHTS" && (
+                      <div
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                          marginLeft: "8px",
+                        }}
+                      >
+                        <button
+                          type="button"
+                          onClick={(e) => handleTriggerClick(e, "limit-info")}
+                          className="backprop-tab-btn"
+                          style={{
+                            padding: "4px 6px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            transition: "all 0.2s ease",
+                            // --- ACTIVE STATE LOGIC ---
+                            backgroundColor:
+                              activeTooltip === "limit-info"
+                                ? "rgb(31, 41, 55)" // Dunkler Hintergrund wenn aktiv
+                                : "transparent",
+                            border:
+                              activeTooltip === "limit-info"
+                                ? "1px solid #a78bfa" // Violetter Rand wenn aktiv
+                                : "1px solid transparent",
+                            borderRadius: "6px",
+                            opacity: 1,
+                          }}
+                          title="Why are values limited?"
+                        >
+                          <HelpCircle
+                            size={14}
+                            color={
+                              activeTooltip === "limit-info"
+                                ? "#fff"
+                                : "#a78bfa"
+                            }
+                          />
+                        </button>
+
+                        {/* Das Tooltip Popup */}
+                        {activeTooltip === "limit-info" && (
+                          <div
+                            // HIER WICHTIG: Eine Klasse für das CSS Media Query
+                            className="limit-popup-mobile"
+                            style={{
+                              // Desktop Defaults (werden mobil überschrieben)
+                              position: "absolute",
+                              top: "125%",
+                              left: "50%",
+                              transform: "translateX(-50%)",
+                              width: "280px",
+
+                              // Generelle Styles
+                              backgroundColor: "rgba(20, 20, 20, 0.98)",
+                              backdropFilter: "blur(10px)",
+                              border: "1px solid rgb(75, 85, 99)",
+                              padding: "1rem",
+                              borderRadius: "0.5rem",
+                              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.9)",
+                              zIndex: 1000,
+                              cursor: "auto",
+                              textAlign: "left",
+                              visibility: "visible",
+                              opacity: 1,
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div
+                              style={{
+                                marginBottom: "10px",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "10px",
+                                borderBottom: "1px solid rgba(255,255,255,0.1)",
+                                paddingBottom: "8px",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  background: "#a78bfa",
+                                  color: "#fff",
+                                  width: "24px",
+                                  height: "24px",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  borderRadius: "6px",
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                  flexShrink: 0,
+                                }}
+                              >
+                                !
+                              </span>
+                              <span
+                                style={{
+                                  color: "#fff",
+                                  fontWeight: "bold",
+                                  fontSize: "0.9rem",
+                                }}
+                              >
+                                Why limit weights?
+                              </span>
+                            </div>
+                            <div
+                              style={{
+                                lineHeight: "1.5",
+                                color: "rgb(209, 213, 219)",
+                                fontSize: "0.8rem",
+                              }}
+                            >
+                              Weights are clamped to{" "}
+                              <strong>[-2.5, 2.5]</strong> to prevent{" "}
+                              <span
+                                style={{
+                                  color: "#f87171",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                Neuron Saturation
+                              </span>
+                              .<br />
+                              <br />
+                              Large weights push the Sigmoid activation to 0 or
+                              1. At these edges, the gradient becomes almost
+                              zero (<strong>Vanishing Gradient</strong>),
+                              causing the network to stop learning.
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {/* --- ENDE INFO BUTTON --- */}
                   </div>
 
                   <button
@@ -1311,16 +1504,17 @@ const BackpropVisualizer = () => {
                             }}
                           >
                             <div className="backprop-small-label">x{i + 1}</div>
-                            <input
+                            <SmartNumberInput
                               type="number"
                               step="0.1"
                               min="0"
                               max="1"
                               className="matrix-input"
                               style={{ width: "100%" }}
-                              value={formatNum(v)}
-                              onChange={(e) =>
-                                handleParamChange("L1", 0, i, e.target.value)
+                              value={v}
+                              formatter={formatNum}
+                              onValueChange={(val) =>
+                                handleParamChange("L1", 0, i, val)
                               }
                               disabled={inputsLocked}
                             />
@@ -1357,19 +1551,15 @@ const BackpropVisualizer = () => {
                               : `a2_${i + 1}`}
                           </span>
                           {r.map((v, j) => (
-                            <input
+                            <SmartNumberInput
                               key={j}
                               type="number"
                               step="0.1"
                               className="matrix-input"
-                              value={formatNum(v)}
-                              onChange={(e) =>
-                                handleParamChange(
-                                  activeTab,
-                                  i,
-                                  j,
-                                  e.target.value
-                                )
+                              value={v}
+                              formatter={formatNum}
+                              onValueChange={(val) =>
+                                handleParamChange(activeTab, i, j, val)
                               }
                               disabled={inputsLocked}
                             />
@@ -1418,14 +1608,15 @@ const BackpropVisualizer = () => {
                           <div className="backprop-small-label">
                             {activeTab === "L3" ? `y${i + 1}` : `h${i + 1}`}
                           </div>
-                          <input
+                          <SmartNumberInput
                             type="number"
                             step="0.1"
                             className="matrix-input"
                             style={{ width: "100%" }}
-                            value={formatNum(v)}
-                            onChange={(e) =>
-                              handleParamChange(activeTab, 0, i, e.target.value)
+                            value={v}
+                            formatter={formatNum}
+                            onValueChange={(val) =>
+                              handleParamChange(activeTab, 0, i, val)
                             }
                             disabled={inputsLocked}
                           />
@@ -1787,7 +1978,7 @@ const BackpropVisualizer = () => {
 
             {/* Output */}
             {/* Positionierung für Output war y=400 in deinem Screenshot, ich habe es angepasst damit es auf einer Linie liegt,
-                falls die Box kürzer ist, musst du evtl. y anpassen.
+                falls die Box kürzer ist, musst du evtl. y anpassen. 
                 Basierend auf deinem Screenshot ist Output etwas höher. Ich setze es passend dazu. */}
             <text
               x="680"
