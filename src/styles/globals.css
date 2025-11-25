@@ -3132,6 +3132,10 @@ PLAYGROUND VISUALIZER STYLES
     padding-left: 20px;
   }
 
+  .x-values {
+    padding-left: unset !important;
+  }
+
   /* Labels (x1, x2): Schmaler machen */
   .matrix-input-row > span.backprop-small-label {
     width: 1.25rem !important; /* War 2rem */
