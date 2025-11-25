@@ -1174,54 +1174,173 @@ const BackpropVisualizer = () => {
             </div>
 
             {/* NEUE STRUKTUR: TARGETS & LEARNING RATE */}
-            <div className="config-row-group">
-              {/* TARGETS INPUTS */}
+            <div
+              className="config-row-group"
+              style={{ alignItems: "flex-end" }}
+            >
+              {/* --- TARGETS BLOCK --- */}
               <div className="config-item-wrapper">
-                <label className="backprop-input-label">
-                  TARGETS y = (y_1, y_2)
-                </label>
-                <div className="backprop-flex-gap-2">
-                  <SmartNumberInput
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    max="1"
-                    className="matrix-input"
-                    value={network.target[0]}
-                    onValueChange={(val) => handleTargetChange(0, val)}
-                    disabled={inputsLocked}
-                  />
-                  <SmartNumberInput
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    max="1"
-                    className="matrix-input"
-                    value={network.target[1]}
-                    onValueChange={(val) => handleTargetChange(1, val)}
-                    disabled={inputsLocked}
-                  />
+                <label className="backprop-input-label">TARGET VECTOR</label>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {/* y = */}
+                  <span
+                    style={{
+                      fontWeight: "bold",
+                      color: "#fff",
+                      fontFamily: "monospace",
+                      marginRight: "4px",
+                      transform: "translateY(12px)", // KORREKTUR: Tiefer (wie bei X)
+                    }}
+                  >
+                    y =
+                  </span>
+
+                  {/* [ */}
+                  <span
+                    style={{
+                      fontSize: "2.5rem",
+                      color: "rgb(107, 114, 128)",
+                      fontWeight: "200",
+                      lineHeight: "1",
+                      transform: "translateY(6px)",
+                      display: "inline-block",
+                    }}
+                  >
+                    [
+                  </span>
+
+                  {/* Inputs y1, y2 */}
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    {network.target.map((v, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                        }}
+                      >
+                        {/* Label y1 */}
+                        <div
+                          className="backprop-small-label"
+                          style={{
+                            marginBottom: 0,
+                            fontFamily: "serif",
+                            fontStyle: "italic",
+                            fontSize: "1rem",
+                            color: "#ddd",
+                          }}
+                        >
+                          y
+                          <sub
+                            style={{
+                              fontSize: "0.7em",
+                              fontStyle: "normal",
+                              marginLeft: "1px",
+                            }}
+                          >
+                            {i + 1}
+                          </sub>
+                        </div>
+
+                        <SmartNumberInput
+                          type="number"
+                          step="0.1"
+                          min="0"
+                          max="1"
+                          className="matrix-input"
+                          style={{
+                            width: "60px",
+                            height: "40px", // Konsistente Höhe mit Inputs
+                          }}
+                          value={v}
+                          onValueChange={(val) => handleTargetChange(i, val)}
+                          disabled={inputsLocked}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* ] */}
+                  <span
+                    style={{
+                      fontSize: "2.5rem",
+                      color: "rgb(107, 114, 128)",
+                      fontWeight: "200",
+                      lineHeight: "1",
+                      transform: "translateY(6px)",
+                      display: "inline-block",
+                    }}
+                  >
+                    ]
+                  </span>
                 </div>
               </div>
 
-              {/* LEARNING RATE INPUT */}
-              <div className="config-item-wrapper" style={{ flexGrow: 0.5 }}>
-                <label className="backprop-input-label">
-                  Learning Rate η (0-1)
+              {/* --- LEARNING RATE BLOCK (Korrigiert) --- */}
+              <div
+                className="config-item-wrapper"
+                style={{ flexGrow: 0, minWidth: "auto" }}
+              >
+                <label
+                  className="backprop-input-label"
+                  style={{ marginBottom: "0.5rem" }}
+                >
+                  LEARNING RATE
                 </label>
-                <SmartNumberInput
-                  type="number"
-                  step="0.01"
-                  min="0.001"
-                  max="1"
-                  className="matrix-input"
+
+                {/* Flex Container für "eta = Input" */}
+                <div
                   style={{
-                    width: "100%",
-                  }} /* Hier okay, da einzelnes Element */
-                  value={network.learningRate}
-                  onValueChange={handleRateChange}
-                  disabled={inputsLocked}
-                />
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  {/* Label Eta = */}
+                  <div
+                    style={{
+                      fontFamily: "serif",
+                      fontStyle: "italic",
+                      fontSize: "1.25rem",
+                      color: "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                    }}
+                  >
+                    η{" "}
+                    <span
+                      style={{
+                        fontFamily: "monospace",
+                        fontStyle: "normal",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      =
+                    </span>
+                  </div>
+
+                  <SmartNumberInput
+                    type="number"
+                    step="0.01"
+                    min="0.001"
+                    max="1"
+                    className="matrix-input"
+                    style={{
+                      width: "70px",
+                      textAlign: "center",
+                    }}
+                    value={network.learningRate}
+                    onValueChange={handleRateChange}
+                    disabled={inputsLocked}
+                  />
+                </div>
               </div>
             </div>
 
@@ -1490,44 +1609,126 @@ const BackpropVisualizer = () => {
                 )}
                 {/* === HIER IST DIE ÄNDERUNG: DER SCROLL WRAPPER === */}
                 <div className="matrix-overflow-wrapper">
-                  {/* Inputs Mode */}
+                  {/* Inputs Mode (Vektor-Darstellung, X korrigiert & Zahlen kleiner) */}
                   {editMode === "INPUTS" && (
-                    <div
-                      className="backprop-flex-col-1"
-                      style={{ width: "100%", minWidth: "200px" }}
-                    >
-                      {/* minWidth sorgt dafür, dass der Scroll-Wrapper greift, wenn es zu eng wird */}
+                    <div className="matrix-overflow-wrapper">
                       <div
-                        className="matrix-input-row"
-                        style={{ justifyContent: "center" }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.3rem",
+                          padding: "1rem 0",
+                          minWidth: "max-content",
+                        }}
                       >
-                        {network.inputs.map((v, i) => (
-                          <div
-                            key={i}
-                            style={{
-                              flex: 1,
-                              minWidth: "35px",
-                              maxWidth: "80px",
-                              textAlign: "center",
-                            }}
-                          >
-                            <div className="backprop-small-label">x{i + 1}</div>
-                            <SmartNumberInput
-                              type="number"
-                              step="0.1"
-                              min="0"
-                              max="1"
-                              className="matrix-input"
-                              style={{ width: "100%" }}
-                              value={v}
-                              formatter={formatNum}
-                              onValueChange={(val) =>
-                                handleParamChange("L1", 0, i, val)
-                              }
-                              disabled={inputsLocked}
-                            />
-                          </div>
-                        ))}
+                        {/* Das Label X = */}
+                        <span
+                          style={{
+                            fontWeight: "bold",
+                            color: "#fff",
+                            fontSize: "1.25rem",
+                            fontFamily: "monospace",
+                            // KORREKTUR: X weiter runter schieben, damit es mittig zu den Boxen steht
+                            transform: "translateY(12px)",
+                            display: "inline-block",
+                          }}
+                        >
+                          X =
+                        </span>
+
+                        {/* Öffnende Klammer */}
+                        <span
+                          style={{
+                            fontSize: "35pt",
+                            color: "rgb(107, 114, 128)",
+                            fontWeight: "200",
+                            lineHeight: "1",
+                            transform: "translateY(8px)",
+                            display: "inline-block",
+                          }}
+                        >
+                          [
+                        </span>
+
+                        {/* Die Inputs selbst */}
+                        <div
+                          className="matrix-input-row"
+                          style={{
+                            width: "auto",
+                            alignItems: "flex-end",
+                            gap: "8px",
+                          }}
+                        >
+                          {network.inputs.map((v, i) => (
+                            <div
+                              key={i}
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                gap: "6px",
+                              }}
+                            >
+                              {/* Label mit Subscript (x₁) - BLEIBT GROSS */}
+                              <div
+                                className="backprop-small-label x-values"
+                                style={{
+                                  width: "100%",
+                                  textAlign: "center",
+                                  marginBottom: 0,
+                                  fontFamily: "serif",
+                                  fontStyle: "italic",
+                                  fontSize: "1rem",
+                                  color: "#ddd",
+                                }}
+                              >
+                                x
+                                <sub
+                                  style={{
+                                    fontSize: "0.7em",
+                                    fontStyle: "normal",
+                                    marginLeft: "1px",
+                                  }}
+                                >
+                                  {i + 1}
+                                </sub>
+                              </div>
+
+                              <SmartNumberInput
+                                type="number"
+                                step="0.1"
+                                min="0"
+                                max="1"
+                                className="matrix-input"
+                                style={{
+                                  width: "75px",
+                                  height: "40px",
+                                }}
+                                value={v}
+                                formatter={formatNum}
+                                onValueChange={(val) =>
+                                  handleParamChange("L1", 0, i, val)
+                                }
+                                disabled={inputsLocked}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Schließende Klammer */}
+                        <span
+                          style={{
+                            fontSize: "35pt",
+                            color: "rgb(107, 114, 128)",
+                            fontWeight: "200",
+                            lineHeight: "1",
+                            transform: "translateY(8px)",
+                            display: "inline-block",
+                          }}
+                        >
+                          ]
+                        </span>
                       </div>
                     </div>
                   )}
@@ -1542,53 +1743,149 @@ const BackpropVisualizer = () => {
                         minWidth: "220px",
                       }}
                     >
-                      {/* minWidth hier erzwingt das Scrollen, falls Screen < 220px Restplatz hat */}
+                      {/* Helper: Wir definieren die Labels basierend auf dem Tab */}
+                      {(() => {
+                        let rowSymbol = "x";
+                        let rowSuper = "";
 
-                      {(activeTab === "L1"
-                        ? network.weights1
-                        : activeTab === "L2"
-                        ? network.weights2
-                        : network.weights3
-                      ).map((r, i) => (
-                        <div key={i} className="matrix-input-row">
-                          <span className="backprop-small-label">
-                            {activeTab === "L1"
-                              ? `x${i + 1}`
-                              : activeTab === "L2"
-                              ? `a1_${i + 1}`
-                              : `a2_${i + 1}`}
-                          </span>
-                          {r.map((v, j) => (
-                            <SmartNumberInput
-                              key={j}
-                              type="number"
-                              step="0.1"
-                              className="matrix-input"
-                              value={v}
-                              formatter={formatNum}
-                              onValueChange={(val) =>
-                                handleParamChange(activeTab, i, j, val)
-                              }
-                              disabled={inputsLocked}
-                            />
-                          ))}
-                        </div>
-                      ))}
+                        let colSymbol = "a"; // HIER GEÄNDERT: a statt h
+                        let colSuper = "[1]";
 
-                      {/* Spalten-Labels */}
-                      <div className="matrix-labels-row">
-                        <span className="placeholder"></span>
-                        {(activeTab === "L1"
-                          ? ["a1_1", "a1_2", "a1_3"]
-                          : activeTab === "L2"
-                          ? ["a2_1", "a2_2", "a2_3"]
-                          : ["y1", "y2"]
-                        ).map((label, idx) => (
-                          <span key={idx} className="backprop-small-label">
-                            {label}
-                          </span>
-                        ))}
-                      </div>
+                        if (activeTab === "L1") {
+                          // Input (x) -> H1 (a^[1])
+                          rowSymbol = "x";
+                          rowSuper = "";
+                          colSymbol = "a";
+                          colSuper = "[1]";
+                        } else if (activeTab === "L2") {
+                          // H1 (a^[1]) -> H2 (a^[2])
+                          rowSymbol = "a";
+                          rowSuper = "[1]";
+                          colSymbol = "a";
+                          colSuper = "[2]";
+                        } else {
+                          // H2 (a^[2]) -> Output (ŷ)
+                          rowSymbol = "a";
+                          rowSuper = "[2]";
+                          colSymbol = "ŷ";
+                          colSuper = "";
+                        }
+
+                        const matrixData =
+                          activeTab === "L1"
+                            ? network.weights1
+                            : activeTab === "L2"
+                            ? network.weights2
+                            : network.weights3;
+
+                        return (
+                          <>
+                            {matrixData.map((r, i) => (
+                              <div key={i} className="matrix-input-row">
+                                {/* --- ZEILEN LABEL (Quelle) --- */}
+                                <span
+                                  className="backprop-small-label"
+                                  style={{
+                                    width: "40px",
+                                    fontFamily: "serif",
+                                    fontStyle: "italic",
+                                    fontSize: "15px",
+                                    color: "#ddd",
+                                    textAlign: "right",
+                                    marginRight: "8px",
+                                  }}
+                                >
+                                  {rowSymbol}
+                                  {rowSuper && (
+                                    <sup
+                                      style={{
+                                        fontStyle: "normal",
+                                        fontSize: "0.6em",
+                                        marginRight: "1px",
+                                      }}
+                                    >
+                                      {rowSuper}
+                                    </sup>
+                                  )}
+                                  <sub
+                                    style={{
+                                      fontSize: "0.7em",
+                                      fontStyle: "normal",
+                                      marginLeft: "1px",
+                                    }}
+                                  >
+                                    {i + 1}
+                                  </sub>
+                                </span>
+
+                                {/* INPUTS */}
+                                {r.map((v, j) => (
+                                  <SmartNumberInput
+                                    key={j}
+                                    type="number"
+                                    step="0.1"
+                                    className="matrix-input"
+                                    value={v}
+                                    formatter={formatNum}
+                                    onValueChange={(val) =>
+                                      handleParamChange(activeTab, i, j, val)
+                                    }
+                                    disabled={inputsLocked}
+                                  />
+                                ))}
+                              </div>
+                            ))}
+
+                            {/* --- SPALTEN LABELS (Ziel) --- */}
+                            <div
+                              className="matrix-labels-row"
+                              style={{ marginTop: "8px", gap: "12px" }}
+                            >
+                              <span
+                                className="placeholder"
+                                style={{ width: "40px", marginRight: "8px" }}
+                              ></span>
+
+                              {matrixData[0].map((_, idx) => (
+                                <span
+                                  key={idx}
+                                  className="backprop-small-label"
+                                  style={{
+                                    width: "70px",
+                                    textAlign: "center",
+                                    fontFamily: "serif",
+                                    fontStyle: "italic",
+                                    fontSize: "15px",
+                                    color: "#aaa",
+                                  }}
+                                >
+                                  {colSymbol}
+                                  {colSuper && (
+                                    <sup
+                                      style={{
+                                        fontStyle: "normal",
+                                        fontSize: "0.6em",
+                                        marginRight: "1px",
+                                      }}
+                                    >
+                                      {colSuper}
+                                    </sup>
+                                  )}
+                                  <sub
+                                    style={{
+                                      fontSize: "0.7em",
+                                      fontStyle: "normal",
+                                      marginLeft: "1px",
+                                    }}
+                                  >
+                                    {idx + 1}
+                                  </sub>
+                                </span>
+                              ))}
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
                   )}
 
@@ -1596,7 +1893,11 @@ const BackpropVisualizer = () => {
                   {editMode === "BIASES" && (
                     <div
                       className="matrix-input-row"
-                      style={{ justifyContent: "center", minWidth: "200px" }}
+                      style={{
+                        justifyContent: "center",
+                        minWidth: "200px",
+                        gap: "12px",
+                      }}
                     >
                       {(activeTab === "L1"
                         ? network.bias1
@@ -1611,16 +1912,43 @@ const BackpropVisualizer = () => {
                             minWidth: "35px",
                             maxWidth: "80px",
                             textAlign: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: "4px",
                           }}
                         >
-                          <div className="backprop-small-label">
-                            {activeTab === "L3" ? `y${i + 1}` : `h${i + 1}`}
+                          {/* Label: b mit Index */}
+                          <div
+                            className="backprop-small-label"
+                            style={{
+                              marginBottom: 0,
+                              fontFamily: "serif",
+                              fontStyle: "italic",
+                              fontSize: "1rem",
+                              color: "#ddd",
+                            }}
+                          >
+                            b
+                            <sub
+                              style={{
+                                fontSize: "0.7em",
+                                fontStyle: "normal",
+                                marginLeft: "1px",
+                              }}
+                            >
+                              {i + 1}
+                            </sub>
                           </div>
+
                           <SmartNumberInput
                             type="number"
                             step="0.1"
                             className="matrix-input"
-                            style={{ width: "100%" }}
+                            style={{
+                              width: "100%",
+                              height: "40px",
+                            }}
                             value={v}
                             formatter={formatNum}
                             onValueChange={(val) =>
