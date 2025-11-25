@@ -49,6 +49,8 @@ type HistoryEntry = {
   error: number;
   output: Vector2;
   activations: { l1: Vector3; l2: Vector3 };
+  preActivations: { l1: Vector3; l2: Vector3; l3: Vector2 };
+  deltas: { l1: Vector3; l2: Vector3; l3: Vector2 };
   weights1: Matrix3x3;
   weights2: Matrix3x3;
   weights3: Matrix3x2;
@@ -429,6 +431,12 @@ const BackpropVisualizer = () => {
           error: currentError,
           output: a3_ as Vector2,
           activations: { l1: a1_, l2: a2_ },
+          preActivations: {
+            l1: z1_ as Vector3,
+            l2: z2_ as Vector3,
+            l3: z3_ as Vector2,
+          },
+          deltas: { l1: d1 as Vector3, l2: d2 as Vector3, l3: d3 as Vector2 },
           weights1: nW1,
           weights2: nW2,
           weights3: nW3,
@@ -2618,7 +2626,7 @@ const BackpropVisualizer = () => {
           >
             <div>EPOCH</div>
             <div>OUTPUT (ŷ)</div>
-            <div style={{ textAlign: "right" }}>LOSS</div>
+            <div style={{ textAlign: "right" }}>MSE/LOSS</div>
             <div style={{ textAlign: "center" }}>INFO</div>
           </div>
           <div style={{ overflowY: "auto", maxHeight: "900px" }}>
@@ -2708,6 +2716,7 @@ const BackpropVisualizer = () => {
                         borderTop: "1px solid rgb(34, 34, 34)",
                       }}
                     >
+                      {/* --- HEADER: LOSS & ERRORS --- */}
                       <div
                         style={{
                           marginBottom: "0.75rem",
@@ -2734,7 +2743,10 @@ const BackpropVisualizer = () => {
                           {Math.abs(h.diffs[1]).toFixed(4)}]
                         </span>
                       </div>
-                      <div style={{ marginBottom: "0.75rem" }}>
+
+                      {/* --- SECTION: NODE ACTIVATIONS --- */}
+                      {/* --- SECTION: NODE STATES (Z & A) --- */}
+                      <div style={{ marginBottom: "1rem" }}>
                         <div
                           style={{
                             fontSize: "0.75rem",
@@ -2743,106 +2755,343 @@ const BackpropVisualizer = () => {
                             fontWeight: "bold",
                           }}
                         >
-                          NODE ACTIVATIONS
+                          <span>NODE STATES (Z → A)</span>
+                          <span
+                            style={{
+                              fontSize: "0.65rem",
+                              color: "#4ade80", // Grün passend zum Forward Flow
+                              opacity: 0.8,
+                              textTransform: "uppercase",
+                              letterSpacing: "0.05em",
+                            }}
+                          >
+                            (Forward Pass)
+                          </span>
                         </div>
                         <div className="backprop-grid-3">
-                          {/* Block 1: Layer 1 */}
+                          {/* L1 States */}
                           <div
                             style={{
                               backgroundColor: "rgb(21, 21, 21)",
-                              padding: "4px",
+                              padding: "6px",
                               borderRadius: "4px",
                               textAlign: "center",
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "4px",
                             }}
                           >
+                            {/* Pre-Activation Z */}
+                            <div>
+                              <div
+                                style={{
+                                  color: "#facc15",
+                                  fontSize: "0.65rem",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                Z<sup style={{ fontSize: "0.7em" }}>[1]</sup>{" "}
+                                (Pre-Activation)
+                              </div>
+                              <div
+                                style={{ color: "#fef08a", fontSize: "0.7rem" }}
+                              >
+                                [
+                                {h.preActivations
+                                  ? h.preActivations.l1
+                                      .map((n) => n.toFixed(2))
+                                      .join(", ")
+                                  : "..."}
+                                ]
+                              </div>
+                            </div>
+                            {/* Trennlinie */}
                             <div
                               style={{
-                                color: "rgb(16, 185, 129)",
-                                marginBottom: "0.25rem",
-                                fontWeight: "bold",
+                                height: "1px",
+                                background: "#333",
+                                margin: "2px 0",
                               }}
-                            >
-                              {/* KORREKTUR: Großes A */}
-                              Activations A
-                              <sup style={{ fontSize: "0.7em" }}>[1]</sup>
-                            </div>
+                            ></div>
+                            {/* Activation A */}
                             <div>
-                              [
-                              {h.activations.l1
-                                .map((n) => n.toFixed(2))
-                                .join(",")}
-                              ]
+                              <div
+                                style={{
+                                  color: "rgb(16, 185, 129)",
+                                  fontSize: "0.65rem",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                A<sup style={{ fontSize: "0.7em" }}>[1]</sup>{" "}
+                                (Activation)
+                              </div>
+                              <div>
+                                [
+                                {h.activations.l1
+                                  .map((n) => n.toFixed(2))
+                                  .join(", ")}
+                                ]
+                              </div>
                             </div>
                           </div>
 
-                          {/* Block 2: Layer 2 */}
+                          {/* L2 States */}
                           <div
                             style={{
                               backgroundColor: "rgb(21, 21, 21)",
-                              padding: "4px",
+                              padding: "6px",
                               borderRadius: "4px",
                               textAlign: "center",
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "4px",
                             }}
                           >
+                            {/* Pre-Activation Z */}
+                            <div>
+                              <div
+                                style={{
+                                  color: "#facc15",
+                                  fontSize: "0.65rem",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                Z<sup style={{ fontSize: "0.7em" }}>[2]</sup>{" "}
+                                (Pre-Activation)
+                              </div>
+                              <div
+                                style={{ color: "#fef08a", fontSize: "0.7rem" }}
+                              >
+                                [
+                                {h.preActivations
+                                  ? h.preActivations.l2
+                                      .map((n) => n.toFixed(2))
+                                      .join(", ")
+                                  : "..."}
+                                ]
+                              </div>
+                            </div>
                             <div
                               style={{
-                                color: "rgb(96, 165, 250)",
-                                marginBottom: "0.25rem",
-                                fontWeight: "bold",
+                                height: "1px",
+                                background: "#333",
+                                margin: "2px 0",
                               }}
-                            >
-                              {/* KORREKTUR: Großes A */}
-                              Activations A
-                              <sup style={{ fontSize: "0.7em" }}>[2]</sup>
-                            </div>
+                            ></div>
+                            {/* Activation A */}
                             <div>
-                              [
-                              {h.activations.l2
-                                .map((n) => n.toFixed(2))
-                                .join(",")}
-                              ]
+                              <div
+                                style={{
+                                  color: "rgb(96, 165, 250)",
+                                  fontSize: "0.65rem",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                A<sup style={{ fontSize: "0.7em" }}>[2]</sup>{" "}
+                                (Activation)
+                              </div>
+                              <div>
+                                [
+                                {h.activations.l2
+                                  .map((n) => n.toFixed(2))
+                                  .join(", ")}
+                                ]
+                              </div>
                             </div>
                           </div>
 
-                          {/* Block 3: Output */}
+                          {/* Output States */}
                           <div
                             style={{
                               backgroundColor: "rgb(21, 21, 21)",
-                              padding: "4px",
+                              padding: "6px",
                               borderRadius: "4px",
                               textAlign: "center",
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "4px",
                             }}
                           >
+                            {/* Pre-Activation Z */}
+                            <div>
+                              <div
+                                style={{
+                                  color: "#facc15",
+                                  fontSize: "0.65rem",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                Z<sup style={{ fontSize: "0.7em" }}>[3]</sup>{" "}
+                                (Pre-Activation)
+                              </div>
+                              <div
+                                style={{ color: "#fef08a", fontSize: "0.7rem" }}
+                              >
+                                [
+                                {h.preActivations
+                                  ? h.preActivations.l3
+                                      .map((n) => n.toFixed(2))
+                                      .join(", ")
+                                  : "..."}
+                                ]
+                              </div>
+                            </div>
                             <div
                               style={{
-                                color: "rgb(168, 85, 247)",
-                                marginBottom: "0.25rem",
-                                fontWeight: "bold",
+                                height: "1px",
+                                background: "#333",
+                                margin: "2px 0",
                               }}
-                            >
-                              Output A
-                              <sup style={{ fontSize: "0.7em" }}>[3]</sup> = ŷ
-                            </div>
-
+                            ></div>
+                            {/* Activation A */}
                             <div>
-                              [{h.output.map((n) => n.toFixed(2)).join(",")}]
+                              <div
+                                style={{
+                                  color: "rgb(168, 85, 247)",
+                                  fontSize: "0.65rem",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                A<sup style={{ fontSize: "0.7em" }}>[3]</sup> =
+                                ŷ (Activation)
+                              </div>
+                              <div>
+                                [{h.output.map((n) => n.toFixed(2)).join(", ")}]
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      {/* --- KOMBINIERTER BLOCK: WEIGHTS & BIASES --- */}
+
+                      {/* --- SECTION: NODE GRADIENTS (NEU) --- */}
+                      {/* Nutzt backprop-grid-3 für Stacked Mobile View */}
+                      <div style={{ marginBottom: "1rem" }}>
+                        <div
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "rgb(107, 114, 128)",
+                            marginBottom: "0.25rem",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          <span>NODE GRADIENTS (δ)</span>
+                          <span
+                            style={{
+                              fontSize: "0.65rem",
+                              color: "#a78bfa", // Violett passend zum Backprop Flow
+                              opacity: 0.8,
+                              textTransform: "uppercase",
+                              letterSpacing: "0.05em",
+                            }}
+                          >
+                            (Backward Pass)
+                          </span>
+                        </div>
+                        <div className="backprop-grid-3">
+                          {/* L1 Gradients */}
+                          <div
+                            style={{
+                              backgroundColor: "rgba(239, 68, 68, 0.1)",
+                              border: "1px solid rgba(239, 68, 68, 0.2)",
+                              padding: "6px",
+                              borderRadius: "4px",
+                              textAlign: "center",
+                            }}
+                          >
+                            <div
+                              style={{
+                                color: "#f87171",
+                                marginBottom: "2px",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              δ<sup style={{ fontSize: "0.7em" }}>[1]</sup> (H1)
+                            </div>
+                            <div style={{ color: "#fca5a5" }}>
+                              [
+                              {h.deltas
+                                ? h.deltas.l1
+                                    .map((n) => n.toFixed(4))
+                                    .join(", ")
+                                : "..."}
+                              ]
+                            </div>
+                          </div>
+
+                          {/* L2 Gradients */}
+                          <div
+                            style={{
+                              backgroundColor: "rgba(239, 68, 68, 0.1)",
+                              border: "1px solid rgba(239, 68, 68, 0.2)",
+                              padding: "6px",
+                              borderRadius: "4px",
+                              textAlign: "center",
+                            }}
+                          >
+                            <div
+                              style={{
+                                color: "#f87171",
+                                marginBottom: "2px",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              δ<sup style={{ fontSize: "0.7em" }}>[2]</sup> (H2)
+                            </div>
+                            <div style={{ color: "#fca5a5" }}>
+                              [
+                              {h.deltas
+                                ? h.deltas.l2
+                                    .map((n) => n.toFixed(4))
+                                    .join(", ")
+                                : "..."}
+                              ]
+                            </div>
+                          </div>
+
+                          {/* L3 Gradients */}
+                          <div
+                            style={{
+                              backgroundColor: "rgba(239, 68, 68, 0.1)",
+                              border: "1px solid rgba(239, 68, 68, 0.2)",
+                              padding: "6px",
+                              borderRadius: "4px",
+                              textAlign: "center",
+                            }}
+                          >
+                            <div
+                              style={{
+                                color: "#f87171",
+                                marginBottom: "2px",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              δ<sup style={{ fontSize: "0.7em" }}>[3]</sup>{" "}
+                              (Out)
+                            </div>
+                            <div style={{ color: "#fca5a5" }}>
+                              [
+                              {h.deltas
+                                ? h.deltas.l3
+                                    .map((n) => n.toFixed(4))
+                                    .join(", ")
+                                : "..."}
+                              ]
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* --- SECTION: WEIGHTS & BIASES --- */}
                       <div
                         className="backprop-grid-3"
                         style={{
-                          gap: "1rem",
                           marginTop: "1rem",
                           paddingTop: "1rem",
                           borderTop: "1px solid rgb(34, 34, 34)",
                           alignItems: "start",
-                          fontFamily: "monospace", // Monospace sieht hier technischer/mathem. aus
                         }}
                       >
-                        {/* --- SPALTE 1: LAYER 1 (Weights + Biases) --- */}
+                        {/* SPALTE 1: LAYER 1 */}
                         <div
                           style={{
                             display: "flex",
@@ -2850,17 +3099,16 @@ const BackpropVisualizer = () => {
                             gap: "1rem",
                           }}
                         >
-                          {/* L1 Weights */}
+                          {/* W1 */}
                           <div>
                             <div
                               style={{
-                                color: "rgb(16, 185, 129)", // Grün
+                                color: "rgb(16, 185, 129)",
                                 marginBottom: "0.25rem",
                                 fontWeight: "bold",
                               }}
                             >
-                              {/* Notation: W^[1] (In->H1) */}W
-                              <sup style={{ fontSize: "0.7em" }}>[1]</sup>{" "}
+                              W<sup style={{ fontSize: "0.7em" }}>[1]</sup>{" "}
                               <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
                                 (In→H1)
                               </span>
@@ -2874,22 +3122,17 @@ const BackpropVisualizer = () => {
                               </div>
                             ))}
                           </div>
-
-                          {/* L1 Biases */}
+                          {/* B1 */}
                           <div>
                             <div
                               style={{
-                                color: "rgb(16, 185, 129)", // Grün
+                                color: "rgb(16, 185, 129)",
                                 marginBottom: "0.25rem",
                                 fontWeight: "bold",
                                 opacity: 0.9,
                               }}
                             >
-                              {/* Notation: b^[1] (H1) */}b
-                              <sup style={{ fontSize: "0.7em" }}>[1]</sup>{" "}
-                              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
-                                (H1)
-                              </span>
+                              b<sup style={{ fontSize: "0.7em" }}>[1]</sup>
                             </div>
                             <div style={{ color: "rgb(156, 163, 175)" }}>
                               [{h.bias1.map((n) => n.toFixed(2)).join(", ")}]
@@ -2897,7 +3140,7 @@ const BackpropVisualizer = () => {
                           </div>
                         </div>
 
-                        {/* --- SPALTE 2: LAYER 2 (Weights + Biases) --- */}
+                        {/* SPALTE 2: LAYER 2 */}
                         <div
                           style={{
                             display: "flex",
@@ -2905,11 +3148,11 @@ const BackpropVisualizer = () => {
                             gap: "1rem",
                           }}
                         >
-                          {/* L2 Weights */}
+                          {/* W2 */}
                           <div>
                             <div
                               style={{
-                                color: "rgb(96, 165, 250)", // Blau
+                                color: "rgb(96, 165, 250)",
                                 marginBottom: "0.25rem",
                                 fontWeight: "bold",
                               }}
@@ -2928,21 +3171,17 @@ const BackpropVisualizer = () => {
                               </div>
                             ))}
                           </div>
-
-                          {/* L2 Biases */}
+                          {/* B2 */}
                           <div>
                             <div
                               style={{
-                                color: "rgb(96, 165, 250)", // Blau
+                                color: "rgb(96, 165, 250)",
                                 marginBottom: "0.25rem",
                                 fontWeight: "bold",
                                 opacity: 0.9,
                               }}
                             >
-                              b<sup style={{ fontSize: "0.7em" }}>[2]</sup>{" "}
-                              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
-                                (H2)
-                              </span>
+                              b<sup style={{ fontSize: "0.7em" }}>[2]</sup>
                             </div>
                             <div style={{ color: "rgb(156, 163, 175)" }}>
                               [{h.bias2.map((n) => n.toFixed(2)).join(", ")}]
@@ -2950,7 +3189,7 @@ const BackpropVisualizer = () => {
                           </div>
                         </div>
 
-                        {/* --- SPALTE 3: LAYER 3 (Weights + Biases) --- */}
+                        {/* SPALTE 3: LAYER 3 */}
                         <div
                           style={{
                             display: "flex",
@@ -2958,11 +3197,11 @@ const BackpropVisualizer = () => {
                             gap: "1rem",
                           }}
                         >
-                          {/* L3 Weights */}
+                          {/* W3 */}
                           <div>
                             <div
                               style={{
-                                color: "rgb(168, 85, 247)", // Violett
+                                color: "rgb(168, 85, 247)",
                                 marginBottom: "0.25rem",
                                 fontWeight: "bold",
                               }}
@@ -2981,21 +3220,17 @@ const BackpropVisualizer = () => {
                               </div>
                             ))}
                           </div>
-
-                          {/* L3 Biases */}
+                          {/* B3 */}
                           <div>
                             <div
                               style={{
-                                color: "rgb(168, 85, 247)", // Violett
+                                color: "rgb(168, 85, 247)",
                                 marginBottom: "0.25rem",
                                 fontWeight: "bold",
                                 opacity: 0.9,
                               }}
                             >
-                              b<sup style={{ fontSize: "0.7em" }}>[3]</sup>{" "}
-                              <span style={{ fontSize: "0.8em", opacity: 0.7 }}>
-                                (Out)
-                              </span>
+                              b<sup style={{ fontSize: "0.7em" }}>[3]</sup>
                             </div>
                             <div style={{ color: "rgb(156, 163, 175)" }}>
                               [{h.bias3.map((n) => n.toFixed(2)).join(", ")}]
