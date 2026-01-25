@@ -3079,8 +3079,29 @@ PLAYGROUND VISUALIZER STYLES
   -webkit-overflow-scrolling: touch; /* Smoothes Scrollen auf iOS */
 }
 
-/* Auf sehr kleinen Screens (Handy) den Randomize Button volle Breite machen */
+.limit-popup-mobile {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  max-width: 1100px !important;
+  width: 90vw !important;
+  transform: translate(-50%, -50%) !important;
+  box-shadow: 0 0 0 100vh rgba(0, 0, 0, 0.7),
+    0 10px 25px -5px rgba(0, 0, 0, 0.9) !important;
+  z-index: 9999 !important;
+}
+
+.legend-tooltip {
+  box-shadow: 0 0 0 100vh rgba(0, 0, 0, 0.7),
+    0 10px 25px -5px rgba(0, 0, 0, 0.9) !important;
+}
+
 @media (max-width: 480px) {
+  .limit-popup-mobile {
+    width: 90vw !important;
+    max-width: 350px !important;
+  }
+
   .backprop-randomize-btn {
     width: 100%;
     justify-content: center;
@@ -3109,6 +3130,10 @@ PLAYGROUND VISUALIZER STYLES
     max-width: 40px !important;
     min-width: 40px !important;
     padding-left: 20px;
+  }
+
+  .x-values {
+    padding-left: unset !important;
   }
 
   /* Labels (x1, x2): Schmaler machen */
@@ -4496,6 +4521,7 @@ Privacy Policy
 
 .animationToggle {
   background: var(--clr-animation-toggle-wrapper);
+  border-radius: 15px;
   padding: 5px;
   position: absolute;
   text-align: center;
