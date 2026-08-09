@@ -41,3 +41,7 @@ next-env.d.ts
 node_modules/
 .cache/
 .env*
+
+# agent runtime / vendored lawbook (ephemeral, never commit)
+/runtime/
+/.agent-rules/

@@ -78,7 +78,11 @@ const AboutPage = ({ customData, cookies }) => {
         <FadeInSection>
           <div id="resume" className="about-download">
             <div className="resume-wrapper">
-              <a href="/resume_sb.pdf" className="btn center-btn">
+              <a
+                href="/samuel-blehm-resume-en.pdf"
+                download="samuel-blehm-resume-en.pdf"
+                className="btn center-btn"
+              >
                 <span className="btn">
                   <MdFileDownload className="icon-margin" />
                   RÉSUMÉ
