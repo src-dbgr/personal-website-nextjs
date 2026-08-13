@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { hasLaunchSeenClass, paintedTheme } from "../lib/bootFlags";
 
 export const GlobalStateContext = React.createContext();
 export const GlobalDispatchContext = React.createContext();
 
-const getInitialTheme = () => {
-  if (typeof window !== "undefined") {
-    const savedTheme = localStorage.getItem("theme");
-    return savedTheme || "dark";
-  }
-  return "dark";
-};
-
 const initialState = {
-  theme: getInitialTheme(),
+  theme: "dark",
   animation: true,
   navopen: false,
   navlogoscale: false,
@@ -26,6 +19,16 @@ function reducer(state, action) {
   switch (action.type) {
     case "TOGGLE_THEME": {
       const newTheme = state.theme === "light" ? "dark" : "light";
+      if (typeof window !== "undefined") {
+        localStorage.setItem("theme", newTheme);
+      }
+      return {
+        ...state,
+        theme: newTheme,
+      };
+    }
+    case "SET_THEME": {
+      const newTheme = action.theme === "light" ? "light" : "dark";
       if (typeof window !== "undefined") {
         localStorage.setItem("theme", newTheme);
       }
@@ -74,30 +77,21 @@ const GlobalContextProvider = ({ children }) => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const launchSeen = Cookies.get("launch_seen");
-    if (launchSeen) {
-      // Wenn das Cookie existiert, Animation sofort ausschalten
+    if (hasLaunchSeenClass() || Cookies.get("launch_seen")) {
       dispatch({ type: "LAUNCH_ANIMATION" });
     }
+    dispatch({ type: "SET_THEME", theme: paintedTheme() });
+    setIsClient(true);
   }, []);
 
   useEffect(() => {
-    setIsClient(true);
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme && savedTheme !== state.theme) {
-      dispatch({ type: "TOGGLE_THEME" });
-    }
-  }, [dispatch, state.theme]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      document.body.classList.toggle("dark-theme", state.theme === "dark");
-      document.documentElement.classList.toggle(
-        "htmlScrollbarDarkMode",
-        state.theme === "dark"
-      );
-    }
-  }, [state.theme]);
+    if (!isClient) return;
+    document.body.classList.toggle("dark-theme", state.theme === "dark");
+    document.documentElement.classList.toggle(
+      "htmlScrollbarDarkMode",
+      state.theme === "dark"
+    );
+  }, [isClient, state.theme]);
 
   return (
     <GlobalStateContext.Provider value={state}>

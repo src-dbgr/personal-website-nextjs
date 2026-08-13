@@ -1,39 +1,17 @@
 import dynamic from "next/dynamic";
 import Cookies from "js-cookie";
 
-const PageWrapper = dynamic(
-  () => import("framer-motion").then((mod) => mod.motion.div),
-  { ssr: false }
-);
-
-const MotionMain = dynamic(
-  () => import("framer-motion").then((mod) => mod.motion.main),
-  {
-    ssr: false,
-    loading: () => <main>Loading...</main>,
-  }
-);
-
 import React, { useEffect, useContext } from "react";
 import Footer from "../07_footer/Footer";
 import {
   GlobalDispatchContext,
   GlobalStateContext,
 } from "../../context/GlobalContextProvider";
+import { hasLaunchSeenClass, markLaunchSeen } from "../../lib/bootFlags";
 
 const Launch = dynamic(() => import("../01_launch/Launch"), { ssr: false });
 
-const StaticShell = ({ children, darkFooter }) => (
-  <div data-layout-shell="ssr">
-    {/* Navbar touches window at render; marker keeps a visible shell without SSR crash */}
-    <header className="navbar" role="banner" data-layout="navbar-marker" />
-    <main data-layout="main">{children}</main>
-    <Footer darkFooter={darkFooter} />
-  </div>
-);
-
 const Layout = ({ children, darkFooter }) => {
-  const isIndexPage = true; // TODO ==> Change, compare to location pathname or slug!
   const [hasMounted, setHasMounted] = React.useState(false);
 
   const state = useContext(GlobalStateContext);
@@ -72,49 +50,24 @@ const Layout = ({ children, darkFooter }) => {
   }, [state.animation]);
 
   const handleFinishLaunching = () => {
-    // Setze das Cookie 'launch_seen' auf 'true'.
-    // expires: 7 days
     Cookies.set("launch_seen", "true", { expires: 7 });
-
-    // Originale Dispatch Funktion aufrufen
+    markLaunchSeen();
     dispatch({ type: "LAUNCH_ANIMATION" });
   };
 
-  // SSR + first client paint: visible shell with page content (AC-04).
-  // Launch / framer wrappers only after mount to avoid blank __next and hydration mismatch.
-  if (!hasMounted) {
-    return (
-      <StaticShell darkFooter={darkFooter}>{children}</StaticShell>
-    );
-  }
+  const showLaunchOverlay =
+    hasMounted && state.animation && !hasLaunchSeenClass();
 
   return (
-    <>
-      {isIndexPage && state.animation ? (
-        <Launch finishLaunching={handleFinishLaunching} />
-      ) : (
-        <PageWrapper
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.1 }}
-        >
-          <MotionMain
-            initial={{ opacity: 0, x: 0 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 0 }}
-            transition={{
-              type: "spring",
-              mass: 0.35,
-              stiffness: 75,
-              duration: 0.1,
-            }}
-          >
-            {children}
-          </MotionMain>
-          <Footer darkFooter={darkFooter} />
-        </PageWrapper>
-      )}
-    </>
+    <div>
+      {showLaunchOverlay ? (
+        <div className="launch-overlay">
+          <Launch finishLaunching={handleFinishLaunching} />
+        </div>
+      ) : null}
+      <main>{children}</main>
+      <Footer darkFooter={darkFooter} />
+    </div>
   );
 };
 

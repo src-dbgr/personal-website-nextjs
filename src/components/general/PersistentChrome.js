@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../02_navigation/Navbar";
 import Topbar from "../02_navigation/Topbar";
 import { GlobalStateContext } from "../../context/GlobalContextProvider";
+import { hasLaunchSeenClass } from "../../lib/bootFlags";
 
 /**
  * Navbar + mobile overlay live here so they survive Pages-Router remounts.
@@ -15,7 +16,7 @@ const PersistentChrome = () => {
     setHasMounted(true);
   }, []);
 
-  if (!hasMounted || animation) {
+  if (!hasMounted || (!hasLaunchSeenClass() && animation)) {
     return null;
   }
 
