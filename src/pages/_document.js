@@ -4,8 +4,9 @@ import { getCspContent } from "../lib/csp";
 class MyDocument extends Document {
   render() {
     return (
-      <Html>
+      <Html className="theme-pending">
         <Head>
+          <style>{"html.theme-pending{visibility:hidden}"}</style>
           <meta httpEquiv="Content-Security-Policy" content={getCspContent()} />
           {/* Favicon and manifest links */}
           <link
@@ -29,6 +30,8 @@ class MyDocument extends Document {
           <link rel="manifest" href="/manifest.json" />
         </Head>
         <body>
+          {/* Blocking, CSP 'self': apply saved theme before Main paints. */}
+          <script src="/theme-init.js" />
           <Main />
           <NextScript />
         </body>

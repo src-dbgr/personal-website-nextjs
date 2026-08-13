@@ -1,29 +1,14 @@
-import { GlobalStateContext } from "../../context/GlobalContextProvider";
-import React, { useEffect, useContext, useState, useRef } from "react";
+import React, { useRef } from "react";
 import Link from "next/link";
-import Aos from "aos";
-import "aos/dist/aos.css";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
 const Threejsrender = dynamic(() => import("./Threejs/ThreejsRender"), {
   ssr: false,
-  loading: () => <div>Loading animation...</div>,
+  loading: () => <div className="hero-canvas-placeholder" aria-hidden="true" />,
 });
 
 const Hero = () => {
   const svgRef = useRef(null);
-
-  const [isMounted, setIsMounted] = useState(false);
-  const { theme, navanimation } = useContext(GlobalStateContext);
-
-  useEffect(() => {
-    setIsMounted(true);
-    Aos.init({ duration: 1000 });
-  }, []);
-
-  if (!isMounted) {
-    return null; // oder ein Loading-Indikator
-  }
 
   return (
     <header className="hero">
@@ -31,25 +16,10 @@ const Hero = () => {
         <div className="section-center hero-center">
           <article className="hero-info">
             <div className="hero-description-wrapper">
-              <div
-                className="underline"
-                data-aos={`${navanimation ? "fade" : ""}`}
-                data-aos-once="true"
-              ></div>
-              <h4
-                data-aos={`${navanimation ? "fade" : ""}`}
-                data-aos-once="true"
-                data-aos-delay={`${navanimation ? "200" : "0"}`}
-              >
-                HI, MY NAME IS
-              </h4>
+              <div className="underline"></div>
+              <h4>HI, MY NAME IS</h4>
               <h1 className="big-heading">
-                <span
-                  className="highlight"
-                  data-aos={`${navanimation ? "fade" : ""}`}
-                  data-aos-delay={`${navanimation ? "400" : "0"}`}
-                  data-aos-once="true"
-                >
+                <span className="highlight">
                   <span>S</span>
                   <span>A</span>
                   <span>M</span>
@@ -58,42 +28,22 @@ const Hero = () => {
                   <span>L</span>
                 </span>
               </h1>
-              <h2
-                data-aos={`${navanimation ? "fade" : ""}`}
-                data-aos-delay={`${navanimation ? "600" : "0"}`}
-                data-aos-once="true"
-                className="big-heading"
-              >
+              <h2 className="big-heading">
                 I BUILD <span className="highlight">IT</span> STUFF
               </h2>
-              <div
-                className="hero-description"
-                data-aos={`${navanimation ? "fade" : ""}`}
-                data-aos-once="true"
-                data-aos-delay={`${navanimation ? "800" : "0"}`}
-              >
+              <div className="hero-description">
                 <p>
                   I AM A SOFTWARE DEVELOPER AND MACHINE LEARNING ENTHUSIAST WHO
                   SPECIALIZES IN SOLVING REAL-WORLD <span>IT</span> PROBLEMS.
                 </p>
               </div>
 
-              <Link
-                href="/contact"
-                data-aos={`${navanimation ? "fade" : ""}`}
-                data-aos-once="true"
-                data-aos-delay={`${navanimation ? "1000" : "0"}`}
-              >
+              <Link href="/contact">
                 <div className="btn">GET IN TOUCH</div>
               </Link>
             </div>
           </article>
-          <div
-            className="hero-img"
-            data-aos={`${navanimation ? "fade" : ""}`}
-            data-aos-once="true"
-            data-aos-delay={`${navanimation ? "1200" : "0"}`}
-          >
+          <div className="hero-img">
             <Threejsrender />
           </div>
         </div>
@@ -106,8 +56,6 @@ const Hero = () => {
         height="251.5"
         viewBox="0 0 4323.9 251.5"
         className="triangle-one"
-        data-aos={`${navanimation ? "fade-up" : ""}`}
-        data-aos-once="true"
       >
         <defs>
           <linearGradient
