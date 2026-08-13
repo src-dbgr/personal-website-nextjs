@@ -1,23 +1,57 @@
 // hooks/useNavigation.js
-import { useContext, useCallback } from 'react';
+import { useContext, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { GlobalDispatchContext, GlobalStateContext } from "../context/GlobalContextProvider";
+
+const PRIMARY_ROUTES = [
+  '/',
+  '/about',
+  '/projects',
+  '/blog',
+  '/playground',
+  '/contact',
+  '/legal',
+  '/privacy',
+];
+
+const normalizePath = (path) => {
+  if (!path) return "/";
+  const bare = path.split("#")[0].split("?")[0];
+  if (bare === "") return "/";
+  return bare.replace(/\/+$/, "") || "/";
+};
 
 export const useNavigation = () => {
   const dispatch = useContext(GlobalDispatchContext);
   const { navopen } = useContext(GlobalStateContext);
   const router = useRouter();
 
-  const handleNavigation = (url) => {
-    if (navopen) {
-      dispatch({ type: "NAV_TOGGLE_LOGO" });
-      dispatch({ type: "NAV_CIRC" });
+  useEffect(() => {
+    PRIMARY_ROUTES.forEach((route) => {
+      router.prefetch(route);
+    });
+  }, [router]);
 
-      setTimeout(() => {
-        router.push(url);
-      }, 450);
-    } else {
+  const closeOverlay = useCallback(() => {
+    dispatch({ type: "NAV_TOGGLE_LOGO" });
+    dispatch({ type: "NAV_CIRC" });
+  }, [dispatch]);
+
+  const handleNavigation = (url) => {
+    void router.prefetch(url);
+
+    if (!navopen) {
       router.push(url);
+      return;
+    }
+
+    // Immediate close animation (PersistentChrome stays mounted so it can finish).
+    // Push on the next frame so the first paint of the close isn't blocked by routing.
+    closeOverlay();
+    if (normalizePath(url) !== normalizePath(router.asPath)) {
+      requestAnimationFrame(() => {
+        void router.push(url);
+      });
     }
   };
 

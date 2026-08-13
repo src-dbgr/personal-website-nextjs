@@ -15,10 +15,7 @@ const MotionMain = dynamic(
 );
 
 import React, { useEffect, useContext } from "react";
-import Navbar from "../02_navigation/Navbar";
-import Topbar from "../02_navigation/Topbar";
 import Footer from "../07_footer/Footer";
-import CookieConsent from "./CookieConsent";
 import {
   GlobalDispatchContext,
   GlobalStateContext,
@@ -26,28 +23,25 @@ import {
 
 const Launch = dynamic(() => import("../01_launch/Launch"), { ssr: false });
 
-const Layout = ({ children, darkFooter, cookies }) => {
+const StaticShell = ({ children, darkFooter }) => (
+  <div data-layout-shell="ssr">
+    {/* Navbar touches window at render; marker keeps a visible shell without SSR crash */}
+    <header className="navbar" role="banner" data-layout="navbar-marker" />
+    <main data-layout="main">{children}</main>
+    <Footer darkFooter={darkFooter} />
+  </div>
+);
+
+const Layout = ({ children, darkFooter }) => {
   const isIndexPage = true; // TODO ==> Change, compare to location pathname or slug!
+  const [hasMounted, setHasMounted] = React.useState(false);
 
   const state = useContext(GlobalStateContext);
   const dispatch = useContext(GlobalDispatchContext);
 
-  const disableCookieConsent = React.useCallback(() => {
-    dispatch({ type: "COOKIE_CONSENT" });
-  }, [dispatch]);
-
-  const checkCookieState = React.useCallback(() => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem("CONSENTRXCSQECJWXXK") === "true"
-    ) {
-      disableCookieConsent();
-    }
-  }, [disableCookieConsent]);
-
   useEffect(() => {
-    checkCookieState();
-  }, [checkCookieState]);
+    setHasMounted(true);
+  }, []);
 
   function navigateToHash(isActive) {
     const isBrowser = () => typeof window !== "undefined";
@@ -86,46 +80,16 @@ const Layout = ({ children, darkFooter, cookies }) => {
     dispatch({ type: "LAUNCH_ANIMATION" });
   };
 
-  if (typeof window === "undefined") {
-    return null; // or a loading placeholder
+  // SSR + first client paint: visible shell with page content (AC-04).
+  // Launch / framer wrappers only after mount to avoid blank __next and hydration mismatch.
+  if (!hasMounted) {
+    return (
+      <StaticShell darkFooter={darkFooter}>{children}</StaticShell>
+    );
   }
 
-  // disable in production
-  // disabling on first render
-  // useEffect(() => {
-  //   const noop = () => { };
-  //   [
-  //     "assert",
-  //     "clear",
-  //     "count",
-  //     "debug",
-  //     "dir",
-  //     "dirxml",
-  //     "error",
-  //     "exception",
-  //     "group",
-  //     "groupCollapsed",
-  //     "groupEnd",
-  //     "info",
-  //     "log",
-  //     "markTimeline",
-  //     "profile",
-  //     "profileEnd",
-  //     "table",
-  //     "time",
-  //     "timeEnd",
-  //     "timeline",
-  //     "timelineEnd",
-  //     "timeStamp",
-  //     "trace",
-  //     "warn",
-  //   ].forEach((method) => {
-  //     window.console[method] = noop;
-  //   });
-  // }, []);
   return (
     <>
-      {state.cookieconsentopen && <CookieConsent cookies={cookies} />}
       {isIndexPage && state.animation ? (
         <Launch finishLaunching={handleFinishLaunching} />
       ) : (
@@ -134,8 +98,6 @@ const Layout = ({ children, darkFooter, cookies }) => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.1 }}
         >
-          <Navbar />
-          <Topbar />
           <MotionMain
             initial={{ opacity: 0, x: 0 }}
             animate={{ opacity: 1, x: 0 }}

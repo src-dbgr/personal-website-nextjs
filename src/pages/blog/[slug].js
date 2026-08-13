@@ -71,14 +71,15 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const { data } = await apolloClient.query({
-    query: GET_BLOG_BY_SLUG,
-    variables: { slug: params.slug },
-  });
+  const [{ data }, { cookies }] = await Promise.all([
+    apolloClient.query({
+      query: GET_BLOG_BY_SLUG,
+      variables: { slug: params.slug },
+    }),
+    fetchCookieStaticProps(),
+  ]);
 
   const blog = data.blogs[0];
-
-  const { cookies } = await fetchCookieStaticProps();
 
   return {
     props: {

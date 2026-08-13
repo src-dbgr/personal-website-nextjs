@@ -4505,6 +4505,27 @@ Privacy Policy
   font-size: 11pt;
 }
 
+.obf {
+  display: inline;
+  font: inherit;
+  color: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+
+.legal-page .section-center h1 {
+  text-transform: none;
+}
+
+.legal-page .section-center > div > .obf {
+  font-size: 11pt;
+  color: var(--clr-text-quiet);
+}
+
+.legal-page .section-center > div > .obf + .impressum-name {
+  display: inline-flex;
+}
+
 .animationWrapper {
   height: 100%;
   width: 100%;

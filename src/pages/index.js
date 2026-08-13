@@ -31,61 +31,56 @@ const index = ({ customData, cookies }) => {
 };
 
 export async function getStaticProps() {
-  const { data } = await apolloClient.query({
-    query: gql`
-      query {
-        blogs(sort: "date:desc", pagination: { limit: 3 }) {
-          date
-          slug
-          desc
-          title
-          category
-          createdAt
-          image {
-            url
-          }
-          documentId
-        }
-        projects(filters: { featured: { eq: true } }, sort: "orderid:asc") {
-          title
-          description
-          image {
-            url
-            caption
-            name
-          }
-          github
-          url
-          stack {
-            id
+  const [{ data }, { cookies }] = await Promise.all([
+    apolloClient.query({
+      query: gql`
+        query {
+          blogs(sort: "date:desc", pagination: { limit: 3 }) {
+            date
+            slug
+            desc
             title
+            category
+            createdAt
+            image {
+              url
+            }
+            documentId
           }
-          orderid
-          createdAt
-          updatedAt
-          publishedAt
-          featured
-        }
-        about {
-          documentId
-          infomain
-        }
-        jobs(sort: "id:desc") {
-          company
-          short_company
-          date
-          desc {
-            id
-            name
+          projects(filters: { featured: { eq: true } }, sort: "orderid:asc") {
+            title
+            description
+            image {
+              url
+            }
+            github
+            url
+            stack {
+              id
+              title
+            }
+            orderid
           }
-          position
-          documentId
+          about {
+            documentId
+            infomain
+          }
+          jobs(sort: "id:desc") {
+            company
+            short_company
+            date
+            desc {
+              id
+              name
+            }
+            position
+            documentId
+          }
         }
-      }
-    `
-  });
-
-  const { cookies } = await fetchCookieStaticProps();
+      `,
+    }),
+    fetchCookieStaticProps(),
+  ]);
 
   const projects = data.projects;
   

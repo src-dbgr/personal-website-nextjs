@@ -14,7 +14,6 @@ const GET_BLOGS = gql`
       desc
       date
       title
-      content
       category
       documentId
       image {
@@ -44,16 +43,17 @@ const BlogPage = ({ blogs, cookies }) => {
 };
 
 export async function getStaticProps() {
-  const { data } = await apolloClient.query({
-    query: GET_BLOGS,
-  });
+  const [{ data }, { cookies }] = await Promise.all([
+    apolloClient.query({
+      query: GET_BLOGS,
+    }),
+    fetchCookieStaticProps(),
+  ]);
 
   const blogs = data.blogs.map((blog) => ({
     ...blog,
     id: blog.documentId // Behalte id für Kompatibilität, aber nutze documentId
   }));
-
-  const { cookies } = await fetchCookieStaticProps();
 
   return {
     props: {

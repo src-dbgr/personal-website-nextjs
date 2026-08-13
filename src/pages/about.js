@@ -103,78 +103,75 @@ const AboutPage = ({ customData, cookies }) => {
 };
 
 export async function getStaticProps() {
-  const { data } = await apolloClient.query({
-    query: gql`
-      query {
-        about {
-          documentId
-          title
-          stack {
-            id
+  const [{ data }, { cookies }] = await Promise.all([
+    apolloClient.query({
+      query: gql`
+        query {
+          about {
+            documentId
             title
+            stack {
+              id
+              title
+            }
+            info
           }
-          info
-          image {
-            url
+          stations(pagination: {pageSize: 1000}, sort: "Order_Id:desc", filters: { Activated: { eq: true } }) {
+            Date
+            Description
+            From_Month
+            From_Year
+            Order_Id
+            To_Month
+            To_Year
+            To_Text
+            Graduation
+            Institution
+            stack {
+              id
+              title
+            }
+            urls {
+              id
+              title
+              url
+            }
+            stationctgry {
+              title
+              description
+              icon {
+                url
+                mime
+              }
+            }
           }
-        }
-        stations(pagination: {pageSize: 1000}, sort: "Order_Id:desc", filters: { Activated: { eq: true } }) {
-          Date
-          Description
-          From_Month
-          From_Year
-          Order_Id
-          To_Month
-          To_Year
-          To_Text
-          Graduation
-          Institution
-          stack {
-            id
-            title
-          }
-          urls {
-            id
-            title
-            url
-          }
-          stationctgry {
+          stationctgries {
             title
             description
             icon {
-              url
               mime
+              url
             }
           }
-        }
-        stationctgries {
-          title
-          description
-          icon {
-            mime
-            url
+          techstacks(pagination: {pageSize: 1000}, filters: { active: { eq: true } }, sort: "skilllevel:desc") {
+            skilldescription
+            skillleveltag
+            skillcategory
+            imgfilename
+            skilltitle
+            skilllevel
+            skilltype
+            techurl
+            imgurl
+            categorylabel
           }
         }
-        techstacks(pagination: {pageSize: 1000}, filters: { active: { eq: true } }, sort: "skilllevel:desc") {
-          skilldescription
-          skillleveltag
-          skillcategory
-          imgfilename
-          skilltitle
-          skilllevel
-          skilltype
-          techurl
-          imgurl
-          categorylabel
-        }
-      }
-    `
-  });
+      `
+    }),
+    fetchCookieStaticProps(),
+  ]);
 
-  const about = {
-    ...data.about,
-    image: { url: data.about.image.url }
-  };
+  const about = data.about;
 
   const stations = data.stations.map((station) => ({
     ...station,
@@ -187,8 +184,6 @@ export async function getStaticProps() {
   }));
 
   const techstacks = data.techstacks;
-
-  const { cookies } = await fetchCookieStaticProps();
 
   return {
     props: {
