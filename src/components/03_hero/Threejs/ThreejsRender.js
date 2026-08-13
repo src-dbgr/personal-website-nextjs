@@ -1,91 +1,23 @@
-import React, { Suspense, useState } from "react";
+import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import { Environment, PerspectiveCamera } from "@react-three/drei";
 
-// Dynamischer Import des Canvas
-const DynamicCanvas = dynamic(
-  () => import("@react-three/fiber").then((mod) => mod.Canvas),
-  { ssr: false }
-);
-
-// Unser neuer Kristall
-const DigitalCrystal = dynamic(() => import("./DigitalCrystal"), {
+const HeroCanvas = dynamic(() => import("./HeroCanvas"), {
   ssr: false,
 });
 
 const ThreejsRender = () => {
-  // STANDARDMÄSSIG AUS (false), wie im Original
   const [animation, setAnimation] = useState(false);
 
   const toggleAnimation = () => {
     setAnimation(!animation);
   };
 
-  const brandGreen = "#00af64";
-  const brandPurple = "#ac4a9c";
-
   let Content;
 
   if (animation) {
-    // --- 3D ANSICHT ---
     Content = (
       <div style={{ width: "100%", height: "100%" }}>
-        <DynamicCanvas
-          dpr={[1, 2]}
-          gl={{
-            antialias: true,
-            alpha: true,
-            toneMappingExposure: 1.2,
-            powerPreference: "high-performance", // Performance-Boost vom Original übernommen
-          }}
-          // Context-Lost-Handler vom Original übernommen für Stabilität
-          onCreated={({ gl }) => {
-            gl.domElement.addEventListener(
-              "webglcontextlost",
-              (event) => {
-                event.preventDefault();
-                console.warn("WebGL Context Lost recovered");
-              },
-              false
-            );
-          }}
-        >
-          <PerspectiveCamera makeDefault position={[0, 0, 7]} fov={35} />
-
-          <Suspense fallback={null}>
-            {/* Lokales Environment */}
-            <Environment
-              files="/assets/images/textures/snow_4k.hdr"
-              background={false}
-              blur={1}
-            />
-
-            {/* Licht-Setup */}
-            <spotLight
-              position={[10, 20, 10]}
-              angle={0.3}
-              penumbra={1}
-              intensity={150}
-              color="white"
-            />
-            <ambientLight intensity={0.5} />
-            <pointLight
-              position={[-4, -2, 2]}
-              intensity={60}
-              color={brandGreen}
-              distance={10}
-            />
-            <pointLight
-              position={[4, 2, 2]}
-              intensity={60}
-              color={brandPurple}
-              distance={10}
-            />
-
-            {/* Der neue Kristall */}
-            <DigitalCrystal />
-          </Suspense>
-        </DynamicCanvas>
+        <HeroCanvas />
       </div>
     );
   } else {

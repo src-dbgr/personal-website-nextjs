@@ -2,17 +2,22 @@ import React from "react";
 import Title from "../components/general/Title";
 import Layout from "../components/general/Layout";
 import Seo from "../components/general/Seo";
-import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 
-const legal  = ({ cookies }) => { // cookies als Prop hinzufügen
+const legal  = () => {
   return (
-    <Layout darkFooter={true} cookies={cookies}>
+    <Layout darkFooter={true}>
       <Seo title="Legal Notice | Impressum" />
       <section className="legal-page">
         <Title title="Legal Notice / Impressum" />
         <div className="section-center">
-          <h1>Impressum</h1>
-          <h2>Angaben gemäß § 5 TMG:</h2>
+          <h1>
+            <span className="obf">I</span>
+            <span className="obf">m</span>
+            <span className="obf">pre</span>
+            <span className="obf">ss</span>
+            <span className="obf">um</span>
+          </h1>
+          <h2>Angaben zum Anbieter</h2>
           <div>
             <div className="impressum-name">
               <div className="impressum-name">S&nbsp;a&nbsp;</div>
@@ -48,19 +53,11 @@ const legal  = ({ cookies }) => { // cookies als Prop hinzufügen
           </div>
           <h3>Kontakt:</h3>
           <div>
+            <span className="obf">E</span>
+            <span className="obf">-</span>
+            <span className="obf">Mail</span>
+            <span className="obf">:&nbsp;</span>
             <div className="impressum-name">
-              <p>Telefon:&nbsp;</p>
-              <div className="impressum-name">+4</div>
-              <div className="impressum-name">9</div>
-              <div className="impressum-name">&nbsp;</div>
-              <div className="impressum-name">15&nbsp;</div>
-              <div className="impressum-name">170</div>
-              <div className="impressum-name">87</div>
-              <div className="impressum-name">66</div>
-              <div className="impressum-name">04</div>
-            </div>
-            <div className="impressum-name">
-              <p>E-Mail:&nbsp;</p>
               <div className="impressum-name">m</div>
               <div className="impressum-name">a</div>
               <div className="impressum-name">il</div>
@@ -74,23 +71,6 @@ const legal  = ({ cookies }) => { // cookies als Prop hinzufügen
               <div className="impressum-name">o</div>
             </div>
           </div>
-          <p>
-            <br />
-          </p>
-          <p></p>
-          <h2>Hinweise zur Website</h2>
-          <p></p>
-          <h2>Information gemäß § 36 VSBG</h2>
-          <p>
-            Gemäß § 36 VSBG (Verbraucherstreitbeilegungsgesetz – Gesetz über die
-            alternative Streitbeilegung in Verbrauchersachen) erklärt der
-            Betreiber dieser Website:
-          </p>
-          <p>
-            Wir sind weder bereit noch verpflichtet, an
-            Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle
-            teilzunehmen.
-          </p>
         </div>
       </section>
     </Layout>
@@ -98,13 +78,9 @@ const legal  = ({ cookies }) => { // cookies als Prop hinzufügen
 };
 
 export async function getStaticProps() {
-  const { cookies } = await fetchCookieStaticProps(); // Cookies Daten abfragen
-
   return {
-    props: {
-      cookies,
-    },
-    revalidate: 10, // Optional: Setzt die Revalidierungszeit für die statische Seite
+    props: {},
+    revalidate: 10,
   };
 }
 

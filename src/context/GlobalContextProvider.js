@@ -18,7 +18,7 @@ const initialState = {
   navopen: false,
   navlogoscale: false,
   navanimation: true,
-  cookieconsentopen: true,
+  cookieconsentopen: false,
   navcircanim: true,
 };
 

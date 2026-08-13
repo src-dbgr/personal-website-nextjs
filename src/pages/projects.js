@@ -43,13 +43,14 @@ const ProjectsPage = ({ projects, cookies }) => {
 };
 
 export async function getStaticProps() {
-  const { data } = await apolloClient.query({
-    query: GET_PROJECTS,
-  });
+  const [{ data }, { cookies }] = await Promise.all([
+    apolloClient.query({
+      query: GET_PROJECTS,
+    }),
+    fetchCookieStaticProps(),
+  ]);
 
   const projects = data.projects;
-
-  const { cookies } = await fetchCookieStaticProps();
 
   return {
     props: {

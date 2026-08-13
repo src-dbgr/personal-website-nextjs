@@ -9,7 +9,6 @@ import PageLinks from "../../data/constants/links";
 
 const Navbar = (props) => {
   const [scaleTrigger, setScaleTrigger] = useState(false);
-  const [showNavbar, setShowNavbar] = useState(true);
   const mounted = useRef(false);
   const firstrender = useRef(true);
   const animationDuration = 500;
@@ -84,26 +83,6 @@ const Navbar = (props) => {
     };
   }, [navopen]);
 
-  let prevScrollpos = window.pageYOffset;
-  const controlNavbarVisibility = () => {
-    if (window.scrollY > 50) {
-      let currentScrollPos = window.pageYOffset;
-      if (prevScrollpos > currentScrollPos) {
-        setShowNavbar(true);
-      } else {
-        setShowNavbar(false);
-      }
-      prevScrollpos = currentScrollPos;
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", controlNavbarVisibility);
-    return () => {
-      window.removeEventListener("scroll", controlNavbarVisibility);
-    };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   useEffect(() => {
     let alive = true;
     if (navanimation) {
@@ -138,14 +117,11 @@ const Navbar = (props) => {
 
   return (
     <nav
-      className={`${navopen
-        ? showNavbar
+      className={`${
+        navopen
           ? "navbar navbar_open blurred-container"
-          : "navbar_disappear blurred-container"
-        : showNavbar
-          ? "navbar navbar_closed blurred-container"
-          : "navbar_disappear blurred-container"
-        }`}
+          : "navbar navbar_closed blurred-container"
+      }`}
     >
       <div className="nav-center">
         <div className="nav-header">
