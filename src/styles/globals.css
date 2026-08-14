@@ -3834,10 +3834,18 @@ ul li:nth-child(even) .timeline-node {
 
 @media screen and (min-width: 576px) {
   .blogs-center {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(368px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     padding-bottom: 0;
     column-gap: 2rem;
+  }
+
+  .blogs-center > .fade-in-section {
+    display: block;
+    flex: 0 1 368px;
+    width: 368px;
+    max-width: 100%;
   }
 }
 
