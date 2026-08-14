@@ -33,7 +33,7 @@ const Hero = () => {
               </h2>
               <div className="hero-description">
                 <p>
-                  8+ YEARS BUILDING PRODUCTION DISTRIBUTED SYSTEMS —
+                  8+ YEARS BUILDING PRODUCTION DISTRIBUTED SYSTEMS -
                   ARCHITECTURE AND SECURITY.
                 </p>
               </div>

@@ -42,7 +42,14 @@ const TOOLS_ORDER = [
   "RabbitMQ",
 ];
 
-const DATA_ORDER = ["Strapi"];
+const DATA_ORDER = [
+  "Adobe CC",
+  "MS Excel / VBA",
+  "Strapi",
+  "Octave / Matlab",
+  "TensorFlow",
+  "PyTorch",
+];
 
 function byTitleOrder(items, order) {
   const rank = new Map(order.map((title, index) => [title, index]));
