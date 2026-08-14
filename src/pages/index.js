@@ -23,7 +23,7 @@ const index = ({ customData, cookies }) => {
     <Layout darkFooter={true} cookies={cookies}>
       <Seo
         title="Home"
-        description="Senior Software Developer. Distributed systems, architecture, reliability, and security in the delivery path."
+        description="Senior Software Developer. Production distributed systems, architecture, and security."
       />
       <Hero />
       <About infomain={about} stack={aboutStack} />

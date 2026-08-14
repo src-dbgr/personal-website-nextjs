@@ -33,8 +33,8 @@ const Hero = () => {
               </h2>
               <div className="hero-description">
                 <p>
-                  8+ YEARS DESIGNING AND OPERATING DISTRIBUTED SYSTEMS —
-                  ARCHITECTURE, RELIABILITY, AND SECURITY IN THE DELIVERY PATH.
+                  8+ YEARS BUILDING PRODUCTION DISTRIBUTED SYSTEMS —
+                  ARCHITECTURE AND SECURITY.
                 </p>
               </div>
 
