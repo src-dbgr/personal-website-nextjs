@@ -1,26 +1,28 @@
 import React, { useState } from "react";
-import Image from 'next/image';
+import Image from "next/image";
+import dynamic from "next/dynamic";
 import Layout from "../components/general/Layout";
 import Title from "../components/general/Title";
 import { BsCircleFill } from "react-icons/bs";
 import { IoTriangleSharp } from "react-icons/io5";
 import { MdFileDownload } from "react-icons/md";
-const Technologies = dynamic(() => import('../components/04_about/04_03_tech/Technologies'), {
-  loading: () => <div>Loading...</div>
-});
-const Stations = dynamic(() => import('../components/04_about/04_02_stations/Stations'), {
-  loading: () => <div>Loading...</div>
-});
 import Seo from "../components/general/Seo";
-import { gql } from '@apollo/client';
-import apolloClient from '../lib/apolloClient';
-import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
-import dynamic from 'next/dynamic';
+import { fetchAboutPage } from "../lib/strapi";
+import { fetchCookieStaticProps } from "../lib/staticPropsHelpers";
+import FadeInSection from "../hooks/FadeInSectionClient";
 
-const FadeInSection = dynamic(() => import("../hooks/FadeInSection"), {
-  ssr: false,
-  loading: () => <div>Loading ...</div>, // optionaler Fallback
-});
+const Technologies = dynamic(
+  () => import("../components/04_about/04_03_tech/Technologies"),
+  {
+    loading: () => <div>Loading...</div>,
+  }
+);
+const Stations = dynamic(
+  () => import("../components/04_about/04_02_stations/Stations"),
+  {
+    loading: () => <div>Loading...</div>,
+  }
+);
 
 const AboutPage = ({ customData, cookies }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -106,94 +108,16 @@ const AboutPage = ({ customData, cookies }) => {
 };
 
 export async function getStaticProps() {
-  const [{ data }, { cookies }] = await Promise.all([
-    apolloClient.query({
-      query: gql`
-        query {
-          about {
-            documentId
-            title
-            stack {
-              id
-              title
-            }
-            info
-          }
-          stations(pagination: {pageSize: 1000}, sort: "Order_Id:desc", filters: { Activated: { eq: true } }) {
-            Date
-            Description
-            From_Month
-            From_Year
-            Order_Id
-            To_Month
-            To_Year
-            To_Text
-            Graduation
-            Institution
-            stack {
-              id
-              title
-            }
-            urls {
-              id
-              title
-              url
-            }
-            stationctgry {
-              title
-              description
-              icon {
-                url
-                mime
-              }
-            }
-          }
-          stationctgries {
-            title
-            description
-            icon {
-              mime
-              url
-            }
-          }
-          techstacks(pagination: {pageSize: 1000}, filters: { active: { eq: true } }) {
-            skilldescription
-            imgfilename
-            skilltitle
-            techurl
-            imgurl
-            categorylabel
-          }
-        }
-      `
-    }),
+  const [customData, { cookies }] = await Promise.all([
+    fetchAboutPage(),
     fetchCookieStaticProps(),
   ]);
 
-  const about = data.about;
-
-  const stations = data.stations.map((station) => ({
-    ...station,
-    stationctgry: station.stationctgry
-  }));
-
-  const categories = data.stationctgries.map((category) => ({
-    ...category,
-    icon: category.icon
-  }));
-
-  const techstacks = data.techstacks;
-
   return {
     props: {
-      customData: {
-        about,
-        stations,
-        categories,
-        techstacks,
-      },
+      customData,
       cookies,
-    }
+    },
   };
 }
 

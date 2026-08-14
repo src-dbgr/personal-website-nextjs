@@ -3,12 +3,7 @@ import Title from "../general/Title";
 import Image from "next/image";
 import { BsCircleFill } from "react-icons/bs";
 import { IoTriangleSharp } from "react-icons/io5";
-import dynamic from "next/dynamic";
-
-const FadeInSection = dynamic(() => import("../../hooks/FadeInSection"), {
-  ssr: false,
-  loading: () => <div>Loading ...</div>, // optionaler Fallback
-});
+import FadeInSection from "../../hooks/FadeInSectionClient";
 
 const About = ({ infomain, stack }) => {
   const chips =

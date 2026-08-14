@@ -45,3 +45,5 @@ node_modules/
 # agent runtime / vendored lawbook (ephemeral, never commit)
 /runtime/
 /.agent-rules/
+/proof-artifacts/
+/.tmp-screenshots/

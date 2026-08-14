@@ -1,10 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import SocialLinks from "../../data/constants/socialLinks";
 import Link from "next/link";
-import {
-  GlobalDispatchContext,
-  GlobalStateContext,
-} from "../../context/GlobalContextProvider";
 import { useNavigation } from "../../hooks/useNavigation";
 
 const Footer = ({ darkFooter }) => {

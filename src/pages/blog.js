@@ -1,27 +1,10 @@
-import React from 'react';
-import { gql } from '@apollo/client';
-import apolloClient from '../lib/apolloClient';
-import Layout from '../components/general/Layout';
-import Seo from '../components/general/Seo';
-import Title from '../components/general/Title';
-import Blog from '../components/06_blog/Blog';
-import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
-
-const GET_BLOGS = gql`
-  query GetBlogs {
-    blogs(pagination: {pageSize: 1000}, sort: ["date:desc"]) {
-      slug
-      desc
-      date
-      title
-      category
-      documentId
-      image {
-        url
-      }
-    }
-  }
-`;
+import React from "react";
+import Layout from "../components/general/Layout";
+import Seo from "../components/general/Seo";
+import Title from "../components/general/Title";
+import Blog from "../components/06_blog/Blog";
+import { fetchBlogs } from "../lib/strapi";
+import { fetchCookieStaticProps } from "../lib/staticPropsHelpers";
 
 const BlogPage = ({ blogs, cookies }) => {
   return (
@@ -43,23 +26,16 @@ const BlogPage = ({ blogs, cookies }) => {
 };
 
 export async function getStaticProps() {
-  const [{ data }, { cookies }] = await Promise.all([
-    apolloClient.query({
-      query: GET_BLOGS,
-    }),
+  const [blogs, { cookies }] = await Promise.all([
+    fetchBlogs(),
     fetchCookieStaticProps(),
   ]);
-
-  const blogs = data.blogs.map((blog) => ({
-    ...blog,
-    id: blog.documentId // Behalte id für Kompatibilität, aber nutze documentId
-  }));
 
   return {
     props: {
       blogs,
       cookies,
-    }
+    },
   };
 }
 

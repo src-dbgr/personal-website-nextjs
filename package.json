@@ -19,7 +19,6 @@
     "@apollo/client": "^4.2.10",
     "@emotion/is-prop-valid": "^1.4.0",
     "@juggle/resize-observer": "^3.4.0",
-    "@loadable/component": "^5.16.7",
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
     "@react-three/postprocessing": "^3.0.5",
@@ -31,11 +30,11 @@
     "js-cookie": "^3.0.8",
     "lucide-react": "^1.31.0",
     "next": "^16.3.0",
+    "prop-types": "^15.8.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-icons": "^5.7.0",
     "react-markdown": "^10.1.0",
-    "rxjs": "^7.8.2",
     "three": "^0.185.1"
   },
   "devDependencies": {

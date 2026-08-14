@@ -7,11 +7,16 @@ import {
   GlobalDispatchContext,
   GlobalStateContext,
 } from "../../context/GlobalContextProvider";
-import { hasLaunchSeenClass, markLaunchSeen } from "../../lib/bootFlags";
+import {
+  COOKIE_BANNER_ENABLED,
+  hasLaunchSeenClass,
+  markLaunchSeen,
+} from "../../lib/bootFlags";
+import CookieConsent from "./CookieConsent";
 
 const Launch = dynamic(() => import("../01_launch/Launch"), { ssr: false });
 
-const Layout = ({ children, darkFooter }) => {
+const Layout = ({ children, darkFooter, cookies }) => {
   const [hasMounted, setHasMounted] = React.useState(false);
 
   const state = useContext(GlobalStateContext);
@@ -68,6 +73,9 @@ const Layout = ({ children, darkFooter }) => {
       <main id="main-content" tabIndex={-1}>
         {children}
       </main>
+      {COOKIE_BANNER_ENABLED && cookies?.length ? (
+        <CookieConsent cookies={cookies} />
+      ) : null}
       <Footer darkFooter={darkFooter} />
     </div>
   );

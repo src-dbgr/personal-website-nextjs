@@ -9,7 +9,7 @@ export const BlogsSection = ({ blogs, title, showLink }) => {
       <Title title={title} />
       <div className="section-center blogs-center">
         {blogs.map((blog) => {
-          return <Blog key={blog.createdAt} {...blog} />;
+          return <Blog key={blog.documentId} {...blog} />;
         })}
       </div>
       {showLink && (

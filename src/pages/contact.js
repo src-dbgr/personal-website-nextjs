@@ -2,13 +2,8 @@ import { useState } from "react";
 import Layout from "../components/general/Layout";
 import Title from "../components/general/Title";
 import Seo from "../components/general/Seo";
-import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
-import dynamic from 'next/dynamic';
-
-const FadeInSection = dynamic(() => import("../hooks/FadeInSection"), {
-  ssr: false,
-  loading: () => <div>Loading ...</div>, // optionaler Fallback
-});
+import { fetchCookieStaticProps } from "../lib/staticPropsHelpers";
+import FadeInSection from "../hooks/FadeInSectionClient";
 
 const Contact = ({ cookies }) => { 
     const [isMailValid, setMailValid] = useState(true);

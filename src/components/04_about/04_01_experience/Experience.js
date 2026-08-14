@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import Title from "../../general/Title";
 import { VscCircleFilled } from "react-icons/vsc";
 import Link from "next/link";
-import dynamic from 'next/dynamic';
-
-const FadeInSection = dynamic(() => import("../../../hooks/FadeInSection"), {
-  ssr: false,
-  loading: () => <div>Loading ...</div>, // optionaler Fallback
-});
+import FadeInSection from "../../../hooks/FadeInSectionClient";
 
 const Experience = ({ jobs }) => {
   const [value, setValue] = useState(0);
+
+  if (!jobs?.length) {
+    return null;
+  }
+
   const { company, position, date, desc } = jobs[value];
 
   return (

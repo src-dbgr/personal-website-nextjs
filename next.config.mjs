@@ -19,8 +19,6 @@ const nextConfig = {
     // unoptimized: true,
   },
   env: {
-    STRAPI_GRAPHQL_URL: process.env.STRAPI_GRAPHQL_URL,
-    STRAPI_TOKEN: process.env.STRAPI_TOKEN,
     NEXT_PUBLIC_GOOGLE_ANALYTICS_ID:
       process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID,
   },

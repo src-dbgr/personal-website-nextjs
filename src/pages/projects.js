@@ -1,32 +1,9 @@
-import React from 'react';
-import { gql } from '@apollo/client';
-import apolloClient from '../lib/apolloClient';
-import Layout from '../components/general/Layout';
-import Projects from '../components/05_projects/Projects';
-import Seo from '../components/general/Seo';
-import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
-
-const GET_PROJECTS = gql`
-  query GetProjects {
-    projects(sort: ["orderid:asc"]) {
-      github
-      orderid
-      description
-      title
-      documentId
-      url
-      image {
-        url
-        caption
-        name
-      }
-      stack {
-        id
-        title
-      }
-    }
-  }
-`;
+import React from "react";
+import Layout from "../components/general/Layout";
+import Projects from "../components/05_projects/Projects";
+import Seo from "../components/general/Seo";
+import { fetchProjects } from "../lib/strapi";
+import { fetchCookieStaticProps } from "../lib/staticPropsHelpers";
 
 const ProjectsPage = ({ projects, cookies }) => {
   return (
@@ -43,20 +20,16 @@ const ProjectsPage = ({ projects, cookies }) => {
 };
 
 export async function getStaticProps() {
-  const [{ data }, { cookies }] = await Promise.all([
-    apolloClient.query({
-      query: GET_PROJECTS,
-    }),
+  const [projects, { cookies }] = await Promise.all([
+    fetchProjects(),
     fetchCookieStaticProps(),
   ]);
-
-  const projects = data.projects;
 
   return {
     props: {
       projects,
       cookies,
-    }
+    },
   };
 }
 

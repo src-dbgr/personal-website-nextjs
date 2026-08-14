@@ -1,4 +1,3 @@
-// src/pages/playground/[slug].js
 import React from "react";
 import Layout from "../../components/general/Layout";
 import Seo from "../../components/general/Seo";
@@ -7,17 +6,12 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { fetchCookieStaticProps } from "../../lib/staticPropsHelpers";
 import playgroundTools from "../../data/constants/playgroundTools";
+import FadeInSection from "../../hooks/FadeInSectionClient";
 
-const FadeInSection = dynamic(() => import("../../hooks/FadeInSection"), {
-  ssr: false,
-  loading: () => <div>Loading ...</div>,
-});
-
-// Dynamischer Import des BackpropVisualizer, um SSR-Probleme und Bundle-Größe zu minimieren
 const BackpropVisualizer = dynamic(
   () => import("../../components/Playground/BackpropVisualizer"),
   {
-    ssr: false, // Wichtig: Client-Side-Rendering erzwingen (wegen window, useEffects, Canvas/SVG-Animationen)
+    ssr: false,
     loading: () => (
       <div className="text-center p-10">Loading Interactive Tool...</div>
     ),
@@ -36,8 +30,6 @@ const ToolTemplate = ({ tool, cookies }) => {
     );
   }
 
-  // Hier kannst du entscheiden, welche Komponente du basierend auf dem Slug lädst.
-  // Da du nur den BackpropVisualizer hast, laden wir diesen.
   const ToolComponent =
     tool.slug === "backpropagation"
       ? BackpropVisualizer
@@ -49,15 +41,11 @@ const ToolTemplate = ({ tool, cookies }) => {
     <Layout darkFooter={true} cookies={cookies}>
       <Seo title={tool.title} description={tool.desc} />
       <section className="backprop-template blog-template">
-        {" "}
-        {/* Neutraler Container */}
-        {/* Das Title-Element des bestehenden Layouts beibehalten */}
         <Title title={tool.title} />
         <FadeInSection>
-          {/* WICHTIG: Kein "blog-content" mehr, um Überschreibungen zu vermeiden */}
+          {/* No blog-content: article reading styles would break Backprop centering. */}
           <div className="section-center wide-container">
             <div className="tool-content-wrapper">
-              {/* HIER WIRD DER VISUALIZER JETZT GERENDERT */}
               <ToolComponent />
               <Link href="/playground" legacyBehavior>
                 <a className="btn center-btn">

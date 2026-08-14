@@ -3,6 +3,8 @@
  * Read these instead of re-parsing cookies in every component.
  */
 
+export const COOKIE_BANNER_ENABLED = false;
+
 export function hasLaunchSeenClass() {
   return (
     typeof document !== "undefined" &&

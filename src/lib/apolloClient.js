@@ -33,18 +33,8 @@ const apolloClient = new ApolloClient({
       Query: {
         fields: {
           about: {
-            // Überschreibt bestehende Daten bei erneutem Fetch.
             merge(existing, incoming) {
               return incoming;
-            },
-          },
-        },
-      },
-      BlogEntity: {
-        fields: {
-          attributes: {
-            merge(existing, incoming) {
-              return { ...existing, ...incoming };
             },
           },
         },

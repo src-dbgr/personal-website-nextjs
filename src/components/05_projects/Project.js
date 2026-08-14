@@ -4,12 +4,7 @@ import Image from "next/image"; // Next.js image component
 import { FaGithubSquare } from "react-icons/fa";
 import { BsCircleFill } from "react-icons/bs";
 import { IoTriangleSharp } from "react-icons/io5";
-import dynamic from "next/dynamic";
-
-const FadeInSection = dynamic(() => import("../../hooks/FadeInSection"), {
-  ssr: false,
-  loading: () => <div>Loading ...</div>, // optionaler Fallback
-});
+import FadeInSection from "../../hooks/FadeInSectionClient";
 
 const Project = ({ image, title, description, github, stack, url, index }) => {
   const [active, setActive] = useState(false);
@@ -38,7 +33,7 @@ const Project = ({ image, title, description, github, stack, url, index }) => {
         >
           {image && (
             <Image
-              src={image?.url ?? image?.data?.attributes?.url} // Pfad zur Bildquelle, eventuell anpassen
+              src={image?.url}
               className={
                 active
                   ? "project-img-active shadow-box-dark"
