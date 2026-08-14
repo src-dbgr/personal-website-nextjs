@@ -35,7 +35,7 @@ const AboutPage = ({ customData, cookies }) => {
     <Layout darkFooter={false} cookies={cookies}>
       <Seo
         title="About"
-        description="Senior Software Developer at Fincons Group AG on a client assignment for Swiss Federal Railways. Distributed systems, architecture, and security."
+        description="Senior Software Developer. Production distributed systems, architecture, and security."
       />
       <section className="about-page">
         <Title title={about.title} />

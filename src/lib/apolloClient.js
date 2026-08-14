@@ -51,6 +51,11 @@ const apolloClient = new ApolloClient({
       },
     },
   }),
+  defaultOptions: {
+    query: {
+      fetchPolicy: "no-cache",
+    },
+  },
   devtools: {
     enabled: process.env.NODE_ENV === "development",
   },
