@@ -1,141 +1,76 @@
-# Personal Website - Next.js Edition
+# Personal Website (Next.js)
 
-## Overview
+Source for [https://devsam.io](https://devsam.io). Pages Router, React 19, Next.js 16. Content comes from a Strapi 5 GraphQL API at build time (`getStaticProps`). There is no server-side rendering of pages and no Framer Motion.
 
-This repository contains the source code for my personal website, built with Next.js. It's a modern, responsive web application showcasing my portfolio, blog, and professional experience. Originally built with Gatsby, this project has been successfully migrated to Next.js to take advantage of its enhanced features and performance capabilities.
+The live site may still run an older deploy until this branch is published.
 
-The live version of this website can be accessed at [https://devsam.io](https://devsam.io).
+The earlier Gatsby site lives at [https://github.com/src-dbgr/personal-website](https://github.com/src-dbgr/personal-website).
 
-## Project History
+## Stack
 
-This Next.js project is the evolved version of my original Gatsby-based personal website. The Gatsby version, which served as the foundation for this project, can be found at:
+- **App**: Next.js 16, React 19, Pages Router, static generation
+- **Data**: Strapi 5 (GraphQL). Documents and fetchers live in `src/lib/strapi.js`. Apollo runs on the server with a no-cache store. `STRAPI_TOKEN` stays off the client.
+- **Motion**: Anime.js (launch overlay, mobile menu morph), AOS (first-load nav stagger). Three.js is opt-in behind START ANIMATION.
+- **Styles**: one `src/styles/globals.css`. Do not split it.
+- **Contact**: Formspree via `NEXT_PUBLIC_FS_API_URL`
+- **Analytics**: Google Analytics code exists, but the cookie banner is off (`COOKIE_BANNER_ENABLED = false`). gtag does not load.
 
-[https://github.com/src-dbgr/personal-website](https://github.com/src-dbgr/personal-website)
+A `manifest.json` is linked for icons. There is no service worker and no offline PWA runtime. Recaptcha and Google Tag Manager are not used.
 
-The migration from Gatsby to Next.js was undertaken to leverage Next.js's enhanced features, improved performance, and better alignment with my current development needs.
+## Local
 
-While the core content and purpose remain the same, this Next.js version incorporates several improvements and new features that were not present in the original Gatsby site.
+Needs Node.js 20+ and a running Strapi with the matching GraphQL schema.
 
-## Key Features
+```
+git clone https://github.com/src-dbgr/personal-website-nextjs.git
+cd personal-website-nextjs
+npm install
+```
 
-- **Server-Side Rendering (SSR)** and **Static Site Generation (SSG)** for optimal performance and SEO
-- **GraphQL integration** with Apollo Client for efficient data fetching
-- **Dynamic content management** via Strapi Headless CMS
-- **Responsive design** with custom CSS
-- **Interactive animations** using Framer Motion and Anime.js
-- **3D graphics** with Three.js and React Three Fiber
-- **Progressive Web App (PWA)** capabilities
+Create `.env.local` from the table below. Fill `STRAPI_TOKEN` and the Formspree URL. Local GraphQL is `http://127.0.0.1:1337/graphql`. Env files stay out of git.
 
-## Tech Stack
+This repo is run on port 3001 so it does not collide with another app on 3000:
 
-- **Frontend**: Next.js, React
-- **State Management**: Apollo Client
-- **CMS**: Strapi (Headless CMS)
-- **Animations**: Framer Motion, Anime.js
-- **3D Graphics**: Three.js, React Three Fiber
-- **Deployment**: Flexible (currently deployed on Netlify)
-- **Version Control**: Git, GitHub
-- **Analytics**: Google Analytics, Google Tag Manager
+```
+npx next dev -p 3001
+```
 
-## Getting Started
+Open [http://localhost:3001](http://localhost:3001). `npm run develop` starts Next on the default port 3000. After Strapi SQLite writes, restart Strapi if it caches. Hard-refresh the Next app. `getStaticProps` needs a fresh request.
 
-### Prerequisites
+## Environment
 
-- Node.js (version compatible with Next.js 14.2.6)
-- npm or yarn
-- Strapi instance (for backend) - **Required for local development**
+Only these are read. Do not commit env files.
 
-### Installation
+| Variable | Where | Notes |
+| --- | --- | --- |
+| `STRAPI_GRAPHQL_URL` | server | Apollo URI |
+| `STRAPI_TOKEN` | server | Bearer token. Not in `next.config` `env` |
+| `NEXT_PUBLIC_FS_API_URL` | browser | Contact form action |
+| `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` | browser | Unused while the cookie banner is off |
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/src-dbgr/personal-website-nextjs.git
-   cd personal-website-nextjs
-   ```
+`STRAPI_API_URL`, Recaptcha keys, and `NEXT_PUBLIC_GTM_ID` are not read by the app.
 
-2. Install dependencies:
-   ```
-   npm install
-   ```
+## Scripts
 
-3. Set up environment variables:
-   Create `.env.local` and `.env.production` files in the root directory and add the following variables to both:
-   ```
-   NEXT_PUBLIC_FS_API_URL=<form-spree-api-url>
-   NEXT_PUBLIC_RECAPTCHA_SITE_KEY=<google-recaptcha-site-key>
-   STRAPI_GRAPHQL_URL=http://127.0.0.1:1337/graphql
-   STRAPI_API_URL=http://127.0.0.1:1337/api
-   STRAPI_TOKEN=<strapi-token>
-   NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=<google-analytics-id>
-   NEXT_PUBLIC_GTM_ID=<google-tag-manager-id>
-   ```
-   Note: Adjust the URLs and tokens as necessary for your local and production environments.
+- `npx next dev -p 3001`: local app (this project)
+- `npm run develop`: `next dev` on port 3000
+- `npm run build` / `npm run start`: production build and server
+- `npm run lint`
+- `npm run analyze`: bundle analyzer (`ANALYZE=true`)
+- `npm run clean`: remove `.next`
 
-4. Run the development server:
-   ```
-   npm run develop
-   ```
+`npm run export` is a leftover. Next 16 does not use `next export`. The app is not configured as `output: 'export'`.
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+## Deploy
 
-## Important Notes for Development
-
-### Strapi Backend Dependency
-This application is designed to work with a specific Strapi backend configuration. The GraphQL queries in the codebase expect a particular data structure. As the Strapi backend is not included in this repository, developers who wish to run this project locally or adapt it for their own use should be aware of the following:
-
-1. The project requires a running Strapi instance with a matching data structure.
-2. GraphQL queries in the codebase are tailored to the original Strapi setup.
-3. If you're setting up your own Strapi instance, you may need to modify the GraphQL queries to match your data structure.
-4. Examine the GraphQL queries in the codebase to understand the expected data format.
-
-We encourage developers to use this project as a reference or starting point, adapting the Strapi setup and GraphQL queries as needed for their specific use cases.
-
-## Additional Scripts
-
-- `npm run build`: Build the Next.js application
-- `npm run start`: Start the production server
-- `npm run export`: Export the application as static HTML
-- `npm run lint`: Run ESLint for code quality
-- `npm run update-check`: Check for package updates
-- `npm run update`: Update packages to their latest versions
-- `npm run clean`: Remove the `.next` directory
-- `npm run clean-cache`: Clean npm cache
-- `npm run clean-install`: Perform a clean installation of dependencies
-
-## Deployment
-
-This project is flexible and can be deployed on various platforms. It's currently deployed on Netlify, but can be easily adapted for other hosting services like Vercel, GitHub Pages, or any platform supporting Next.js applications.
-
-For deployment on Netlify:
-
-1. Connect your GitHub repository to Netlify
-2. Set the build command to `npm run build`
-3. Set the publish directory to `out`
-4. Configure your environment variables in Netlify's settings
-
-## Progressive Web App (PWA) Features
-
-This website is configured as a Progressive Web App, offering enhanced capabilities on supported devices:
-
-- **Installable**: Can be added to the home screen for quick access
-- **Offline Support**: Basic functionality available without an internet connection
-- **Responsive Design**: Adapts to various screen sizes and orientations
-- **Theme Colors**: Custom theme color (#3d8b68) and background color (#b5aba6)
-
-## Contributing
-
-While this is primarily a personal project, I welcome suggestions and feedback for non-commercial purposes. Please feel free to open an issue or submit a pull request, keeping in mind the project's license terms.
+Build with `npm run build` on a host that runs Next.js. Set the same environment variables there. Do not put `STRAPI_TOKEN` in `NEXT_PUBLIC_*` or in `next.config` `env`.
 
 ## License
 
-This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) License. For more details, see the [LICENSE](LICENSE) file in the repository.
+Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0). See [LICENSE](LICENSE).
 
 ## Contact
 
-src-dbgr - https://devsam.io/contact
+[https://devsam.io/contact](https://devsam.io/contact)
 
-Project Link: [https://github.com/yourusername/personal-website-nextjs](https://github.com/yourusername/personal-website-nextjs)
-
----
-
-Built with ❤️ using Next.js
+[https://github.com/src-dbgr/personal-website-nextjs](https://github.com/src-dbgr/personal-website-nextjs)

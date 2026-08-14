@@ -30,6 +30,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env*
 
 # vercel
 .vercel
@@ -40,7 +41,6 @@ next-env.d.ts
 
 node_modules/
 .cache/
-.env*
 
 # agent runtime / vendored lawbook (ephemeral, never commit)
 /runtime/
