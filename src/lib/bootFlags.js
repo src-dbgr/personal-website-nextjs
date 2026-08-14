@@ -18,6 +18,27 @@ export function markLaunchSeen() {
   }
 }
 
+export function whenLaunchReady(callback) {
+  if (typeof document === "undefined") {
+    return () => {};
+  }
+  if (hasLaunchSeenClass()) {
+    callback();
+    return () => {};
+  }
+  const observer = new MutationObserver(() => {
+    if (hasLaunchSeenClass()) {
+      observer.disconnect();
+      callback();
+    }
+  });
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+}
+
 export function paintedTheme() {
   if (typeof document === "undefined") {
     return "dark";

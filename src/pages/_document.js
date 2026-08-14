@@ -35,7 +35,7 @@ class MyDocument extends Document {
           <noscript>
             <style>
               {
-                ".fade-in-section{opacity:1;transform:none;visibility:visible}"
+                ".fade-in-section{opacity:1;transform:none;visibility:visible}html:not(.launch-seen) .persistent-chrome{visibility:visible;pointer-events:auto}"
               }
             </style>
           </noscript>

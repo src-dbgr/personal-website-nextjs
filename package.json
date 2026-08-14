@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@apollo/client": "^4.2.10",
-    "@emotion/is-prop-valid": "^1.4.0",
     "@juggle/resize-observer": "^3.4.0",
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",

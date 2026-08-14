@@ -6,6 +6,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import anime from "animejs";
 import "aos/dist/aos.css";
 import PageLinks from "../../data/constants/links";
+import { whenLaunchReady } from "../../lib/bootFlags";
 
 const Navbar = (props) => {
   const [scaleTrigger, setScaleTrigger] = useState(false);
@@ -85,8 +86,10 @@ const Navbar = (props) => {
 
   useEffect(() => {
     let alive = true;
-    if (navanimation) {
-      // Dynamisches Laden von Aos
+    const stop = whenLaunchReady(() => {
+      if (!navanimation || !alive) {
+        return;
+      }
       import("aos").then((Aos) => {
         Aos.init({ duration: 400 });
         setTimeout(() => {
@@ -95,11 +98,11 @@ const Navbar = (props) => {
           }
         }, 900);
       });
-    }
+    });
 
     return () => {
+      stop();
       import("aos").then((Aos) => {
-        // Disable Animation afer initial execution
         Aos.init({ duration: 0 });
       });
       alive = false;

@@ -1097,6 +1097,11 @@ NAVBAR
 ==========
 */
 
+html:not(.launch-seen) .persistent-chrome {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .navbar_open {
   backdrop-filter: blur(10px);
 }

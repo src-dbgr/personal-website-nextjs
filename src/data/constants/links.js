@@ -7,6 +7,7 @@ import CustomLink from "@/components/general/CustomLink";
 import Link from "next/link";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import { whenLaunchReady } from "../../lib/bootFlags";
 // const data = [
 //   {
 //     id: 1,
@@ -50,7 +51,9 @@ import "aos/dist/aos.css";
 
 const Links = function (props) {
   useEffect(() => {
-    Aos.init({ duration: 400 });
+    return whenLaunchReady(() => {
+      Aos.init({ duration: 400 });
+    });
   }, []);
 
   const dispatch = useContext(GlobalDispatchContext);

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import Layout from "../components/general/Layout";
 import Title from "../components/general/Title";
 import { BsCircleFill } from "react-icons/bs";
@@ -10,19 +9,8 @@ import Seo from "../components/general/Seo";
 import { fetchAboutPage } from "../lib/strapi";
 import { fetchCookieStaticProps } from "../lib/staticPropsHelpers";
 import FadeInSection from "../hooks/FadeInSectionClient";
-
-const Technologies = dynamic(
-  () => import("../components/04_about/04_03_tech/Technologies"),
-  {
-    loading: () => <div>Loading...</div>,
-  }
-);
-const Stations = dynamic(
-  () => import("../components/04_about/04_02_stations/Stations"),
-  {
-    loading: () => <div>Loading...</div>,
-  }
-);
+import Technologies from "../components/04_about/04_03_tech/Technologies";
+import Stations from "../components/04_about/04_02_stations/Stations";
 
 const AboutPage = ({ customData, cookies }) => {
   const [isExpanded, setIsExpanded] = useState(false);
