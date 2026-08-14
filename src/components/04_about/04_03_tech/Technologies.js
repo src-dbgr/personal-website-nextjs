@@ -44,7 +44,6 @@ const TOOLS_ORDER = [
 
 const DATA_ORDER = [
   "Adobe CC",
-  "MS Excel / VBA",
   "Strapi",
   "Octave / Matlab",
   "TensorFlow",

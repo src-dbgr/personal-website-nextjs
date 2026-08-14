@@ -29,12 +29,13 @@ const Hero = () => {
                 </span>
               </h1>
               <h2 className="big-heading">
-                I BUILD <span className="highlight">IT</span> SYSTEMS
+                I BUILD <span className="highlight">IT</span> STUFF
               </h2>
               <div className="hero-description">
                 <p>
-                  8+ YEARS BUILDING PRODUCTION DISTRIBUTED SYSTEMS -
-                  ARCHITECTURE AND SECURITY.
+                  8+ YEARS BUILDING PRODUCTION DISTRIBUTED SYSTEMS
+                  <br />
+                  ARCHITECTURE AND SECURITY
                 </p>
               </div>
 

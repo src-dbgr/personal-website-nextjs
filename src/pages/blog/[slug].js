@@ -11,8 +11,23 @@ import { fetchCookieStaticProps } from "../../lib/staticPropsHelpers";
 
 const FadeInSection = dynamic(() => import("../../hooks/FadeInSection"), {
   ssr: false,
-  loading: () => <div>Loading ...</div>, // optionaler Fallback
+  loading: () => <div>Loading ...</div>,
 });
+
+const markdownComponents = {
+  a: ({ href, children }) => {
+    const external = href && /^https?:\/\//.test(href);
+    return (
+      <a
+        href={href}
+        className="blog-inline-link"
+        {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+      >
+        {children}
+      </a>
+    );
+  },
+};
 
 const GET_BLOG_BY_SLUG = gql`
   query GetBlogBySlug($slug: String!) {
@@ -46,7 +61,9 @@ const BlogTemplate = ({ blog, cookies }) => {
         <FadeInSection>
           <div className="section-center">
             <article className="blog-content">
-              <ReactMarkdown>{content}</ReactMarkdown>
+              <ReactMarkdown components={markdownComponents}>
+                {content}
+              </ReactMarkdown>
               <Link href="/blog" legacyBehavior>
                 <a className="btn center-btn">
                   <span className="btn">all blogs</span>
