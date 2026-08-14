@@ -33,8 +33,8 @@ const Hero = () => {
               </h2>
               <div className="hero-description">
                 <p>
-                  SENIOR SOFTWARE DEVELOPER SPECIALIZING IN DISTRIBUTED
-                  SYSTEMS, ARCHITECTURE AND SECURITY.
+                  8+ YEARS DESIGNING AND OPERATING DISTRIBUTED SYSTEMS —
+                  ARCHITECTURE, RELIABILITY, AND SECURITY IN THE DELIVERY PATH.
                 </p>
               </div>
 

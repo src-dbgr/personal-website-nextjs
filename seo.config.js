@@ -1,6 +1,6 @@
 const siteMetadata = {
     title: "Samuel IT",
-    description: "Samuel is a Senior Software Developer specializing in distributed systems, architecture, and security.",
+    description: "Senior Software Developer. Distributed systems, architecture, reliability, and security in the delivery path.",
     siteUrl: "https://devsam.io",
     author: "@devsam",
     image: "/og2.png",
