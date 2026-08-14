@@ -32,6 +32,13 @@ class MyDocument extends Document {
         <body>
           {/* Blocking, CSP 'self': apply saved theme before Main paints. */}
           <script src="/theme-init.js" />
+          <noscript>
+            <style>
+              {
+                ".fade-in-section{opacity:1;transform:none;visibility:visible}"
+              }
+            </style>
+          </noscript>
           <Main />
           <NextScript />
         </body>

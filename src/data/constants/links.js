@@ -80,7 +80,7 @@ const Links = function (props) {
         key="2"
         data-aos={`${navanimation ? "fade-down" : ""}`}
         data-aos-once="true"
-        data-aos-delay={`${navanimation ? "150" : "0"}`}
+        data-aos-delay={`${navanimation ? "70" : "0"}`}
       >
         <CustomLink href="/about">about</CustomLink>
       </li>
@@ -88,7 +88,7 @@ const Links = function (props) {
         key="3"
         data-aos={`${navanimation ? "fade-down" : ""}`}
         data-aos-once="true"
-        data-aos-delay={`${navanimation ? "300" : "0"}`}
+        data-aos-delay={`${navanimation ? "140" : "0"}`}
       >
         <CustomLink href="/projects">projects</CustomLink>
       </li>
@@ -96,7 +96,7 @@ const Links = function (props) {
         key="4"
         data-aos={`${navanimation ? "fade-down" : ""}`}
         data-aos-once="true"
-        data-aos-delay={`${navanimation ? "450" : "0"}`}
+        data-aos-delay={`${navanimation ? "210" : "0"}`}
       >
         <CustomLink href="/blog">blog</CustomLink>
       </li>
@@ -104,7 +104,7 @@ const Links = function (props) {
         key="5"
         data-aos={`${navanimation ? "fade-down" : ""}`}
         data-aos-once="true"
-        data-aos-delay={`${navanimation ? "600" : "0"}`}
+        data-aos-delay={`${navanimation ? "280" : "0"}`}
       >
         <CustomLink href="/playground">playground</CustomLink>
       </li>
@@ -112,7 +112,7 @@ const Links = function (props) {
         key="6"
         data-aos={`${navanimation ? "fade-down" : ""}`}
         data-aos-once="true"
-        data-aos-delay={`${navanimation ? "750" : "0"}`}
+        data-aos-delay={`${navanimation ? "350" : "0"}`}
       >
         <CustomLink href="/contact">contact</CustomLink>
       </li>
@@ -125,7 +125,7 @@ const Links = function (props) {
         tabIndex={0}
         data-aos={`${navanimation ? "fade-down" : ""}`}
         data-aos-once="true"
-        data-aos-delay={`${navanimation ? "1500" : "0"}`}
+        data-aos-delay={`${navanimation ? "400" : "0"}`}
       >
         <svg
           id="sunmoon"

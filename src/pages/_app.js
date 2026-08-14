@@ -1,6 +1,5 @@
 import "../styles/globals.css";
 import GlobalContextProvider from "../context/GlobalContextProvider";
-import { AnimatePresence } from "framer-motion";
 import React from "react";
 import PersistentChrome from "../components/general/PersistentChrome";
 import { useEffect } from "react";
@@ -53,10 +52,7 @@ function MyApp({ Component, pageProps }) {
         <meta name="apple-mobile-web-app-title" content="Samuel IT" />
       </Head>
       <PersistentChrome />
-      {/* sync: do not serialize route enter behind exit (F-P0-02 Soft-Nav) */}
-      <AnimatePresence mode="sync">
-        <Component {...pageProps} />
-      </AnimatePresence>
+      <Component {...pageProps} />
     </GlobalContextProvider>
   );
 }

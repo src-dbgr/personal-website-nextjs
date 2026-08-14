@@ -232,9 +232,10 @@ Fade In Effect
 .fade-in-section {
   display: inherit;
   opacity: 0;
-  transform: translateY(20vh);
+  transform: translateY(1.25rem);
   visibility: hidden;
-  transition: var(--transition-medium);
+  transition: opacity 0.4s var(--easing), transform 0.4s var(--easing),
+    visibility 0.4s var(--easing);
 }
 
 .fade-in-section.is-visible {
@@ -242,6 +243,16 @@ Fade In Effect
   opacity: 1;
   transform: none;
   visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-section,
+  .fade-in-section.is-visible {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+    transition: none;
+  }
 }
 
 /*

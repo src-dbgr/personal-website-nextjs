@@ -88,12 +88,12 @@ const Navbar = (props) => {
     if (navanimation) {
       // Dynamisches Laden von Aos
       import("aos").then((Aos) => {
-        Aos.init({ duration: 1000 });
+        Aos.init({ duration: 400 });
         setTimeout(() => {
           if (alive) {
             dispatch({ type: "NAV_ANIMATION" });
           }
-        }, 1200);
+        }, 900);
       });
     }
 
@@ -135,7 +135,7 @@ const Navbar = (props) => {
               id="nav_main_logo"
               data-aos={`${navanimation ? "fade" : ""}`}
               data-aos-once="true"
-              data-aos-delay={`${navanimation ? "1500" : ""}`}
+              data-aos-delay={`${navanimation ? "400" : ""}`}
             >
               <defs>
                 <radialGradient
