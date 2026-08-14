@@ -156,7 +156,7 @@ export async function getStaticProps() {
               url
             }
           }
-          techstacks(pagination: {pageSize: 1000}, filters: { active: { eq: true } }, sort: "skilltitle:asc") {
+          techstacks(pagination: {pageSize: 1000}, filters: { active: { eq: true } }) {
             skilldescription
             imgfilename
             skilltitle
