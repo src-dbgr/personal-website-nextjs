@@ -33,7 +33,10 @@ const AboutPage = ({ customData, cookies }) => {
 
   return (
     <Layout darkFooter={false} cookies={cookies}>
-      <Seo title="About" description={""} />
+      <Seo
+        title="About"
+        description="Senior Software Developer at Fincons Group AG on a project exclusively at SBB CFF FFS. Distributed systems, architecture, and security."
+      />
       <section className="about-page">
         <Title title={about.title} />
         <div className={`section section-center about-component-center ${isExpanded ? '' : 'h-500'}`}>
@@ -153,14 +156,10 @@ export async function getStaticProps() {
               url
             }
           }
-          techstacks(pagination: {pageSize: 1000}, filters: { active: { eq: true } }, sort: "skilllevel:desc") {
+          techstacks(pagination: {pageSize: 1000}, filters: { active: { eq: true } }, sort: "skilltitle:asc") {
             skilldescription
-            skillleveltag
-            skillcategory
             imgfilename
             skilltitle
-            skilllevel
-            skilltype
             techurl
             imgurl
             categorylabel

@@ -3448,17 +3448,11 @@ caption {
   /* background: var(--clr-dark-shadow); */
 }
 
-.tech-table td:nth-child(2),
-.tech-table-collapsed td:nth-child(2) {
-  max-width: 80px;
-  padding: 0 5px;
-  vertical-align: middle;
-}
-
 .tech-table td:last-child,
 .tech-table-collapsed td:last-child {
   text-align: justify;
   padding: 5px var(--border-thickness);
+  vertical-align: middle;
 }
 
 .tech-table td:first-child img,

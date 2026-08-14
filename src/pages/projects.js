@@ -33,7 +33,7 @@ const ProjectsPage = ({ projects, cookies }) => {
     <Layout darkFooter={false} cookies={cookies}>
       <Seo
         title="Projects"
-        description="Samuel IT - Discover the latest IT projects I worked on."
+        description="Samuel IT - Production and personal IT projects."
       />
       <section className="projects-page">
         <Projects projects={projects} title="all projects" />

@@ -32,11 +32,11 @@ const About = ({ infomain }) => {
             <p>{infomain}</p>
             <ul className="skill-set">
               <li>Java</li>
-              <li>Python</li>
-              <li>K8s</li>
-              <li>Kafka</li>
+              <li>TypeScript</li>
               <li>Angular</li>
-              <li>TS</li>
+              <li>Kafka</li>
+              <li>OpenShift</li>
+              <li>ArgoCD</li>
             </ul>
           </article>
         </FadeInSection>
