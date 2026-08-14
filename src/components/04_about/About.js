@@ -10,7 +10,18 @@ const FadeInSection = dynamic(() => import("../../hooks/FadeInSection"), {
   loading: () => <div>Loading ...</div>, // optionaler Fallback
 });
 
-const About = ({ infomain }) => {
+const About = ({ infomain, stack }) => {
+  const chips =
+    Array.isArray(stack) && stack.length > 0
+      ? stack
+      : [
+          { id: "java", title: "Java" },
+          { id: "ts", title: "TypeScript" },
+          { id: "angular", title: "Angular" },
+          { id: "kafka", title: "Kafka" },
+          { id: "openshift", title: "OpenShift" },
+          { id: "argocd", title: "ArgoCD" },
+        ];
   return (
     <section id="about" className="section about-component-section">
       <Title title="Welcome" />
@@ -31,12 +42,9 @@ const About = ({ infomain }) => {
             <div className="underline"></div>
             <p>{infomain}</p>
             <ul className="skill-set">
-              <li>Java</li>
-              <li>TypeScript</li>
-              <li>Angular</li>
-              <li>Kafka</li>
-              <li>OpenShift</li>
-              <li>ArgoCD</li>
+              {chips.map((item) => (
+                <li key={item.id || item.title}>{item.title}</li>
+              ))}
             </ul>
           </article>
         </FadeInSection>

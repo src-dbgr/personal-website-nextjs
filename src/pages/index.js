@@ -13,6 +13,7 @@ import { fetchCookieStaticProps } from '../lib/staticPropsHelpers';
 const index = ({ customData, cookies }) => {
   const {
     about,
+    aboutStack,
     blogs,
     projects,
     jobs
@@ -25,7 +26,7 @@ const index = ({ customData, cookies }) => {
         description="Senior Software Developer. Distributed systems, architecture, reliability, and security in the delivery path."
       />
       <Hero />
-      <About infomain={about} />
+      <About infomain={about} stack={aboutStack} />
       <Experience jobs={jobs}/>
       <Projects projects={projects} title="Featured Projects" showLink />
       <BlogsSection blogs={blogs} title="Latest Blog Articles" showLink />
@@ -67,6 +68,10 @@ export async function getStaticProps() {
           about {
             documentId
             infomain
+            stack {
+              id
+              title
+            }
           }
           jobs(sort: "id:desc") {
             company
@@ -96,6 +101,7 @@ export async function getStaticProps() {
     props: {
       customData: {
         about: data.about.infomain,
+        aboutStack: data.about.stack,
         blogs,
         projects,
         jobs: data.jobs

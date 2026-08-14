@@ -23,7 +23,6 @@ const LIBS_ORDER = [
   "React",
   "Mockito",
   "Kubernetes",
-  "Gatsby",
 ];
 
 const TOOLS_ORDER = [
