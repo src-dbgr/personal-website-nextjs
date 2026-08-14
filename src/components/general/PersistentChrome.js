@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../02_navigation/Navbar";
 import Topbar from "../02_navigation/Topbar";
+import ScrollToTop from "./ScrollToTop";
 import { GlobalStateContext } from "../../context/GlobalContextProvider";
 import { hasLaunchSeenClass } from "../../lib/bootFlags";
 
@@ -24,6 +25,7 @@ const PersistentChrome = () => {
     <>
       <Navbar />
       <Topbar />
+      <ScrollToTop />
     </>
   );
 };

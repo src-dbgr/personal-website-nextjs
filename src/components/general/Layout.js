@@ -65,7 +65,9 @@ const Layout = ({ children, darkFooter }) => {
           <Launch finishLaunching={handleFinishLaunching} />
         </div>
       ) : null}
-      <main>{children}</main>
+      <main id="main-content" tabIndex={-1}>
+        {children}
+      </main>
       <Footer darkFooter={darkFooter} />
     </div>
   );

@@ -832,6 +832,88 @@ p {
   width: 100%;
 }
 
+/*
+===============
+Scroll to top
+===============
+*/
+
+.scroll-top {
+  position: fixed;
+  right: max(1.15rem, env(safe-area-inset-right, 0px));
+  bottom: max(1.15rem, env(safe-area-inset-bottom, 0px));
+  z-index: 150;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--clr-dark);
+  border-radius: 50%;
+  color: var(--clr-dark);
+  background: color-mix(in srgb, var(--clr-background-minor) 42%, transparent);
+  box-shadow: var(--default-btn-shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(0.4rem);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease,
+    background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.scroll-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+}
+
+.scroll-top svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  display: block;
+}
+
+.scroll-top:hover,
+.scroll-top:active {
+  color: var(--clr-background-major);
+  background: color-mix(in srgb, var(--clr-dark) 72%, transparent);
+  border-color: var(--clr-dark);
+}
+
+.scroll-top:focus-visible {
+  outline: 2px solid var(--clr-dark);
+  outline-offset: 3px;
+}
+
+#main-content:focus {
+  outline: none;
+}
+
+@supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .scroll-top {
+    background: var(--clr-background-minor-opaque);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-top {
+    transition: none;
+    transform: none;
+  }
+}
+
+@media print {
+  .scroll-top {
+    display: none;
+  }
+}
+
 /* section */
 .section {
   padding: 5rem 0;
