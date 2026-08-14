@@ -25,7 +25,7 @@ const ToolCard = ({ title, desc, slug, icon, category }) => (
              und nicht auf ein Bild-Asset wartet. Wir belassen den
              CSS-Struktur, ändern nur den Inhalt/das Icon-Styling. */}
           <div className="rounded-img-child flex items-center justify-center p-4">
-            {getIconComponent(icon, 36, "text-emerald-400")}
+            {getIconComponent(icon, 36)}
           </div>
           <div className="blog-card">
             <h4>{title}</h4>
