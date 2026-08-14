@@ -1625,7 +1625,8 @@ About Component
   text-align: center;
   -webkit-transition: var(--transition);
   transition: var(--transition);
-  overflow-x: hidden !important;
+  overflow: visible;
+  min-width: 0;
 }
 
 .about-component h4 {
@@ -1783,9 +1784,10 @@ About Component
 
 .skill-set {
   display: grid;
-  grid-template-columns: repeat(3, minmax(100px, 200px));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 20px 0 0 0;
-  overflow: hidden;
+  padding-left: 0.75rem;
+  overflow: visible;
   list-style: none;
 }
 
@@ -1796,6 +1798,8 @@ About Component
   font-family: var(--clr-green-major);
   font-size: 1rem;
   text-align: left;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 ul.skill-set li::before {
@@ -1810,8 +1814,29 @@ ul.skill-set li::before {
   border-bottom: 7px solid var(--clr-dark);
 }
 
+@container (max-width: 340px) {
+  .skill-set {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .about-component-center {
   padding: 0;
+}
+
+.section.about-component-center,
+.section.about-component-section {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+.about-component-center > .fade-in-section {
+  min-width: 0;
+}
+
+.about-component:not(.about-img-container) {
+  container-type: inline-size;
+  padding-bottom: calc(var(--border-thickness) + 0.5rem);
 }
 
 .icon-margin {
@@ -1848,7 +1873,8 @@ About Page
 }
 
 .h-500 {
-  height: 500px;
+  min-height: 500px;
+  height: auto;
 }
 
 .about-text.colappsed {
@@ -2275,6 +2301,8 @@ Projects
 
 .about-stack {
   text-align: left;
+  overflow: visible;
+  padding-bottom: 0.25rem;
 }
 
 .project-stack span,
@@ -3879,6 +3907,12 @@ caption {
   padding-right: 5px;
 }
 
+.timeline-institution {
+  min-width: 0;
+  overflow-wrap: break-word;
+  flex: 1 1 auto;
+}
+
 .timeline ul {
   margin-top: -1px;
   /*remove space between heading and list*/
@@ -3928,6 +3962,7 @@ caption {
   width: 400px;
   padding: var(--border-thickness);
   background: var(--clr-background-major);
+  overflow-wrap: break-word;
 }
 
 /* .timeline ul li .timeline-node::before {
@@ -4034,6 +4069,7 @@ ul li:nth-child(even) .timeline-node {
     -webkit-column-gap: 2rem;
     -moz-column-gap: 2rem;
     column-gap: 2rem;
+    align-items: start;
   }
 
   .skill-set li {
@@ -4375,6 +4411,7 @@ ul li:nth-child(even) .timeline-node {
 
   .h-500 {
     height: unset;
+    min-height: unset;
   }
 
   .blog-content p img {

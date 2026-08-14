@@ -18,6 +18,16 @@ const Project = ({ image, title, description, github, stack, url, index }) => {
     return link && link.trim() !== "" && link.includes("github.com");
   };
 
+  const repoLabel = (link) => {
+    const slug = String(link.match("[^/]+(?=/$|$)") || "")
+      .replace(/-/g, " ")
+      .toUpperCase();
+    if (slug === "GO JOB SCRAPER") {
+      return "GO JOB ANALYTICS";
+    }
+    return slug;
+  };
+
   return (
     <FadeInSection>
       <div className={index % 2 === 0 ? "project" : "project even"}>
@@ -71,18 +81,11 @@ const Project = ({ image, title, description, github, stack, url, index }) => {
                   <>
                     <FaGithubSquare className="project-icon" />
                     <p>
-                      GITHUB{" "}
-                      {String(github.match("[^/]+(?=/$|$)"))
-                        .replace(/-/g, " ")
-                        .toUpperCase()}
+                      GITHUB {repoLabel(github)}
                     </p>
                   </>
                 ) : (
-                  <p>
-                    {String(github.match("[^/]+(?=/$|$)"))
-                      .replace(/-/g, " ")
-                      .toUpperCase()}
-                  </p>
+                  <p>{repoLabel(github)}</p>
                 )}
               </a>
             </div>
@@ -94,10 +97,7 @@ const Project = ({ image, title, description, github, stack, url, index }) => {
               <a href={url}>
                 <FaGithubSquare className="project-icon" />
                 <p>
-                  GITHUB{" "}
-                  {String(url.match("[^/]+(?=/$|$)"))
-                    .replace(/-/g, " ")
-                    .toUpperCase()}
+                  GITHUB {repoLabel(url)}
                 </p>
               </a>
             </div>

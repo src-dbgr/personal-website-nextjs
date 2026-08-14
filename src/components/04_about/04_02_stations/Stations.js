@@ -213,7 +213,9 @@ const Stations = ({ stations, categories }) => {
                           <div className="timeline-width">
                             <h4>Institution:</h4>
                           </div>
-                          <div>{station.Institution}</div>
+                          <div className="timeline-institution">
+                            {station.Institution}
+                          </div>
                         </div>
                       </div>
                       <div className="timeline-from-to">
