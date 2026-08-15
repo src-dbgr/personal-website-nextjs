@@ -21,7 +21,6 @@ const HeroCanvas = () => {
           "webglcontextlost",
           (event) => {
             event.preventDefault();
-            console.warn("WebGL Context Lost recovered");
           },
           false
         );

@@ -54,14 +54,13 @@ const SocialLinks = ({ styleClass }) => {
     if (link.type === "internal") {
       return (
         <li key={link.id}>
-          <Link href={link.url} passHref legacyBehavior>
-            <a 
-              className="social-link" 
-              onClick={(e) => handleInternalLinkClick(e, link.url)}
-              onKeyDown={(e) => handleInternalKeyDown(e, link.url)}
-            >
-              {link.icon}
-            </a>
+          <Link
+            href={link.url}
+            className="social-link"
+            onClick={(e) => handleInternalLinkClick(e, link.url)}
+            onKeyDown={(e) => handleInternalKeyDown(e, link.url)}
+          >
+            {link.icon}
           </Link>
         </li>
       );

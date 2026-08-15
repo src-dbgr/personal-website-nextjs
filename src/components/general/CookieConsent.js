@@ -308,6 +308,7 @@ const CookieConsent = ({ cookies }) => {
                       return (
                         <SwitchToggle
                           key={identifier}
+                          id={identifier}
                           toggleHandler={toggleHandler[identifier]}
                           checkBoxState={checkBoxState[identifier]}
                           vendor={vendor}

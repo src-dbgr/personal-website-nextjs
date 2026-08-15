@@ -8,6 +8,7 @@ const nextConfig = {
   agentRules: false,
   reactStrictMode: true,
   images: {
+    qualities: [75, 90],
     remotePatterns: [
       {
         protocol: "https",
@@ -25,7 +26,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: "/((?!_next/static/development/).*)",
         headers: [
           {
             key: "Strict-Transport-Security",

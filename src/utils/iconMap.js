@@ -18,10 +18,15 @@ const iconComponentMap = {
  * @param {string} className - Optional: CSS-Klassen.
  * @returns {React.ReactElement} Die Lucide-Icon-Komponente.
  */
-export const getIconComponent = (iconName, size = 24, className = "") => {
+export const getIconComponent = (
+  iconName,
+  size = 24,
+  className = "",
+  strokeWidth = 2
+) => {
   const Icon = iconComponentMap[iconName];
   if (Icon) {
-    return <Icon size={size} className={className} />;
+    return <Icon size={size} className={className} strokeWidth={strokeWidth} />;
   }
   return null;
 };

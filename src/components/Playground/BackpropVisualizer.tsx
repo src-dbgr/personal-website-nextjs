@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useId } from "react";
 import {
   Play,
   Pause,
@@ -108,6 +108,8 @@ const SmartNumberInput: React.FC<SmartInputProps> = ({
   value,
   onValueChange,
   formatter,
+  id,
+  name,
   ...props
 }) => {
   // If no formatter is provided, just use String conversion
@@ -142,9 +144,15 @@ const SmartNumberInput: React.FC<SmartInputProps> = ({
     if (props.onFocus) props.onFocus(e);
   };
 
+  const reactId = useId();
+  const inputId = id ?? `bp-${reactId}`;
+
   return (
     <input
       {...props}
+      id={inputId}
+      name={name ?? inputId}
+      autoComplete="off"
       value={localVal}
       onChange={handleChange}
       onBlur={handleBlur}
@@ -1180,7 +1188,9 @@ const BackpropVisualizer = () => {
             >
               {/* --- TARGETS BLOCK --- */}
               <div className="config-item-wrapper">
-                <label className="backprop-input-label">TARGET VECTOR</label>
+                <label className="backprop-input-label" htmlFor="bp-target-0">
+                  TARGET VECTOR
+                </label>
                 <div
                   style={{
                     display: "flex",
@@ -1249,6 +1259,7 @@ const BackpropVisualizer = () => {
                         </div>
 
                         <SmartNumberInput
+                          id={`bp-target-${i}`}
                           type="number"
                           step="0.1"
                           min="0"
@@ -1289,6 +1300,7 @@ const BackpropVisualizer = () => {
               >
                 <label
                   className="backprop-input-label"
+                  htmlFor="bp-learning-rate"
                   style={{ marginBottom: "0.5rem" }}
                 >
                   LEARNING RATE
@@ -1327,6 +1339,7 @@ const BackpropVisualizer = () => {
                   </div>
 
                   <SmartNumberInput
+                    id="bp-learning-rate"
                     type="number"
                     step="0.01"
                     min="0.001"
@@ -1347,7 +1360,7 @@ const BackpropVisualizer = () => {
             {/* NEUE STRUKTUR: PARAMETERS HEADER */}
             <div>
               <div className="params-header">
-                <label
+                <span
                   style={{
                     fontSize: "0.75rem",
                     color: "rgb(156, 163, 175)",
@@ -1355,7 +1368,7 @@ const BackpropVisualizer = () => {
                   }}
                 >
                   PARAMETERS
-                </label>
+                </span>
 
                 <div
                   style={{
@@ -3110,6 +3123,9 @@ const BackpropVisualizer = () => {
             Speed
           </span>
           <input
+            id="bp-train-speed"
+            name="bp-train-speed"
+            aria-label="Training speed"
             type="range"
             min="1"
             max="100"

@@ -2299,6 +2299,11 @@ Projects
   transition: var(--transition-fast) !important;
 }
 
+.project-img,
+.project-img-active {
+  aspect-ratio: 772 / 471;
+}
+
 .project-img {
   margin-left: var(--border-thickness);
   margin-right: var(--border-thickness);
@@ -2589,6 +2594,8 @@ Blog
 
 .blog-img {
   height: 5rem;
+  width: auto;
+  aspect-ratio: 1 / 1;
 }
 
 .blog-card h4 {
@@ -2798,6 +2805,7 @@ Blog Template
 .blog-content p img {
   max-height: 400px;
   max-width: 400px;
+  aspect-ratio: 1 / 1;
 }
 
 .blog-content blockquote {
@@ -2872,6 +2880,7 @@ Blog Template
   max-width: 90vw;
   width: 30rem;
   max-height: 30rem;
+  aspect-ratio: 1 / 1;
   margin: 2rem 0;
   object-fit: cover;
   border-radius: 50%;
@@ -4781,7 +4790,20 @@ Contact Page
 }
 
 .form-group {
+  position: relative;
   padding: 1rem 1.5rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 input {

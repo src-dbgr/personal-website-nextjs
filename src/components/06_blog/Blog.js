@@ -4,33 +4,32 @@ import Link from "next/link";
 import Image from "next/image";
 import FadeInSection from "../../hooks/FadeInSectionClient";
 
-const Blog = ({ id, title, desc, slug, date, category, image }) => {
+const Blog = ({ title, desc, slug, date, category, image }) => {
   return (
     <FadeInSection>
-      <Link href={`/blog/${slug}`} legacyBehavior>
-        <a className="blog shadow-box-dark" key={id}>
-          <article className="blog-img-parent">
-            <div className="rounded-img-child">
-              <Image
-                className="blog-img"
-                src={image.url}
-                alt={title}
-                width="100"
-                height="100"
-              />
-            </div>
-            <div className="blog-card">
-              <h4>{title}</h4>
-              <p className="blog-description">{desc}</p>
-              <div className="blog-footer-parent">
-                <div className="blog-footer">
-                  <p>{category}</p>
-                  <p>{date}</p>
-                </div>
+      <Link href={`/blog/${slug}`} className="blog shadow-box-dark">
+        <article className="blog-img-parent">
+          <div className="rounded-img-child">
+            <Image
+              className="blog-img"
+              src={image.url}
+              alt={title}
+              width={100}
+              height={100}
+              style={{ width: "auto", aspectRatio: "1 / 1" }}
+            />
+          </div>
+          <div className="blog-card">
+            <h4>{title}</h4>
+            <p className="blog-description">{desc}</p>
+            <div className="blog-footer-parent">
+              <div className="blog-footer">
+                <p>{category}</p>
+                <p>{date}</p>
               </div>
             </div>
-          </article>
-        </a>
+          </div>
+        </article>
       </Link>
     </FadeInSection>
   );

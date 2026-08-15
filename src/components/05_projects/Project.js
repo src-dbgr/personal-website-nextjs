@@ -50,12 +50,14 @@ const Project = ({ image, title, description, github, stack, url, index }) => {
                   : "project-img shadow-box-dark"
               }
               alt={title}
-              width={772} // Passende Breite setzen
-              height={471} // Passende Höhe setzen
+              width={772}
+              height={471}
+              priority={index === 0}
               style={{
                 width: "100%",
                 height: "auto",
                 maxHeight: "471px",
+                aspectRatio: "772 / 471",
                 objectFit: "cover",
                 objectPosition: "center",
               }}

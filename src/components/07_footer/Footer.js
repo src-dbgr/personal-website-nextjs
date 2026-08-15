@@ -12,27 +12,25 @@ const Footer = ({ darkFooter }) => {
         <SocialLinks styleClass="footer-links"></SocialLinks>
         <h4>copyright&copy;{new Date().getFullYear()}</h4>
         <div>
-          <Link href="/legal" legacyBehavior>
-            <a
-              className="legal-disclosure"
-              onClick={(e) => handleInternalLinkClick(e, "/legal")}
-              onKeyDown={(e) => handleInternalKeyDown(e, "/legal")}
-            >
-              Legal Notice |{" "}
-              <span className="obf">Im</span>
-              <span className="obf">pre</span>
-              <span className="obf">ss</span>
-              <span className="obf">um</span>
-            </a>
+          <Link
+            href="/legal"
+            className="legal-disclosure"
+            onClick={(e) => handleInternalLinkClick(e, "/legal")}
+            onKeyDown={(e) => handleInternalKeyDown(e, "/legal")}
+          >
+            Legal Notice |{" "}
+            <span className="obf">Im</span>
+            <span className="obf">pre</span>
+            <span className="obf">ss</span>
+            <span className="obf">um</span>
           </Link>
-          <Link href="/privacy" legacyBehavior>
-            <a
-              className="legal-disclosure"
-              onClick={(e) => handleInternalLinkClick(e, "/privacy")}
-              onKeyDown={(e) => handleInternalKeyDown(e, "/privacy")}
-            >
-              Privacy Policy | Datenschutzerklärung
-            </a>
+          <Link
+            href="/privacy"
+            className="legal-disclosure"
+            onClick={(e) => handleInternalLinkClick(e, "/privacy")}
+            onKeyDown={(e) => handleInternalKeyDown(e, "/privacy")}
+          >
+            Privacy Policy | Datenschutzerklärung
           </Link>
         </div>
       </div>

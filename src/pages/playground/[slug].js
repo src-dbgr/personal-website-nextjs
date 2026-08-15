@@ -47,10 +47,8 @@ const ToolTemplate = ({ tool, cookies }) => {
           <div className="section-center wide-container">
             <div className="tool-content-wrapper">
               <ToolComponent />
-              <Link href="/playground" legacyBehavior>
-                <a className="btn center-btn">
-                  <span>All Playground Tools</span>
-                </a>
+              <Link href="/playground" className="btn center-btn">
+                <span>All Playground Tools</span>
               </Link>
             </div>
           </div>

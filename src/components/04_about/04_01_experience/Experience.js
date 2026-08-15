@@ -42,8 +42,8 @@ const Experience = ({ jobs }) => {
           </article>
         </div>
       </FadeInSection>
-      <Link href="/about" legacyBehavior>
-        <a className="btn center-btn">more info</a>
+      <Link href="/about" className="btn center-btn">
+        more info
       </Link>
     </section>
   );

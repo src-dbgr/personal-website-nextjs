@@ -13,8 +13,8 @@ export const BlogsSection = ({ blogs, title, showLink }) => {
         })}
       </div>
       {showLink && (
-        <Link href="/blog" legacyBehavior>
-          <a className="btn center-btn">All Blog Articles</a>
+        <Link href="/blog" className="btn center-btn">
+          All Blog Articles
         </Link>
       )}
     </section>

@@ -21,6 +21,15 @@ const markdownComponents = {
       </a>
     );
   },
+  img: ({ src, alt }) => (
+    <img
+      src={src}
+      alt={alt || ""}
+      width={480}
+      height={480}
+      loading="lazy"
+    />
+  ),
 };
 
 const BlogTemplate = ({ blog, cookies }) => {
@@ -37,10 +46,8 @@ const BlogTemplate = ({ blog, cookies }) => {
               <ReactMarkdown components={markdownComponents}>
                 {content}
               </ReactMarkdown>
-              <Link href="/blog" legacyBehavior>
-                <a className="btn center-btn">
-                  <span className="btn">all blogs</span>
-                </a>
+              <Link href="/blog" className="btn center-btn">
+                <span className="btn">all blogs</span>
               </Link>
             </article>
           </div>

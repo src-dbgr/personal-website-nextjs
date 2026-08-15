@@ -84,25 +84,37 @@ const Contact = ({ cookies }) => {
               <h3>get in touch</h3>
               <form id="mailForm" onSubmit={checkData}>
                 <div className="form-group">
+                  <label htmlFor="name" className="visually-hidden">
+                    Name
+                  </label>
                   <input
                     id="name"
                     type="text"
                     placeholder="name"
                     name="name"
+                    autoComplete="name"
                     className="form-control"
                     required
                   />
+                  <label htmlFor="email" className="visually-hidden">
+                    Email
+                  </label>
                   <input
                     id="email"
                     type="email"
                     placeholder="email"
                     name="email"
+                    autoComplete="email"
                     className="form-control"
                     required
                   />
+                  <label htmlFor="message" className="visually-hidden">
+                    Message
+                  </label>
                   <textarea
                     id="message"
                     name="message"
+                    autoComplete="off"
                     value={message}
                     onChange={handleMessageChange}
                     onKeyDown={handleKeyDown}

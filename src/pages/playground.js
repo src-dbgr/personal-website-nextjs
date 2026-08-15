@@ -10,24 +10,22 @@ import FadeInSection from "../hooks/FadeInSectionClient";
 
 const ToolCard = ({ title, desc, slug, icon, category }) => (
   <FadeInSection>
-    <Link href={`/playground/${slug}`} legacyBehavior>
-      <a className="blog shadow-box-dark">
-        <article className="blog-img-parent">
-          <div className="rounded-img-child flex items-center justify-center p-4">
-            {getIconComponent(icon, 36, "tile-card-icon")}
-          </div>
-          <div className="blog-card">
-            <h4>{title}</h4>
-            <p className="blog-description">{desc}</p>
-            <div className="blog-footer-parent">
-              <div className="blog-footer">
-                <p>{category}</p>
-                <p>Tool</p>
-              </div>
+    <Link href={`/playground/${slug}`} className="blog shadow-box-dark">
+      <article className="blog-img-parent">
+        <div className="rounded-img-child flex items-center justify-center p-4">
+          {getIconComponent(icon, 36, "tile-card-icon", 1.5)}
+        </div>
+        <div className="blog-card">
+          <h4>{title}</h4>
+          <p className="blog-description">{desc}</p>
+          <div className="blog-footer-parent">
+            <div className="blog-footer">
+              <p>{category}</p>
+              <p>Tool</p>
             </div>
           </div>
-        </article>
-      </a>
+        </div>
+      </article>
     </Link>
   </FadeInSection>
 );
