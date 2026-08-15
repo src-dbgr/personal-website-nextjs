@@ -86,11 +86,16 @@ const GlobalContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (!isClient) return;
-    document.body.classList.toggle("dark-theme", state.theme === "dark");
-    document.documentElement.classList.toggle(
-      "htmlScrollbarDarkMode",
-      state.theme === "dark"
-    );
+    const isDark = state.theme === "dark";
+    document.body.classList.toggle("dark-theme", isDark);
+    document.documentElement.classList.toggle("htmlScrollbarDarkMode", isDark);
+    let themeColor = document.querySelector('meta[name="theme-color"]');
+    if (!themeColor) {
+      themeColor = document.createElement("meta");
+      themeColor.setAttribute("name", "theme-color");
+      document.head.appendChild(themeColor);
+    }
+    themeColor.setAttribute("content", isDark ? "#2e2e2e" : "#b5b2a6");
   }, [isClient, state.theme]);
 
   return (

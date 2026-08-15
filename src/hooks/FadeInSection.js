@@ -15,19 +15,33 @@ const FadeInSection = (props) => {
       return;
     }
 
-    const observer = new IntersectionObserver(
+    let observer;
+    const reveal = (target) => {
+      setVisible(true);
+      if (observer) {
+        observer.unobserve(target);
+      }
+    };
+
+    observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setVisible(true);
-            observer.unobserve(entry.target);
+            reveal(entry.target);
           }
         });
       },
-      { threshold: 0.05, rootMargin: "0px" }
+      { threshold: 0, rootMargin: "0px" }
     );
 
     observer.observe(node);
+
+    const rect = node.getBoundingClientRect();
+    const viewportHeight =
+      window.innerHeight || document.documentElement.clientHeight;
+    if (rect.top < viewportHeight && rect.bottom > 0) {
+      reveal(node);
+    }
 
     return () => {
       observer.disconnect();

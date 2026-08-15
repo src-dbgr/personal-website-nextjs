@@ -31,11 +31,11 @@ const Hero = () => {
                 I BUILD <span className="highlight">IT</span> STUFF
               </h2>
               <div className="hero-description">
-                <p>
-                  8+ YEARS BUILDING PRODUCTION DISTRIBUTED SYSTEMS
-                  <br />
-                  ARCHITECTURE AND SECURITY
+                <p className="hero-slogan-line">8+ years building</p>
+                <p className="hero-slogan-line">
+                  production-grade distributed systems,
                 </p>
+                <p className="hero-slogan-line">architecture and security</p>
               </div>
 
               <Link href="/contact">

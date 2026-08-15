@@ -14,7 +14,7 @@ const ToolCard = ({ title, desc, slug, icon, category }) => (
       <a className="blog shadow-box-dark">
         <article className="blog-img-parent">
           <div className="rounded-img-child flex items-center justify-center p-4">
-            {getIconComponent(icon, 36)}
+            {getIconComponent(icon, 36, "tile-card-icon")}
           </div>
           <div className="blog-card">
             <h4>{title}</h4>

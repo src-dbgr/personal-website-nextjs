@@ -33,6 +33,16 @@
       }
     } catch (e) {}
 
+    var applyThemeColor = function (isDark) {
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (!meta) {
+        meta = document.createElement("meta");
+        meta.setAttribute("name", "theme-color");
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute("content", isDark ? "#2e2e2e" : "#b5b2a6");
+    };
+
     var apply = function () {
       var isDark = theme === "dark";
       if (document.body) {
@@ -42,6 +52,7 @@
         "htmlScrollbarDarkMode",
         isDark
       );
+      applyThemeColor(isDark);
       document.documentElement.classList.remove("theme-pending");
     };
 
@@ -52,6 +63,7 @@
         "htmlScrollbarDarkMode",
         theme === "dark"
       );
+      applyThemeColor(theme === "dark");
       document.addEventListener("DOMContentLoaded", apply);
     }
   } catch (e) {}

@@ -75,10 +75,9 @@
   --clr-dark-four-o-four: rgb(52, 69, 73);
   --clr-lighthouse: rgb(150, 149, 141);
   --clr-sunmoon-topbar: rgb(231, 230, 213);
-  --clr-animation-toggle-wrapper: rgb(86, 95, 97);
-  --clr-stop-animation: rgb(198 102 102);
-  --clr-stop-animation: rgb(237, 118, 118);
-  --clr-start-animation: rgb(74, 200, 130);
+  --clr-animation-toggle-wrapper: rgb(150, 149, 141);
+  --clr-stop-animation: rgb(190, 78, 80);
+  --clr-start-animation: rgb(52, 69, 73);
   --clr-about-img-background: linear-gradient(
     rgb(150, 149, 141),
     rgb(181, 178, 166)
@@ -654,17 +653,50 @@ Global Styles
 */
 
 html {
-  background: rgb(46, 46, 46);
+  background: rgb(181, 178, 166);
+  color-scheme: light;
   /* scrollbar-face-color: var(--clr-dark);
   scrollbar-shadow-color: var(--clr-magenta);
   scrollbar-highlight-color: var(--clr-magenta); */
   /* scrollbar-color: rgb(52, 69, 73) rgb(51, 51, 51); */
   /* scrollbar-color: var(--clr-dark) var(--clr-background-minor); */
-  /* background: var(--clr-background-major); */
   scrollbar-width: thin;
   overflow-y: scroll;
   overflow-x: hidden !important;
   font-size: 100%;
+}
+
+html.htmlScrollbarDarkMode {
+  background: rgb(46, 46, 46);
+  color-scheme: dark;
+}
+
+::selection,
+*::selection {
+  background: rgb(52, 69, 73) !important;
+  color: rgb(231, 230, 213) !important;
+}
+
+::-moz-selection,
+*::-moz-selection {
+  background: rgb(52, 69, 73) !important;
+  color: rgb(231, 230, 213) !important;
+}
+
+.dark-theme ::selection,
+.dark-theme *::selection,
+html.htmlScrollbarDarkMode ::selection,
+html.htmlScrollbarDarkMode *::selection {
+  background: rgb(181, 178, 166) !important;
+  color: rgb(33, 33, 33) !important;
+}
+
+.dark-theme ::-moz-selection,
+.dark-theme *::-moz-selection,
+html.htmlScrollbarDarkMode ::-moz-selection,
+html.htmlScrollbarDarkMode *::-moz-selection {
+  background: rgb(181, 178, 166) !important;
+  color: rgb(33, 33, 33) !important;
 }
 
 *,
@@ -955,6 +987,54 @@ Card corners
 .customizeCookies,
 .resume-wrapper {
   border-radius: var(--radius);
+}
+
+:is(
+  .about-component:not(.about-img-container),
+  .about-component p,
+  .blog,
+  .blog-description,
+  .project-info,
+  .project-desc,
+  .job-info,
+  .job-btn,
+  .job-info h4,
+  .blog-content,
+  .blog-content blockquote,
+  .contact-form,
+  .form-control,
+  .tech-table-comp,
+  .timeline ul li .timeline-node,
+  .project-stack span,
+  .about-stack span,
+  .cookie-info-child,
+  .cookie-info-box,
+  .cookie-text,
+  .customizeCookies,
+  .resume-wrapper
+):is(:hover, :focus, :focus-visible, :active) {
+  border-radius: var(--radius);
+}
+
+.job-btn,
+.blog,
+.about-img,
+.project-img-wrapper,
+.rounded-img-child,
+.blog-template img {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.job-btn:focus:not(:focus-visible),
+.blog:focus:not(:focus-visible),
+.about-img:focus:not(:focus-visible),
+.project-img-wrapper:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.blog:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--clr-dark) !important;
 }
 
 .blog,
@@ -1555,14 +1635,23 @@ h2 {
 }
 
 .hero-description {
-  font-family: var(--ff-ternary);
-  max-width: 400px;
-  hyphens: auto;
-  text-align: justify;
+  max-width: 22rem;
   padding-top: 1rem;
-  /* padding-bottom: 1rem; */
   margin-bottom: var(--button-space);
+}
+
+.hero-slogan-line {
+  display: block;
+  font-family: var(--ff-ternary);
+  color: var(--clr-dark);
+  font-size: 1.1rem;
+  hyphens: none;
+  text-align: left;
+  text-align-last: left;
+  word-spacing: normal;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+  margin-bottom: 0;
 }
 
 .stretch-span-to-width {
@@ -1772,9 +1861,13 @@ About Component
   opacity: 0.7;
 }
 
-.about-img:hover {
+.about-img:hover,
+.about-img:focus,
+.about-img:focus-visible,
+.about-img:active {
   transition: var(--transition);
   background: var(--clr-about-img-background-hover);
+  border-radius: 50% !important;
 }
 
 ::before,
@@ -2060,18 +2153,26 @@ Jobs
   padding: 0.25rem 0;
   line-height: 1;
   background: var(--clr-background-minor-opaque);
+  border-radius: var(--radius) !important;
+  outline: none !important;
 }
 
 .active-btn {
   background: var(--clr-background-minor-opaque);
   box-shadow: 0 3px var(--clr-green-minor);
   color: var(--clr-dark);
+  border-radius: var(--radius);
 }
 
-.job-btn:hover {
+.job-btn:hover,
+.job-btn:focus,
+.job-btn:focus-visible,
+.job-btn:active {
   background: var(--clr-background-minor-opaque);
   /* color: var(--clr-passive); */
   box-shadow: 0 3px var(--clr-green-minor);
+  border-radius: var(--radius) !important;
+  outline: none !important;
 }
 
 .job-info {
@@ -2439,12 +2540,12 @@ Blog
   background: var(--clr-background-major);
 }
 
-.rounded-img-child svg {
-  width: 100;
-  height: 80;
-  color: var(--clr-green-minor);
-  stroke: var(--clr-green-minor);
-  stroke-width: 1;
+.rounded-img-child svg,
+.tile-card-icon {
+  width: 5rem;
+  height: 5rem;
+  color: rgb(61, 139, 104);
+  stroke: rgb(61, 139, 104);
 }
 
 @keyframes slideAndReturn {
@@ -2632,6 +2733,10 @@ Blog Template
   margin: 2.4rem 0 0.9rem;
 }
 
+.blog-content > h2:first-child {
+  margin-top: 0;
+}
+
 .blog-content h2::after {
   content: "";
   display: block;
@@ -2776,9 +2881,11 @@ Blog Template
   transition: var(--transition);
 }
 
-.blog-template img:hover {
+.blog-template img:hover,
+.blog-template img:focus,
+.blog-template img:active {
   opacity: 1;
-  border-radius: 0%;
+  border-radius: 50%;
   transition: var(--transition);
 }
 
@@ -3739,6 +3846,18 @@ caption {
   cursor: pointer;
   overflow: hidden;
   border-radius: var(--radius) var(--radius) 0 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.timeline-flex-header div,
+.timeline-flex-header div * {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.timeline-flex-header div:focus:not(:focus-visible),
+.timeline-flex-header div:active {
+  outline: none;
 }
 
 .tech-button-wrapper div {
@@ -4185,16 +4304,6 @@ ul li:nth-child(even) .timeline-node {
     opacity: 1;
     visibility: visible;
   }
-  .hero::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 50%;
-    right: 0;
-    bottom: 0;
-    background: var(--clr-prisma-background-gradient);
-  }
-
   .hero-center {
     grid-template-columns: repeat(12, 1fr);
   }
@@ -4251,12 +4360,18 @@ ul li:nth-child(even) .timeline-node {
     background: var(--clr-background-minor-opaque);
     box-shadow: 0 3px var(--clr-green-minor);
     color: var(--clr-dark);
+    border-radius: var(--radius);
   }
 
-  .job-btn:hover {
+  .job-btn:hover,
+  .job-btn:focus,
+  .job-btn:focus-visible,
+  .job-btn:active {
     background: var(--clr-background-minor-opaque);
     color: var(--clr-passive);
     box-shadow: 0 3px var(--clr-green-minor);
+    border-radius: var(--radius) !important;
+    outline: none !important;
   }
 
   .project {
@@ -4622,12 +4737,22 @@ Contact Page
 ===============
 */
 .contact-page,
-.error-section,
-.blog-template {
+.error-section {
   display: flex;
   flex-direction: column;
   place-items: center;
   min-height: calc(100vh - 9rem);
+}
+
+.blog-template {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 9rem);
+}
+
+.blog-template .section-title {
+  margin-bottom: 1.5rem;
 }
 
 .contact-page .fade-in-section {
