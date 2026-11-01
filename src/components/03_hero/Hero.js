@@ -31,7 +31,7 @@ const Hero = () => {
                 I BUILD <span className="highlight">IT</span> STUFF
               </h2>
               <div className="hero-description">
-                <p className="hero-slogan-line">8+ years building</p>
+                <p className="hero-slogan-line">9+ years building</p>
                 <p className="hero-slogan-line">
                   production-grade distributed systems,
                 </p>

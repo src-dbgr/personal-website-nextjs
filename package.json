@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "analyze": "ANALYZE=true next build",
+    "analyze": "ANALYZE=true next build --webpack",
     "develop": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "next lint",
     "export": "next export",
@@ -16,30 +16,30 @@
     "clean-install": "rm -rf .next && rm -rf node_modules && rm -f package-lock.json && npm cache clean --force && npm install && echo 'Clean install completed. Remember to restart your dev server!'"
   },
   "dependencies": {
-    "@apollo/client": "^4.2.10",
+    "@apollo/client": "^4.3.5",
     "@juggle/resize-observer": "^3.4.0",
-    "@react-three/drei": "^10.7.8",
-    "@react-three/fiber": "^9.7.0",
-    "@react-three/postprocessing": "^3.0.5",
-    "@types/three": "^0.185.4",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "@react-three/postprocessing": "^3.2.2",
+    "@types/three": "^0.187.0",
     "animejs": "^3.2.2",
     "aos": "^2.3.4",
     "graphql": "^17.0.2",
     "js-cookie": "^3.0.8",
-    "lucide-react": "^1.31.0",
-    "next": "^16.3.0",
+    "lucide-react": "^1.66.0",
+    "next": "^16.4.3",
     "prop-types": "^15.8.1",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "react-icons": "^5.7.0",
     "react-markdown": "^10.1.0",
-    "three": "^0.185.1"
+    "three": "^0.187.0"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^16.3.0",
-    "eslint": "^10.8.1",
-    "eslint-config-next": "^16.3.0",
-    "npm-check-updates": "^23.0.2",
+    "@next/bundle-analyzer": "^16.4.3",
+    "eslint": "^10.14.0",
+    "eslint-config-next": "^16.4.3",
+    "npm-check-updates": "^23.1.1",
     "serve": "^14.2.6"
   }
 }

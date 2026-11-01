@@ -63,7 +63,7 @@ Only these are read. Do not commit env files.
 
 ## Deploy
 
-Build with `npm run build` on a host that runs Next.js. Set the same environment variables there. Do not put `STRAPI_TOKEN` in `NEXT_PUBLIC_*` or in `next.config` `env`.
+Build with `npm run build` on a host that runs Next.js. The script uses `--webpack` because Turbopack production builds in Next 16.4+ emit an inline bootstrap script that the CSP blocks, which stops hydration. Set the same environment variables there. Do not put `STRAPI_TOKEN` in `NEXT_PUBLIC_*` or in `next.config` `env`.
 
 ## License
 
