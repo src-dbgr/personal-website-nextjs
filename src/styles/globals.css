@@ -2740,7 +2740,7 @@ Blog Template
   margin: 2.4rem 0 0.9rem;
 }
 
-.blog-content > h2:first-child {
+.blog-article-body > h2:first-child {
   margin-top: 0;
 }
 
@@ -2792,6 +2792,14 @@ Blog Template
   padding: 0;
   display: inline;
   box-shadow: none;
+}
+
+.blog-copy-btn.center-btn {
+  margin: 0 0 1.5rem auto;
+}
+
+.blog-copy-btn .icon-margin {
+  margin-right: 0.5rem;
 }
 
 .blog-content .btn {

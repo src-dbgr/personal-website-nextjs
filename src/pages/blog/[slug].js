@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Layout from "../../components/general/Layout";
 import Title from "../../components/general/Title";
 import ReactMarkdown from "react-markdown";
@@ -7,6 +7,7 @@ import Link from "next/link";
 import { fetchBlogBySlug, fetchBlogPaths } from "../../lib/strapi";
 import { fetchCookieStaticProps } from "../../lib/staticPropsHelpers";
 import FadeInSection from "../../hooks/FadeInSectionClient";
+import CopyTextButton from "../../components/06_blog/CopyTextButton";
 
 const markdownComponents = {
   a: ({ href, children }) => {
@@ -35,6 +36,7 @@ const markdownComponents = {
 
 const BlogTemplate = ({ blog, cookies }) => {
   const { content, title, desc } = blog;
+  const bodyRef = useRef(null);
 
   return (
     <Layout darkFooter={false} cookies={cookies}>
@@ -44,9 +46,12 @@ const BlogTemplate = ({ blog, cookies }) => {
         <FadeInSection>
           <div className="section-center">
             <article className="blog-content">
-              <ReactMarkdown components={markdownComponents}>
-                {content}
-              </ReactMarkdown>
+              <CopyTextButton sourceRef={bodyRef} title={title} />
+              <div className="blog-article-body" ref={bodyRef}>
+                <ReactMarkdown components={markdownComponents}>
+                  {content}
+                </ReactMarkdown>
+              </div>
               <Link href="/blog" className="btn center-btn">
                 <span className="btn">all blogs</span>
               </Link>
