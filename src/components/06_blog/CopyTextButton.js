@@ -5,9 +5,9 @@ import { MdCheck, MdContentCopy, MdErrorOutline } from "react-icons/md";
 const RESET_AFTER_MS = 2000;
 
 const STATES = {
-  idle: { label: "COPY TEXT", Icon: MdContentCopy },
-  copied: { label: "COPIED", Icon: MdCheck },
-  failed: { label: "NOT COPIED", Icon: MdErrorOutline },
+  idle: { label: "Copy text", Icon: MdContentCopy },
+  copied: { label: "Copied", Icon: MdCheck },
+  failed: { label: "Not copied", Icon: MdErrorOutline },
 };
 
 const CopyTextButton = ({ sourceRef, title }) => {
@@ -36,11 +36,10 @@ const CopyTextButton = ({ sourceRef, title }) => {
       type="button"
       className="btn center-btn blog-copy-btn"
       onClick={handleCopy}
+      aria-label={label}
+      title={label}
     >
-      <span className="btn" aria-live="polite">
-        <Icon className="icon-margin" aria-hidden="true" />
-        {label}
-      </span>
+      <Icon aria-hidden="true" />
     </button>
   );
 };

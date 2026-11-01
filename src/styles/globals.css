@@ -2794,12 +2794,11 @@ Blog Template
   box-shadow: none;
 }
 
-.blog-copy-btn.center-btn {
+.blog-content .blog-copy-btn.center-btn {
+  width: 3rem;
+  min-width: 3rem;
   margin: 0 0 1.5rem auto;
-}
-
-.blog-copy-btn .icon-margin {
-  margin-right: 0.5rem;
+  font-size: 1.4rem;
 }
 
 .blog-content .btn {
