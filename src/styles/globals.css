@@ -2898,6 +2898,22 @@ Blog Template
   transition: var(--transition);
 }
 
+.blog-template img.blog-diagram,
+.blog-template img.blog-diagram:hover,
+.blog-template img.blog-diagram:focus,
+.blog-template img.blog-diagram:active {
+  display: block;
+  width: 30rem;
+  max-width: 100%;
+  height: auto;
+  max-height: none;
+  margin: 2rem auto;
+  object-fit: contain;
+  border: none;
+  border-radius: 0;
+  opacity: 1;
+}
+
 /* social links */
 .social-links {
   margin-top: 2rem;

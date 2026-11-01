@@ -25,6 +25,7 @@ const markdownComponents = {
     <img
       src={src}
       alt={alt || ""}
+      className={src?.endsWith(".svg") ? "blog-diagram" : undefined}
       width={480}
       height={480}
       loading="lazy"
