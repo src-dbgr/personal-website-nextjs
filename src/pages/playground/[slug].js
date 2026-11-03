@@ -8,15 +8,21 @@ import { fetchCookieStaticProps } from "../../lib/staticPropsHelpers";
 import playgroundTools from "../../data/constants/playgroundTools";
 import FadeInSection from "../../hooks/FadeInSectionClient";
 
-const BackpropVisualizer = dynamic(
-  () => import("../../components/Playground/BackpropVisualizer"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="text-center p-10">Loading Interactive Tool...</div>
-    ),
-  }
+const loadingTool = () => (
+  <div className="text-center p-10">Loading Interactive Tool...</div>
 );
+
+// Each tool is its own client-side bundle, keyed by its slug in playgroundTools.
+const TOOL_COMPONENTS = {
+  backpropagation: dynamic(
+    () => import("../../components/Playground/BackpropVisualizer"),
+    { ssr: false, loading: loadingTool }
+  ),
+  "eval-uncertainty": dynamic(
+    () => import("../../components/Playground/EvalLab"),
+    { ssr: false, loading: loadingTool }
+  ),
+};
 
 const ToolTemplate = ({ tool, cookies }) => {
   if (!tool) {
@@ -31,11 +37,8 @@ const ToolTemplate = ({ tool, cookies }) => {
   }
 
   const ToolComponent =
-    tool.slug === "backpropagation"
-      ? BackpropVisualizer
-      : () => (
-          <div>Tool Component for {tool.title} is not yet implemented.</div>
-        );
+    TOOL_COMPONENTS[tool.slug] ??
+    (() => <div>Tool Component for {tool.title} is not yet implemented.</div>);
 
   return (
     <Layout darkFooter={true} cookies={cookies}>

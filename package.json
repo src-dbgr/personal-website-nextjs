@@ -9,6 +9,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "next lint",
+    "test:eval-lab": "node --test src/components/Playground/EvalLab/stats.test.mjs",
     "export": "next export",
     "update-check": "npx npm-check-updates",
     "update": "npx npm-check-updates -u && npm install",

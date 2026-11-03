@@ -1,5 +1,5 @@
 // src/utils/iconMap.js
-import { Zap, Activity, Code, BookOpen } from "lucide-react";
+import { Zap, Activity, Code, BookOpen, Sigma } from "lucide-react";
 import React from "react";
 
 // Map von Icon-Namen zu den tatsächlichen Lucide-React-Komponenten
@@ -8,6 +8,7 @@ const iconComponentMap = {
   Activity: Activity,
   Code: Code,
   BookOpen: BookOpen,
+  Sigma: Sigma,
   // Füge hier weitere benötigte Icons hinzu
 };
 
