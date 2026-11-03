@@ -74,6 +74,53 @@ export function compareModels({ pA, pB, n, k = 1, icc = 0, rho = 0, clusterSize 
   };
 }
 
+// Small seeded PRNG (mulberry32), so simulated results are stable between renders.
+export function seededRandom(seed = 1) {
+  let s = seed >>> 0;
+  return () => {
+    s = (s + 0x6d2b79f5) >>> 0;
+    let t = s;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function standardNormal(rand) {
+  return Math.sqrt(-2 * Math.log(1 - rand())) * Math.cos(2 * Math.PI * rand());
+}
+
+// Leaderboard with published scores and standard errors, treated as independent
+// normal estimates. Returns, per model: the chance it is truly the best, the
+// chance it is truly in the top 3, and whether its gap to the leader is
+// significant at 95%. Ignoring the positive correlation from shared questions
+// makes this conservative: real gaps can be somewhat clearer than shown here.
+export function analyseRanking(models, { draws = 20000, seed = 42 } = {}) {
+  const n = models.length;
+  const best = new Array(n).fill(0);
+  const top3 = new Array(n).fill(0);
+  const rand = seededRandom(seed);
+  const sample = new Array(n);
+  const order = models.map((_, i) => i);
+  for (let d = 0; d < draws; d += 1) {
+    for (let i = 0; i < n; i += 1) sample[i] = models[i].mean + models[i].stderr * standardNormal(rand);
+    order.sort((x, y) => sample[y] - sample[x]);
+    best[order[0]] += 1;
+    for (let r = 0; r < Math.min(3, n); r += 1) top3[order[r]] += 1;
+  }
+  const leader = models.reduce((b, m, i) => (m.mean > models[b].mean ? i : b), 0);
+  return models.map((m, i) => {
+    const se = Math.hypot(m.stderr, models[leader].stderr);
+    const gap = models[leader].mean - m.mean;
+    return {
+      ...m,
+      pBest: best[i] / draws,
+      pTop3: top3[i] / draws,
+      tiedWithLeader: i === leader || se === 0 || gap < 1.959963984540054 * se,
+    };
+  });
+}
+
 // Beta(a, b) with mean p and Var(p_i) = icc * p(1-p), i.e. a + b = 1/icc - 1.
 export function betaParams(p, icc) {
   const s = 1 / icc - 1;

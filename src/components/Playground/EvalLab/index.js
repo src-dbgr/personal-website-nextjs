@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { Check, Link as LinkIcon } from "lucide-react";
 import SampleSizeChapter from "./SampleSizeChapter";
 import PassKChapter from "./PassKChapter";
+import RankingChapter from "./RankingChapter";
 import styles from "./EvalLab.module.css";
 
 // To add a chapter: build a component that takes { number }, keeps its settings
 // with useUrlState under its own prefix, and append it here.
 const CHAPTERS = [
   { id: "sample-size", Component: SampleSizeChapter },
+  { id: "rankings", Component: RankingChapter },
   { id: "pass-k", Component: PassKChapter },
 ];
 

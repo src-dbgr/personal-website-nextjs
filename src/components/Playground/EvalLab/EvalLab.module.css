@@ -309,6 +309,108 @@
   margin: 0.5rem 0 0;
 }
 
+.presetActive {
+  background: var(--clr-dark);
+  color: var(--clr-background-major);
+}
+
+.rankTable {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 1rem;
+}
+
+.rankRow {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) 3.5rem 3.5rem;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.rankHead {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.rankName {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.rankLabel {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rankScore {
+  flex-shrink: 0;
+  font-family: var(--ff-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.rankNum {
+  text-align: right;
+  font-family: var(--ff-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.rankHead .rankNum {
+  font-family: inherit;
+}
+
+.rankBar {
+  display: block;
+  width: 100%;
+  height: 0.9rem;
+}
+
+.rankCi,
+.rankCiTied {
+  stroke-width: 4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.rankCi {
+  stroke: currentColor;
+  opacity: 0.5;
+}
+
+.rankCiTied {
+  stroke: var(--clr-green-everywhere);
+}
+
+.rankMean {
+  stroke: currentColor;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.rankAxisLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.attribution {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 1rem 0 0;
+  opacity: 0.9;
+}
+
+.attribution a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 @media screen and (max-width: 700px) {
   .chapter {
     padding: 1.25rem 1rem;
@@ -324,6 +426,21 @@
 
   .chapterHeader .chapterTitle {
     font-size: 1.2rem;
+  }
+
+  .rankRow {
+    grid-template-columns: minmax(0, 1fr) 3rem 3rem;
+    gap: 0.25rem 0.75rem;
+  }
+
+  .rankRow > .rankBar,
+  .rankRow > .rankAxisLabels {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .rankHead > span:nth-child(2) {
+    display: none;
   }
 
   /* Charts scale down with the screen, so their text needs larger units. */

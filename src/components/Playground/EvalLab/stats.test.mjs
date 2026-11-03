@@ -9,6 +9,7 @@ import {
   passAtK,
   passHatK,
   betaParams,
+  analyseRanking,
 } from "./stats.js";
 
 // Seeded PRNG so failures are reproducible.
@@ -159,4 +160,32 @@ test("clustered tasks widen the error by the design effect", () => {
   const base = scoreStandardError({ p: 0.5, n: 100 });
   const clustered = scoreStandardError({ p: 0.5, n: 100, clusterSize: 5, clusterCorrelation: 0.25 });
   assert.ok(Math.abs(clustered / base - Math.sqrt(2)) < 1e-12);
+});
+
+test("ranking analysis: probabilities are consistent", () => {
+  const models = [
+    { model: "a", mean: 0.8, stderr: 0.02 },
+    { model: "b", mean: 0.8, stderr: 0.02 },
+    { model: "c", mean: 0.5, stderr: 0.02 },
+  ];
+  const r = analyseRanking(models, { draws: 40000 });
+  const sumBest = r.reduce((s, m) => s + m.pBest, 0);
+  const sumTop3 = r.reduce((s, m) => s + m.pTop3, 0);
+  assert.ok(Math.abs(sumBest - 1) < 1e-12);
+  assert.ok(Math.abs(sumTop3 - 3) < 1e-12);
+  assert.ok(Math.abs(r[0].pBest - 0.5) < 0.02 && Math.abs(r[1].pBest - 0.5) < 0.02);
+  assert.ok(r[2].pBest < 0.001);
+  assert.equal(r[1].tiedWithLeader, true);
+  assert.equal(r[2].tiedWithLeader, false);
+});
+
+test("ranking analysis matches the closed form for two models", () => {
+  const models = [
+    { model: "a", mean: 0.75, stderr: 0.02 },
+    { model: "b", mean: 0.72, stderr: 0.015 },
+  ];
+  const r = analyseRanking(models, { draws: 200000 });
+  const exact = normalCdf(0.03 / Math.hypot(0.02, 0.015));
+  assert.ok(Math.abs(r[0].pBest - exact) < 0.005, `${r[0].pBest} vs ${exact}`);
+  assert.ok(analyseRanking(models).every((m, i) => m.pBest === analyseRanking(models)[i].pBest));
 });

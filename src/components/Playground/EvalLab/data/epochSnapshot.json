@@ -1,0 +1,421 @@
+{
+  "source": "Epoch AI, Benchmarking Hub",
+  "sourceUrl": "https://epoch.ai/benchmarks",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "retrieved": "2026-11-03",
+  "benchmarks": [
+    {
+      "id": "frontiermath",
+      "name": "FrontierMath Tiers 1-3",
+      "note": "Expert-level maths, private problem set.",
+      "models": [
+        {
+          "model": "gpt-6.1-sol_max",
+          "org": "OpenAI",
+          "released": "2026-09-29",
+          "runDate": "2026-09-29",
+          "mean": 0.9368421052631579,
+          "stderr": 0.014434038295343787
+        },
+        {
+          "model": "gpt-6-astra_max",
+          "org": "OpenAI",
+          "released": "2026-09-03",
+          "runDate": "2026-08-30",
+          "mean": 0.9368421052631579,
+          "stderr": 0.014434038295343787
+        },
+        {
+          "model": "claude-opus-5-5_max",
+          "org": "Anthropic",
+          "released": "2026-09-22",
+          "runDate": "2026-09-22",
+          "mean": 0.9122807017543859,
+          "stderr": 0.016786209858442095
+        },
+        {
+          "model": "gpt-6.1-terra_max",
+          "org": "OpenAI",
+          "released": "2026-10-26",
+          "runDate": "2026-10-26",
+          "mean": 0.9087719298245615,
+          "stderr": 0.017085690144166794
+        },
+        {
+          "model": "claude-fable-5-1_max",
+          "org": "Anthropic",
+          "released": "2026-09-01",
+          "runDate": "2026-09-01",
+          "mean": 0.9017543859649123,
+          "stderr": 0.017662067789031757
+        },
+        {
+          "model": "gpt-6-sol_max",
+          "org": "OpenAI",
+          "released": "2026-09-22",
+          "runDate": "2026-09-22",
+          "mean": 0.8982456140350877,
+          "stderr": 0.01793969072128637
+        },
+        {
+          "model": "gpt-5.6-sol_max",
+          "org": "OpenAI",
+          "released": "2026-07-09",
+          "runDate": "2026-07-09",
+          "mean": 0.8912280701754386,
+          "stderr": 0.018475392571140503
+        },
+        {
+          "model": "claude-sonnet-5-5_max",
+          "org": "Anthropic",
+          "released": "2026-09-28",
+          "runDate": "2026-09-29",
+          "mean": 0.887719298245614,
+          "stderr": 0.018734030360524248
+        },
+        {
+          "model": "gpt-5.5-pro_xhigh",
+          "org": "OpenAI",
+          "released": "2026-04-23",
+          "runDate": "2026-06-12",
+          "mean": 0.8771929824561403,
+          "stderr": 0.019476010341530077
+        },
+        {
+          "model": "claude-fable-5_max",
+          "org": "Anthropic",
+          "released": "2026-06-09",
+          "runDate": "2026-06-09",
+          "mean": 0.8701754385964913,
+          "stderr": 0.019944477920133024
+        },
+        {
+          "model": "gemini-4-argon_high",
+          "org": "Google DeepMind",
+          "released": "2026-09-30",
+          "runDate": "2026-10-13",
+          "mean": 0.8596491228070176,
+          "stderr": 0.020611471958164294
+        },
+        {
+          "model": "gpt-5.6-terra_max",
+          "org": "OpenAI",
+          "released": "2026-07-09",
+          "runDate": "2026-07-09",
+          "mean": 0.8596491228070176,
+          "stderr": 0.020611471958164294
+        }
+      ]
+    },
+    {
+      "id": "simpleqa",
+      "name": "SimpleQA Verified",
+      "note": "Short factual questions.",
+      "models": [
+        {
+          "model": "gemini-4-argon_high",
+          "org": "Google DeepMind",
+          "released": "2026-09-30",
+          "runDate": "2026-10-13",
+          "mean": 0.76,
+          "stderr": 0.013512312258920845
+        },
+        {
+          "model": "gpt-6-astra_max",
+          "org": "OpenAI",
+          "released": "2026-09-03",
+          "runDate": "2026-08-30",
+          "mean": 0.756,
+          "stderr": 0.013588548437881386
+        },
+        {
+          "model": "gpt-6.1-sol_max",
+          "org": "OpenAI",
+          "released": "2026-09-29",
+          "runDate": "2026-09-29",
+          "mean": 0.739,
+          "stderr": 0.013895037677965185
+        },
+        {
+          "model": "gemini-3.1-pro-preview_high",
+          "org": "Google DeepMind",
+          "released": "2026-02-19",
+          "runDate": "2026-08-10",
+          "mean": 0.735,
+          "stderr": 0.013963164754810065
+        },
+        {
+          "model": "claude-opus-5-5_max",
+          "org": "Anthropic",
+          "released": "2026-09-22",
+          "runDate": "2026-09-22",
+          "mean": 0.722,
+          "stderr": 0.014174516461485273
+        },
+        {
+          "model": "claude-fable-5-1_max",
+          "org": "Anthropic",
+          "released": "2026-09-01",
+          "runDate": "2026-09-01",
+          "mean": 0.708,
+          "stderr": 0.014385511563477433
+        },
+        {
+          "model": "claude-fable-5_xhigh",
+          "org": "Anthropic",
+          "released": "2026-06-09",
+          "runDate": "2026-08-10",
+          "mean": 0.707,
+          "stderr": 0.014399942998441292
+        },
+        {
+          "model": "gemini-3.8-flash_high",
+          "org": "Google DeepMind",
+          "released": "2026-09-02",
+          "runDate": "2026-09-02",
+          "mean": 0.697,
+          "stderr": 0.014539683710535193
+        },
+        {
+          "model": "gpt-5.6-sol_max",
+          "org": "OpenAI",
+          "released": "2026-07-09",
+          "runDate": "2026-08-10",
+          "mean": 0.697,
+          "stderr": 0.014539683710535193
+        },
+        {
+          "model": "gemini-3.7-flash_high",
+          "org": "Google DeepMind",
+          "released": "2026-08-13",
+          "runDate": "2026-08-27",
+          "mean": 0.692,
+          "stderr": 0.01460648312734278
+        },
+        {
+          "model": "gemini-3-flash-preview_high",
+          "org": "Google DeepMind",
+          "released": "2025-12-17",
+          "runDate": "2026-08-27",
+          "mean": 0.668,
+          "stderr": 0.014899597242811567
+        },
+        {
+          "model": "gemini-3.5-flash_high",
+          "org": "Google DeepMind",
+          "released": "2026-05-19",
+          "runDate": "2026-08-27",
+          "mean": 0.662,
+          "stderr": 0.014965960710224383
+        }
+      ]
+    },
+    {
+      "id": "gpqa",
+      "name": "GPQA Diamond",
+      "note": "Graduate-level science questions, close to saturated.",
+      "models": [
+        {
+          "model": "gemini-4-argon_high",
+          "org": "Google DeepMind",
+          "released": "2026-09-30",
+          "runDate": "2026-10-13",
+          "mean": 0.9640151515151515,
+          "stderr": 0.011918129589602694
+        },
+        {
+          "model": "gpt-6-astra_max",
+          "org": "OpenAI",
+          "released": "2026-09-03",
+          "runDate": "2026-08-30",
+          "mean": 0.9577020202020202,
+          "stderr": 0.013696812097020311
+        },
+        {
+          "model": "claude-sonnet-5-5_max",
+          "org": "Anthropic",
+          "released": "2026-09-28",
+          "runDate": "2026-09-29",
+          "mean": 0.9558080808080808,
+          "stderr": 0.013710320714521202
+        },
+        {
+          "model": "gpt-6.1-sol_max",
+          "org": "OpenAI",
+          "released": "2026-09-29",
+          "runDate": "2026-09-29",
+          "mean": 0.9539141414141414,
+          "stderr": 0.013780748450364692
+        },
+        {
+          "model": "gemini-3.8-flash_high",
+          "org": "Google DeepMind",
+          "released": "2026-09-02",
+          "runDate": "2026-09-02",
+          "mean": 0.9539141414141414,
+          "stderr": 0.01401136318210652
+        },
+        {
+          "model": "gemini-3.7-flash_high",
+          "org": "Google DeepMind",
+          "released": "2026-08-13",
+          "runDate": "2026-08-14",
+          "mean": 0.9482323232323232,
+          "stderr": 0.013456525292246259
+        },
+        {
+          "model": "gpt-5.4-pro-2026-03-05_xhigh",
+          "org": "OpenAI",
+          "released": "2026-03-05",
+          "runDate": "2026-03-20",
+          "mean": 0.946,
+          "stderr": 0.016
+        },
+        {
+          "model": "gemini-3.1-pro-preview_high",
+          "org": "Google DeepMind",
+          "released": "2026-02-19",
+          "runDate": "2026-08-06",
+          "mean": 0.9444444444444444,
+          "stderr": 0.016319950700767385
+        },
+        {
+          "model": "gpt-6.1-terra_max",
+          "org": "OpenAI",
+          "released": "2026-10-26",
+          "runDate": "2026-10-26",
+          "mean": 0.9431818181818182,
+          "stderr": 0.014911672683567374
+        },
+        {
+          "model": "gpt-6-sol_max",
+          "org": "OpenAI",
+          "released": "2026-09-22",
+          "runDate": "2026-09-22",
+          "mean": 0.9431818181818182,
+          "stderr": 0.014938512008159717
+        },
+        {
+          "model": "gemini-3.6-flash_high",
+          "org": "Google DeepMind",
+          "released": "2026-07-21",
+          "runDate": "2026-08-02",
+          "mean": 0.9412878787878788,
+          "stderr": 0.014028967942064968
+        },
+        {
+          "model": "gemini-3.1-pro-preview",
+          "org": "Google DeepMind",
+          "released": "2026-02-19",
+          "runDate": "2026-02-20",
+          "mean": 0.941,
+          "stderr": 0.017
+        }
+      ]
+    },
+    {
+      "id": "swebench",
+      "name": "SWE-bench Verified",
+      "note": "Coding tasks from real GitHub issues. Epoch has fewer recent runs here.",
+      "models": [
+        {
+          "model": "claude-opus-4-7_max",
+          "org": "Anthropic",
+          "released": "2026-04-16",
+          "runDate": "2026-04-20",
+          "mean": 0.8347107438016529,
+          "stderr": 0.016901169179529604
+        },
+        {
+          "model": "gpt-5.5-pre-release_xhigh",
+          "org": "OpenAI",
+          "released": "2026-04-23",
+          "runDate": "2026-04-24",
+          "mean": 0.8057851239669421,
+          "stderr": 0.018000198869416815
+        },
+        {
+          "model": "gemini-3.5-flash_high",
+          "org": "Google DeepMind",
+          "released": "2026-05-19",
+          "runDate": "2026-06-01",
+          "mean": 0.7933884297520661,
+          "stderr": 0.018422420250424888
+        },
+        {
+          "model": "claude-opus-4-6",
+          "org": "Anthropic",
+          "released": "2026-02-05",
+          "runDate": "2026-02-18",
+          "mean": 0.7871900826446281,
+          "stderr": 0.01862353730305288
+        },
+        {
+          "model": "glm-5.2_max",
+          "org": "Z.ai (Zhipu AI)",
+          "released": "2026-06-16",
+          "runDate": "2026-06-25",
+          "mean": 0.787,
+          "stderr": 0.018656911901656907
+        },
+        {
+          "model": "deepseek-v4-pro_max",
+          "org": "DeepSeek",
+          "released": "2026-04-24",
+          "runDate": "2026-06-18",
+          "mean": 0.7763975155279503,
+          "stderr": 0.01897828052158487
+        },
+        {
+          "model": "qwen3.7-max",
+          "org": "Alibaba",
+          "released": "2026-05-19",
+          "runDate": "2026-06-18",
+          "mean": 0.7727272727272727,
+          "stderr": 0.01906835447169652
+        },
+        {
+          "model": "gpt-5.4-2026-03-05_high",
+          "org": "OpenAI",
+          "released": "2026-03-05",
+          "runDate": "2026-03-06",
+          "mean": 0.768595041322314,
+          "stderr": 0.019189407003691976
+        },
+        {
+          "model": "qwen3.6-max-preview",
+          "org": "Alibaba",
+          "released": "2026-04-20",
+          "runDate": "2026-05-28",
+          "mean": 0.7665289256198347,
+          "stderr": 0.01924895909142592
+        },
+        {
+          "model": "kimi-k2.6",
+          "org": "Moonshot",
+          "released": "2026-04-20",
+          "runDate": "2026-05-08",
+          "mean": 0.7665289256198347,
+          "stderr": 0.01924895909142592
+        },
+        {
+          "model": "claude-opus-4-5-20251101",
+          "org": "Anthropic",
+          "released": "2025-11-24",
+          "runDate": "2026-02-05",
+          "mean": 0.7665289256198347,
+          "stderr": 0.01924895909142592
+        },
+        {
+          "model": "gemini-3.1-pro-preview-customtools",
+          "org": "Google DeepMind",
+          "released": "2026-02-19",
+          "runDate": "2026-02-24",
+          "mean": 0.756198347107438,
+          "stderr": 0.019537213360116365
+        }
+      ]
+    }
+  ]
+}
