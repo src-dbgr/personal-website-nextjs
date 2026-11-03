@@ -411,9 +411,122 @@
   text-decoration: underline;
 }
 
+.howItWorks {
+  background: var(--clr-background-minor);
+  border-radius: var(--radius);
+  box-shadow: var(--default-box-shadow);
+  padding: 1.25rem 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.howSummary {
+  cursor: pointer;
+  font-family: var(--ff-secondary);
+  font-size: 1.3rem;
+}
+
+.howToolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.4rem;
+  color: var(--clr-background-major);
+  background: var(--clr-dark);
+  border: none;
+  border-radius: 50%;
+  box-shadow: var(--default-btn-shadow);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.copyButton:hover,
+.copyButton:focus-visible {
+  background: var(--clr-green-minor);
+  color: var(--clr-btn-text-on-hover);
+}
+
+.howBody {
+  line-height: 1.7;
+}
+
+/* Two classes so the page's centred .blog-template headings do not apply. */
+.howBody h3,
+.howBody h4 {
+  font-family: var(--ff-secondary);
+  color: var(--clr-dark);
+  text-align: left;
+  text-transform: none;
+  letter-spacing: var(--spacing);
+}
+
+.howBody h3 {
+  font-size: 1.35rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.howBody h4 {
+  font-size: 1.15rem;
+  margin: 2rem 0 0.75rem;
+}
+
+.howBody p,
+.howBody li {
+  font-size: 1rem;
+}
+
+.howBody p {
+  margin: 0 0 0.9rem;
+}
+
+.howBody ul {
+  padding-left: 1.2rem;
+  margin: 0 0 0.9rem;
+}
+
+.howBody li {
+  margin-bottom: 0.4rem;
+}
+
+.formula {
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  background: var(--clr-background-major);
+  border-radius: 0.4rem;
+  padding: 0.1rem 0.45rem;
+  margin: 0.1rem 0;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.howBody > .formula {
+  display: block;
+  width: fit-content;
+  margin: 0 0 0.9rem;
+}
+
 @media screen and (max-width: 700px) {
   .chapter {
     padding: 1.25rem 1rem;
+  }
+
+  .howItWorks {
+    padding: 1rem;
+  }
+
+  /* Wrap long formulas on phones instead of scrolling them sideways. */
+  .formula {
+    white-space: normal;
   }
 
   .grid {

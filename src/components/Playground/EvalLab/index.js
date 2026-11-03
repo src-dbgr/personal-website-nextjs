@@ -3,6 +3,7 @@ import { Check, Link as LinkIcon } from "lucide-react";
 import SampleSizeChapter from "./SampleSizeChapter";
 import PassKChapter from "./PassKChapter";
 import RankingChapter from "./RankingChapter";
+import HowItWorks from "./HowItWorks";
 import styles from "./EvalLab.module.css";
 
 // To add a chapter: build a component that takes { number }, keeps its settings
@@ -57,6 +58,7 @@ export default function EvalLab() {
       {CHAPTERS.map(({ id, Component }, i) => (
         <Component key={id} number={i + 1} />
       ))}
+      <HowItWorks />
       <div className={styles.sources}>
         <strong>Method and sources.</strong> Scores are modelled as task-level averages of independent
         attempts, with normal-approximation intervals and paired differences, following the Anthropic
