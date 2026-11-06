@@ -72,8 +72,8 @@ const AboutPage = ({ customData, cookies }) => {
           <div id="resume" className="about-download">
             <div className="resume-wrapper">
               <a
-                href="/samuel-blehm-resume-en.pdf"
-                download="samuel-blehm-resume-en.pdf"
+                href="/samuel-resume-en.pdf"
+                download="samuel-resume-en.pdf"
                 className="btn center-btn"
               >
                 <span className="btn">
