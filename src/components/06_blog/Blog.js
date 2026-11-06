@@ -20,7 +20,7 @@ const Blog = ({ title, desc, slug, date, category, image }) => {
             />
           </div>
           <div className="blog-card">
-            <h4>{title}</h4>
+            <h3>{title}</h3>
             <p className="blog-description">{desc}</p>
             <div className="blog-footer-parent">
               <div className="blog-footer">

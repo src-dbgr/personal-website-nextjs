@@ -33,7 +33,7 @@ const About = ({ infomain, stack }) => {
                 className="about-component-icon"
               />
             </div>
-            <h4>Who am I?</h4>
+            <h3>Who am I?</h3>
             <div className="underline"></div>
             <p>{infomain}</p>
             <ul className="skill-set">

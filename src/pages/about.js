@@ -36,7 +36,7 @@ const AboutPage = ({ customData, cookies }) => {
                 <BsCircleFill id="bs-circle-fill" className="about-component-icon" />
                 <IoTriangleSharp id="io-triangle-sharp" className="about-component-icon" />
               </div>
-              <h4>Who am I?</h4>
+              <h3>Who am I?</h3>
               <div className="underline"></div>
               <div className={`about-text ${isExpanded ? 'expanded' : 'colappsed'}`}>
                 <p>{about.info}</p>

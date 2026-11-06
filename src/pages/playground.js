@@ -16,7 +16,7 @@ const ToolCard = ({ title, desc, slug, icon, category }) => (
           {getIconComponent(icon, 36, "tile-card-icon", 1.5)}
         </div>
         <div className="blog-card">
-          <h4>{title}</h4>
+          <h3>{title}</h3>
           <p className="blog-description">{desc}</p>
           <div className="blog-footer-parent">
             <div className="blog-footer">

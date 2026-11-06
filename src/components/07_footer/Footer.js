@@ -10,7 +10,7 @@ const Footer = ({ darkFooter }) => {
     <div className={`${darkFooter ? "footer" : "footer light-footer"}`}>
       <div>
         <SocialLinks styleClass="footer-links"></SocialLinks>
-        <h4>copyright&copy;{new Date().getFullYear()}</h4>
+        <p className="footer-copyright">copyright&copy;{new Date().getFullYear()}</p>
         <div>
           <Link
             href="/legal"
