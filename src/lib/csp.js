@@ -13,6 +13,7 @@ export function getCspContent() {
     "connect-src": [
       "'self'",
       "https://submit-form.com",
+      "https://api.botpoison.com",
       "https://www.google-analytics.com",
       "https://*.google-analytics.com",
       "https://res.cloudinary.com",

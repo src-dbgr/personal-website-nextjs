@@ -93,6 +93,11 @@ const Contact = ({ cookies }) => {
       try {
         if (!FORMSPARK_URL) throw new Error("Form endpoint not configured");
         const fields = form.elements;
+        // Invisible proof-of-work; Formspark rejects submissions without it.
+        const { default: Botpoison } = await import("@botpoison/browser");
+        const { solution } = await new Botpoison({
+          publicKey: process.env.NEXT_PUBLIC_BOTPOISON_PUBLIC_KEY,
+        }).challenge();
         const response = await fetch(FORMSPARK_URL, {
           method: "POST",
           headers: {
@@ -104,6 +109,7 @@ const Contact = ({ cookies }) => {
             email: fields["email"].value,
             message,
             _honeypot: fields["_honeypot"].value,
+            _botpoison: solution,
             _email: { subject: "devsam.io contact: new message" },
           }),
         });

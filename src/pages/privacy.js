@@ -257,6 +257,25 @@ const privacy = () => {
                   approximate location by Hetzner in Germany.
                 </p>
                 <p>
+                  Before a message is sent, your browser solves a small,
+                  invisible computing task from Botpoison, a spam protection
+                  service run by the same company as Formspark. Your browser
+                  connects to Botpoison&apos;s servers for this, which process
+                  your IP address. No cookies are set and nothing is stored in
+                  your browser. This protects the form from abuse (Art. 6(1)(f)
+                  GDPR; legitimate interest). According to Botpoison, its data is stored in
+                  Ireland (privacy policy:{" "}
+                  <a
+                    href="https://botpoison.com/legal/privacy-policy/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="externalLink"
+                  >
+                    https://botpoison.com/legal/privacy-policy/
+                  </a>
+                  ).
+                </p>
+                <p>
                   Formspark sends a notification with your message to our
                   mailbox at Proton Mail. We keep messages only as long as we
                   need them to handle your request and then delete them from
@@ -327,7 +346,9 @@ const privacy = () => {
                     under the Swiss-U.S. Data Privacy Framework.
                   </li>
                   <li>
-                    <strong>Formspark (Belgium, Ireland, Germany):</strong>{" "}
+                    <strong>
+                      Formspark and Botpoison (Belgium, Ireland, Germany):
+                    </strong>{" "}
                     These countries are part of the EEA and are listed in
                     Annex 1 of the Data Protection Ordinance as countries with
                     adequate data protection.
