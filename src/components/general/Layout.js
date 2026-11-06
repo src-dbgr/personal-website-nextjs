@@ -55,7 +55,7 @@ const Layout = ({ children, darkFooter, cookies }) => {
   }, [state.animation]);
 
   const handleFinishLaunching = () => {
-    Cookies.set("launch_seen", "true", { expires: 7 });
+    Cookies.set("launch_seen", "true", { expires: 30 });
     markLaunchSeen();
     dispatch({ type: "LAUNCH_ANIMATION" });
   };

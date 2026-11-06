@@ -19,30 +19,35 @@ const data = [
     id: 1,
     icon: <FaSquareGithub className="social-icon" />,
     url: "https://www.github.com/src-dbgr",
+    label: "GitHub",
     type: "external",
   },
   {
     id: 2,
     icon: <BlueskyIcon />,
     url: "https://bsky.app/profile/devsam.bsky.social",
+    label: "Bluesky",
     type: "external",
   },  
   {
     id: 3,
     icon: <FaSquareXTwitter className="social-icon" />,
     url: "https://www.x.com/smlblm",
+    label: "X",
     type: "external",
   },
   {
     id: 4,
     icon: <FaEnvelopeSquare className="social-icon" />,
     url: "/contact",
+    label: "Contact",
     type: "internal",
   },
   {
     id: 5,
     icon: <ImSoundcloud2 className="social-icon soundcloud" />,
     url: "https://soundcloud.com/ivorycone",
+    label: "SoundCloud",
     type: "external",
   },
 ];
@@ -57,6 +62,7 @@ const SocialLinks = ({ styleClass }) => {
           <Link
             href={link.url}
             className="social-link"
+            aria-label={link.label}
             onClick={(e) => handleInternalLinkClick(e, link.url)}
             onKeyDown={(e) => handleInternalKeyDown(e, link.url)}
           >
@@ -70,6 +76,7 @@ const SocialLinks = ({ styleClass }) => {
           <a 
             href={link.url} 
             className="social-link" 
+            aria-label={`${link.label} (opens in a new tab)`}
             target="_blank" 
             rel="noopener noreferrer"
             onKeyDown={handleExternalKeyDown}

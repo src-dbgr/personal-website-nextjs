@@ -2975,6 +2975,10 @@ PLAYGROUND VISUALIZER STYLES
   overflow: hidden;
 }
 
+.tool-loading {
+  min-height: 100vh;
+}
+
 .backprop-visualizer-container {
   /* Verwenden Sie Ihre Haupt-Hintergrundfarbe */
   min-height: 100vh;

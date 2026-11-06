@@ -295,7 +295,7 @@ const privacy = () => {
                     Besuch erhalten bleibt.
                   </li>
                   <li>
-                    <strong>launch_seen</strong> (Cookie, Laufzeit 7 Tage):
+                    <strong>launch_seen</strong> (Cookie, Laufzeit 30 Tage):
                     merkt, dass die Startanimation bereits gesehen wurde, damit
                     sie nicht bei jedem Besuch erneut abgespielt wird.
                   </li>

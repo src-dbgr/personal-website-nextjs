@@ -4,10 +4,12 @@ import { getCspContent } from "../lib/csp";
 class MyDocument extends Document {
   render() {
     return (
-      <Html className="theme-pending">
+      <Html className="theme-pending" lang="en">
         <Head>
           <style>{"html.theme-pending{visibility:hidden}"}</style>
           <meta httpEquiv="Content-Security-Policy" content={getCspContent()} />
+          {/* Blocking, CSP 'self': set the theme class on <html> before first paint. */}
+          <script src="/theme-init.js" />
           {/* Favicon and manifest links */}
           <link
             rel="apple-touch-icon"

@@ -8,8 +8,9 @@ import { fetchCookieStaticProps } from "../../lib/staticPropsHelpers";
 import playgroundTools from "../../data/constants/playgroundTools";
 import FadeInSection from "../../hooks/FadeInSectionClient";
 
+// Reserves a full viewport while the client-only bundle loads, so the footer does not jump.
 const loadingTool = () => (
-  <div className="text-center p-10">Loading Interactive Tool...</div>
+  <div className="text-center p-10 tool-loading">Loading Interactive Tool...</div>
 );
 
 // Each tool is its own client-side bundle, keyed by its slug in playgroundTools.
