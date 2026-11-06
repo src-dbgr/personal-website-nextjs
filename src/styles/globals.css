@@ -58,9 +58,9 @@
   --clr-dark-opaque-overlay: rgba(46, 46, 46, 0.4);
   --clr-light-dark: rgb(86, 95, 97);
   --clr-triangle-nav-stroke: rgb(53, 160, 103);
-  --clr-green-major: rgb(61, 139, 104);
+  --clr-green-major: rgb(31, 107, 73);
   --clr-green-blog-circle: rgba(52, 69, 73, 0.5);
-  --clr-green-minor: rgb(61, 139, 104);
+  --clr-green-minor: rgb(31, 107, 73);
   --clr-green-everywhere: rgb(74, 177, 130);
   --clr-magenta: rgb(118, 112, 129);
   --clr-topbar-font-hover: rgb(181, 178, 166);
@@ -71,6 +71,8 @@
   --clr-about-img-border: rgb(181, 178, 166);
   --clr-about-img-border-hover: rgba(150, 149, 141, 0.7);
   --clr-passive: rgb(50, 56, 57);
+  --clr-passive-surface: rgb(60, 67, 69);
+  --clr-on-passive: rgb(181, 178, 166);
   --clr-dark-shadow: rgb(128, 128, 123);
   --clr-dark-four-o-four: rgb(52, 69, 73);
   --clr-lighthouse: rgb(150, 149, 141);
@@ -146,11 +148,13 @@
   --clr-very-dark: rgb(181, 178, 166);
   --clr-dark: rgb(81, 181, 136);
   --clr-passive: rgb(147, 157, 159);
+  --clr-passive-surface: rgb(86, 95, 97);
+  --clr-on-passive: rgb(218, 221, 222);
   --clr-dark-transparent: transparent;
   --clr-light-dark: rgb(46, 46, 46);
   --clr-green-everywhere: rgb(120, 170, 143);
-  --clr-green-major: rgb(137, 163, 149);
-  --clr-green-blog-circle: rgba(137, 163, 149, 0.6);
+  --clr-green-major: rgb(138, 199, 170);
+  --clr-green-blog-circle: rgba(138, 199, 170, 0.6);
   --clr-magenta: rgb(53, 161, 105);
   --clr-btn-text-on-hover: rgb(46, 46, 46);
   --clr-about-img-border: rgb(46, 46, 46);
@@ -172,7 +176,7 @@
     rgb(46, 46, 46),
     rgb(51, 51, 51)
   );
-  --clr-green-minor: rgb(137, 163, 149);
+  --clr-green-minor: rgb(138, 199, 170);
   --clr-topbar-text-hover-linear-gradient: linear-gradient(
     270deg,
     var(--clr-background-minor),
@@ -198,6 +202,8 @@
   --clr-background-minor: rgb(51, 51, 51);
   --clr-dark: rgb(81, 181, 136);
   --clr-passive: rgb(147, 157, 159);
+  --clr-passive-surface: rgb(86, 95, 97);
+  --clr-on-passive: rgb(218, 221, 222);
   --clr-magenta: rgb(53, 161, 105);
   /* scrollbar-face-color: var(--clr-dark); */
   /* scrollbar-shadow-color: var(--clr-magenta); */
@@ -324,7 +330,7 @@ Cookie Consent
   width: 95vw;
   max-width: 1170px;
   padding: 10px;
-  border: 2px solid var(--clr-passive);
+  border: 2px solid var(--clr-passive-surface);
   min-height: 80px;
   overflow: hidden;
 }
@@ -421,7 +427,7 @@ Cookie Consent
   flex-direction: row;
   /* justify-content: bottom; */
   /* align-items: left; */
-  border: 1px solid var(--clr-passive);
+  border: 1px solid var(--clr-passive-surface);
   padding-left: 0.25rem;
   margin-top: 0.25rem;
   font-size: 8pt !important;
@@ -450,7 +456,7 @@ Cookie Consent
   right: 0 !important;
   bottom: 0 !important;
   width: 35px !important;
-  background-color: var(--clr-passive);
+  background-color: var(--clr-passive-surface);
   -webkit-transition: 0.2s;
   transition: 0.2s;
 }
@@ -2020,7 +2026,7 @@ About Page
 .resume-wrapper {
   background: var(--clr-background-major);
   padding: 1rem;
-  border: 3px dashed var(--clr-passive);
+  border: 3px dashed var(--clr-passive-surface);
 }
 
 .about-download-radio-wrapper {
@@ -2066,7 +2072,7 @@ label .overlay {
   display: inline-block;
   position: relative;
   top: -1px;
-  border: 2px solid var(--clr-passive);
+  border: 2px solid var(--clr-passive-surface);
   border-radius: 50%;
   vertical-align: middle;
 }
@@ -2358,7 +2364,7 @@ Projects
   height: 100%;
   background: linear-gradient(
     to bottom right,
-    var(--clr-passive),
+    var(--clr-passive-surface),
     var(--clr-light-dark)
   ) !important;
   opacity: 0.85;
@@ -2818,7 +2824,7 @@ Blog Template
 }
 
 .blog-content blockquote {
-  border: 3px dashed var(--clr-passive);
+  border: 3px dashed var(--clr-passive-surface);
   box-shadow: var(--default-box-shadow);
 }
 
@@ -3760,7 +3766,7 @@ th {
 
 .timeline-legend-table {
   /* margin-bottom: var(--navbar-height); */
-  border-top: solid 5px var(--clr-passive);
+  border-top: solid 5px var(--clr-passive-surface);
 }
 
 .timeline-legend-table-open {
@@ -3782,7 +3788,7 @@ caption {
   padding: 10px;
   padding-bottom: 5px;
   max-width: 905px;
-  border: 3px dashed var(--clr-passive);
+  border: 3px dashed var(--clr-passive-surface);
 }
 
 .tech-button-wrapper {
@@ -3867,8 +3873,8 @@ caption {
 }
 
 .tech-caption h4 {
-  color: var(--clr-background-major) !important;
-  background: var(--clr-passive) !important;
+  color: var(--clr-on-passive) !important;
+  background: var(--clr-passive-surface) !important;
   font-size: 1.3rem;
 }
 
@@ -3929,15 +3935,16 @@ caption {
 }
 
 .timeline-flex-collapsible-icon {
-  color: var(--clr-green-major);
-  background-color: var(--clr-passive);
+  /* Same pairing as .timeline-flex-title-dark, so the chevrons stay visible in both themes. */
+  color: var(--clr-on-passive);
+  background-color: var(--clr-passive-surface);
   height: 100%;
   min-height: 42px;
 }
 
 .timeline-flex-title-dark {
-  color: var(--clr-background-major) !important;
-  background: var(--clr-passive) !important;
+  color: var(--clr-on-passive) !important;
+  background: var(--clr-passive-surface) !important;
 }
 
 .timeline-legend-table th {
@@ -4044,8 +4051,8 @@ caption {
   max-width: 890px;
   padding-top: var(--border-thickness);
   padding-bottom: calc(var(--border-thickness) - 13px);
-  border-bottom: 5px solid var(--clr-passive);
-  border-top: 5px solid var(--clr-passive);
+  border-bottom: 5px solid var(--clr-passive-surface);
+  border-top: 5px solid var(--clr-passive-surface);
 }
 
 .timeline-from-to-category {
@@ -4081,7 +4088,7 @@ caption {
   width: 5px;
   margin: 0 auto;
   padding-top: 50px;
-  background: var(--clr-passive);
+  background: var(--clr-passive-surface);
 }
 
 .timeline ul li::after {
@@ -4749,7 +4756,7 @@ Skill Level Tech Table
 
 .skills-wrapper svg circle {
   stroke-width: 3px;
-  stroke: var(--clr-passive);
+  stroke: var(--clr-passive-surface);
 }
 
 .skills-wrapper svg .cbar {
