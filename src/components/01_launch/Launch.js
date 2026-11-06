@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { useRouter } from "next/router";
 import anime from "animejs";
-import Seo from "../general/Seo";
 import { GlobalStateContext } from "../../context/GlobalContextProvider";
 import styles from "./Launch.module.css";
 
@@ -423,7 +422,6 @@ const Launch = ({ finishLaunching }) => {
 
   return (
     <>
-      <Seo title="Launch" description={"test"} />
       <div className={styles.imagewrapper}>
         <svg
           id="logo"
