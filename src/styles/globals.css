@@ -1185,9 +1185,28 @@ NAVBAR
 ==========
 */
 
+/* opacity as well: children such as #nav_main_logo set visibility: visible. */
 html:not(.launch-seen) .persistent-chrome {
   visibility: hidden;
+  opacity: 0;
   pointer-events: none;
+}
+
+/* First visit: the static HTML paints before the launch chunk loads.
+   Keep page content hidden until the overlay covers it. The delayed reveal
+   is a fallback if the chunk fails; the overlay sits on top by then. */
+html:not(.launch-seen) #main-content,
+html:not(.launch-seen) .footer {
+  visibility: hidden;
+  opacity: 0;
+  animation: launch-content-fallback 0s linear 6s forwards;
+}
+
+@keyframes launch-content-fallback {
+  to {
+    visibility: visible;
+    opacity: 1;
+  }
 }
 
 .navbar_open {
