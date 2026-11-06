@@ -48,7 +48,18 @@ const legal  = () => {
               <div className="impressum-name">o</div>
             </div>
           </div>
-          <p>A postal address is available on request by email.</p>
+          <p>
+            <span className="obf">A po</span>
+            <span className="obf">st</span>
+            <span className="obf">al ad</span>
+            <span className="obf">dr</span>
+            <span className="obf">ess is av</span>
+            <span className="obf">ail</span>
+            <span className="obf">able on re</span>
+            <span className="obf">qu</span>
+            <span className="obf">est by em</span>
+            <span className="obf">ail.</span>
+          </p>
         </div>
       </section>
     </Layout>
