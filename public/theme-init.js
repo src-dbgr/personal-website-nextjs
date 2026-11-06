@@ -33,6 +33,13 @@
       }
     } catch (e) {}
 
+    // The launch animation only plays when a visit starts on the home page.
+    // Deep links (blog posts, tools) render their content right away.
+    var path = location.pathname;
+    if (path !== "/" && path !== "/index.html") {
+      document.documentElement.classList.add("launch-seen");
+    }
+
     var applyThemeColor = function (isDark) {
       var meta = document.querySelector('meta[name="theme-color"]');
       if (!meta) {
