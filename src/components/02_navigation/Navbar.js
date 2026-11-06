@@ -540,6 +540,8 @@ const Navbar = (props) => {
         type="button"
         className="toggle-btn"
         onClick={handleToggle}
+        aria-label={navopen ? "Close menu" : "Open menu"}
+        aria-expanded={navopen}
       >
             <svg
               id="toggle"
