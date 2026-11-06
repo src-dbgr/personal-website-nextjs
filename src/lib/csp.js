@@ -12,6 +12,7 @@ export function getCspContent() {
     "frame-src": ["https://www.google.com"],
     "connect-src": [
       "'self'",
+      "https://submit-form.com",
       "https://www.google-analytics.com",
       "https://*.google-analytics.com",
       "https://res.cloudinary.com",

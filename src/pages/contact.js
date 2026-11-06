@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { BsCheckCircle } from "react-icons/bs";
 import Layout from "../components/general/Layout";
 import Title from "../components/general/Title";
 import Seo from "../components/general/Seo";
@@ -10,7 +12,19 @@ const Contact = ({ cookies }) => {
     const [isNameValid, setNameValid] = useState(true);
     const [isMessageValid, setMessageValid] = useState(true);
     const [message, setMessage] = useState('');
+    // idle | sending | sent | error | cooldown
     const [sendState, setSendState] = useState('idle');
+    const openedAt = useRef(0);
+    const inFlight = useRef(false);
+    const confirmationRef = useRef(null);
+
+    useEffect(() => {
+      openedAt.current = Date.now();
+    }, []);
+
+    useEffect(() => {
+      if (sendState === 'sent') confirmationRef.current?.focus();
+    }, [sendState]);
 
     function checkData(event) {
       event.preventDefault();
@@ -35,25 +49,79 @@ const Contact = ({ cookies }) => {
       submitForm(nameValidity, messageValidity, emailValidity, event);
     }
 
-    // Netlify Forms: post to the static detection file, not to this page.
-    // See public/__forms.html and https://opennext.js.org/netlify/forms
+    // Formspark (https://documentation.formspark.io/examples/ajax.html).
+    // Server side, Formspark rejects filled honeypots, foreign origins and
+    // filtered spam without using the quota. The checks here only keep naive
+    // bots and double submits away.
+    const FORMSPARK_URL = process.env.NEXT_PUBLIC_FORMSPARK_FORM_ID
+      ? `https://submit-form.com/${process.env.NEXT_PUBLIC_FORMSPARK_FORM_ID}`
+      : null;
+    const MIN_FILL_MS = 3000;
+    const COOLDOWN_MS = 60000;
+
+    function readLastSent() {
+      try {
+        return Number(sessionStorage.getItem("contact_last_sent")) || 0;
+      } catch (err) {
+        return 0;
+      }
+    }
+
+    function writeLastSent() {
+      try {
+        sessionStorage.setItem("contact_last_sent", String(Date.now()));
+      } catch (err) {}
+    }
+
     async function submitForm(nameValidity, messageValidity, emailValidity, event) {
       if (!(nameValidity && messageValidity && emailValidity)) return;
+      if (inFlight.current) return;
       const form = event.target;
+      const looksAutomated =
+        form.elements["_honeypot"].value !== "" ||
+        Date.now() - openedAt.current < MIN_FILL_MS;
+      if (looksAutomated) {
+        setSendState('sent');
+        return;
+      }
+      if (Date.now() - readLastSent() < COOLDOWN_MS) {
+        setSendState('cooldown');
+        return;
+      }
+      inFlight.current = true;
       setSendState('sending');
       try {
-        const response = await fetch("/__forms.html", {
+        if (!FORMSPARK_URL) throw new Error("Form endpoint not configured");
+        const fields = form.elements;
+        const response = await fetch(FORMSPARK_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams(new FormData(form)).toString(),
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            name: fields["name"].value,
+            email: fields["email"].value,
+            message,
+            _honeypot: fields["_honeypot"].value,
+            _email: { subject: "devsam.io contact: new message" },
+          }),
         });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        writeLastSent();
         form.reset();
         setMessage('');
         setSendState('sent');
       } catch (err) {
         setSendState('error');
+      } finally {
+        inFlight.current = false;
       }
+    }
+
+    function startNewMessage() {
+      openedAt.current = Date.now();
+      setSendState('idle');
     }
 
     function validateEmail(inputText) {
@@ -94,12 +162,33 @@ const Contact = ({ cookies }) => {
           <FadeInSection>
             <article className="contact-form shadow-box-dark">
               <h3>get in touch</h3>
-              <form id="mailForm" name="contact" onSubmit={checkData}>
-                <input type="hidden" name="form-name" value="contact" />
+              {sendState === 'sent' ? (
+                <div
+                  className="form-confirmation"
+                  role="status"
+                  tabIndex={-1}
+                  ref={confirmationRef}
+                >
+                  <BsCheckCircle className="form-confirmation-icon" aria-hidden="true" />
+                  <p className="form-confirmation-title">Thank you!</p>
+                  <p>
+                    Your message has been sent. I will get back to you by email
+                    as soon as possible.
+                  </p>
+                  <button
+                    type="button"
+                    className="submit-btn btn"
+                    onClick={startNewMessage}
+                  >
+                    SEND ANOTHER MESSAGE
+                  </button>
+                </div>
+              ) : (
+              <form id="mailForm" onSubmit={checkData} aria-busy={sendState === 'sending'}>
                 <p className="visually-hidden" aria-hidden="true">
                   <label>
                     Leave this field empty
-                    <input type="text" name="bot-field" tabIndex={-1} autoComplete="off" />
+                    <input type="text" name="_honeypot" tabIndex={-1} autoComplete="off" />
                   </label>
                 </p>
                 <div className="form-group">
@@ -113,6 +202,7 @@ const Contact = ({ cookies }) => {
                     name="name"
                     autoComplete="name"
                     className="form-control"
+                    maxLength={200}
                     required
                   />
                   <label htmlFor="email" className="visually-hidden">
@@ -125,6 +215,7 @@ const Contact = ({ cookies }) => {
                     name="email"
                     autoComplete="email"
                     className="form-control"
+                    maxLength={320}
                     required
                   />
                   <label htmlFor="message" className="visually-hidden">
@@ -140,6 +231,7 @@ const Contact = ({ cookies }) => {
                     rows="5"
                     placeholder="message"
                     className="form-control"
+                    maxLength={5000}
                     required
                   ></textarea>
                 </div>
@@ -163,14 +255,21 @@ const Contact = ({ cookies }) => {
                     <p>- INVALID EMAIL</p>
                   </div>
                 )}
-                {sendState === 'sent' && (
-                  <div className="success-message" role="status">
-                    <p>MESSAGE SENT</p>
+                {sendState === 'error' && (
+                  <div className="form-notice form-notice-error" role="alert">
+                    <p>
+                      Your message could not be sent. Please try again in a
+                      moment, or write to the email address in the{" "}
+                      <Link href="/legal">legal notice</Link>.
+                    </p>
                   </div>
                 )}
-                {sendState === 'error' && (
-                  <div className="invalid invalid-header" role="alert">
-                    <p>MAIL NOT SENT, PLEASE TRY AGAIN</p>
+                {sendState === 'cooldown' && (
+                  <div className="form-notice" role="alert">
+                    <p>
+                      You just sent a message. Please wait a minute before
+                      sending another one.
+                    </p>
                   </div>
                 )}
                 <button
@@ -178,9 +277,10 @@ const Contact = ({ cookies }) => {
                   className="submit-btn btn"
                   disabled={sendState === 'sending'}
                 >
-                  SUBMIT
+                  {sendState === 'sending' ? 'SENDING…' : 'SUBMIT'}
                 </button>
               </form>
+              )}
               {/* <div id="send-status">
               <div id="send-issue"></div>
             </div> */}

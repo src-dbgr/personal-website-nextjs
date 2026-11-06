@@ -248,18 +248,44 @@ const privacy = () => {
                   contractual matters, otherwise Art. 6(1)(f) GDPR).
                 </p>
                 <p>
-                  Submissions are received by Netlify Forms, the form service
-                  of our host Netlify (see Hosting), which stores them on our
-                  behalf. Netlify also receives technical data of the
-                  submission, such as your IP address and browser information.
-                  To filter spam, Netlify checks submissions with the service
-                  Akismet (Automattic Inc., USA).
+                  Submissions are received by the form service Formspark,
+                  which stores them on our behalf and checks them for spam.
+                  Formspark also receives technical data of the submission,
+                  such as your IP address and browser information. According
+                  to Formspark, submissions are stored with Amazon Web
+                  Services in Ireland, and IP addresses are converted to an
+                  approximate location by Hetzner in Germany.
                 </p>
                 <p>
-                  Netlify sends a notification with your message to our
+                  Formspark sends a notification with your message to our
                   mailbox at Proton Mail. We keep messages only as long as we
                   need them to handle your request and then delete them from
-                  Netlify and from our mailbox.
+                  Formspark and from our mailbox.
+                </p>
+                <p>
+                  <strong>Trampoline Software SRL</strong> (Formspark)
+                  <br />
+                  Rue de Marsannay-la-Côte 16, 5032 Mazy, Belgium
+                  <br />
+                  Privacy policy:{" "}
+                  <a
+                    href="https://formspark.io/legal/privacy-policy/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="externalLink"
+                  >
+                    https://formspark.io/legal/privacy-policy/
+                  </a>
+                  <br />
+                  Sub-processors:{" "}
+                  <a
+                    href="https://formspark.io/legal/subprocessors/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="externalLink"
+                  >
+                    https://formspark.io/legal/subprocessors/
+                  </a>
                 </p>
                 <p>
                   <strong>Proton AG</strong>
@@ -301,8 +327,10 @@ const privacy = () => {
                     under the Swiss-U.S. Data Privacy Framework.
                   </li>
                   <li>
-                    <strong>Akismet (USA):</strong> Automattic Inc. is
-                    certified under the Swiss-U.S. Data Privacy Framework.
+                    <strong>Formspark (Belgium, Ireland, Germany):</strong>{" "}
+                    These countries are part of the EEA and are listed in
+                    Annex 1 of the Data Protection Ordinance as countries with
+                    adequate data protection.
                   </li>
                 </ul>
               </div>
