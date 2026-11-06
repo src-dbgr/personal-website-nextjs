@@ -46,13 +46,13 @@
 :root {
   --clr-background-major: rgb(181, 178, 166);
   --clr-background-major-opaque: rgba(181, 178, 166, 0.9);
-  --clr-background-minor: rgb(150, 149, 141);
-  --clr-background-minor-opaque: rgba(150, 149, 141, 0.9);
+  --clr-background-minor: rgb(162, 161, 154);
+  --clr-background-minor-opaque: rgba(162, 161, 154, 0.9);
   --clr-background-minor-light: rgb(170, 168, 163);
   --clr-navbar-fallback: rgba(150, 149, 141, 0.8);
   --clr-very-dark: rgb(26, 26, 26);
   --clr-dark-strong: rgb(33, 33, 33);
-  --clr-dark: rgb(52, 69, 73);
+  --clr-dark: rgb(42, 56, 60);
   --clr-dark-transparent: rgb(52, 69, 73);
   --clr-dark-opaque: rgba(52, 69, 73, 0.5);
   --clr-dark-opaque-overlay: rgba(46, 46, 46, 0.4);
@@ -67,17 +67,17 @@
   --clr-mountain-stroke: rgb(181, 178, 166);
   --clr-descr-animation-light: rgba(201, 201, 201, 0.5);
   --clr-btn-text-on-hover: rgb(181, 178, 166);
-  --clr-text-quiet: rgb(52, 69, 73);
+  --clr-text-quiet: rgb(42, 56, 60);
   --clr-about-img-border: rgb(181, 178, 166);
   --clr-about-img-border-hover: rgba(150, 149, 141, 0.7);
-  --clr-passive: rgb(86, 95, 97);
+  --clr-passive: rgb(50, 56, 57);
   --clr-dark-shadow: rgb(128, 128, 123);
   --clr-dark-four-o-four: rgb(52, 69, 73);
   --clr-lighthouse: rgb(150, 149, 141);
   --clr-sunmoon-topbar: rgb(231, 230, 213);
-  --clr-animation-toggle-wrapper: rgb(150, 149, 141);
+  --clr-animation-toggle-wrapper: rgb(162, 161, 154);
   --clr-stop-animation: rgb(190, 78, 80);
-  --clr-start-animation: rgb(52, 69, 73);
+  --clr-start-animation: rgb(42, 56, 60);
   --clr-about-img-background: linear-gradient(
     rgb(150, 149, 141),
     rgb(181, 178, 166)
@@ -144,7 +144,8 @@
   --clr-background-minor-light: rgb(51, 51, 51);
   --clr-navbar-fallback: rgba(51, 51, 51, 0.8);
   --clr-very-dark: rgb(181, 178, 166);
-  --clr-dark: rgb(61, 139, 104);
+  --clr-dark: rgb(81, 181, 136);
+  --clr-passive: rgb(147, 157, 159);
   --clr-dark-transparent: transparent;
   --clr-light-dark: rgb(46, 46, 46);
   --clr-green-everywhere: rgb(120, 170, 143);
@@ -195,7 +196,8 @@
 
 .htmlScrollbarDarkMode {
   --clr-background-minor: rgb(51, 51, 51);
-  --clr-dark: rgb(61, 139, 104);
+  --clr-dark: rgb(81, 181, 136);
+  --clr-passive: rgb(147, 157, 159);
   --clr-magenta: rgb(53, 161, 105);
   /* scrollbar-face-color: var(--clr-dark); */
   /* scrollbar-shadow-color: var(--clr-magenta); */
