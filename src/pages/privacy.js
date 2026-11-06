@@ -248,50 +248,18 @@ const privacy = () => {
                   contractual matters, otherwise Art. 6(1)(f) GDPR).
                 </p>
                 <p>
-                  Submissions are received by the form service Formspree,
-                  which processes the form data on our behalf. Formspree also
-                  receives technical data of the submission, such as your IP
-                  address and browser information. According to its own
-                  information, Formspree processes data in the USA and uses
-                  further service providers, most of them in the USA.
+                  Submissions are received by Netlify Forms, the form service
+                  of our host Netlify (see Hosting), which stores them on our
+                  behalf. Netlify also receives technical data of the
+                  submission, such as your IP address and browser information.
+                  To filter spam, Netlify checks submissions with the service
+                  Akismet (Automattic Inc., USA).
                 </p>
                 <p>
-                  Formspree forwards your message to our mailbox at Proton
-                  Mail. We keep messages only as long as we need them to
-                  handle your request.
-                </p>
-                <p>
-                  <strong>Formspree, Inc.</strong> (USA)
-                  <br />
-                  Website:{" "}
-                  <a
-                    href="https://formspree.io/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="externalLink"
-                  >
-                    https://formspree.io/
-                  </a>
-                  <br />
-                  Privacy policy:{" "}
-                  <a
-                    href="https://formspree.io/legal/privacy-policy/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="externalLink"
-                  >
-                    https://formspree.io/legal/privacy-policy/
-                  </a>
-                  <br />
-                  Sub-processors:{" "}
-                  <a
-                    href="https://formspree.io/legal/subprocessors/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="externalLink"
-                  >
-                    https://formspree.io/legal/subprocessors/
-                  </a>
+                  Netlify sends a notification with your message to our
+                  mailbox at Proton Mail. We keep messages only as long as we
+                  need them to handle your request and then delete them from
+                  Netlify and from our mailbox.
                 </p>
                 <p>
                   <strong>Proton AG</strong>
@@ -333,14 +301,8 @@ const privacy = () => {
                     under the Swiss-U.S. Data Privacy Framework.
                   </li>
                   <li>
-                    <strong>Formspree (USA):</strong> Formspree, Inc. is not
-                    certified under the Swiss-U.S. Data Privacy Framework, and
-                    there is no adequacy decision for it. The form therefore
-                    asks for your consent: by submitting it, you expressly
-                    consent to the transfer of your name, email address,
-                    message and the technical data of the submission to
-                    Formspree in the USA (Art. 17(1)(a) FADP). If you do not
-                    agree, please contact us by email instead.
+                    <strong>Akismet (USA):</strong> Automattic Inc. is
+                    certified under the Swiss-U.S. Data Privacy Framework.
                   </li>
                 </ul>
               </div>

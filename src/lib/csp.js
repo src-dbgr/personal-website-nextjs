@@ -12,7 +12,6 @@ export function getCspContent() {
     "frame-src": ["https://www.google.com"],
     "connect-src": [
       "'self'",
-      "https://formspree.io",
       "https://www.google-analytics.com",
       "https://*.google-analytics.com",
       "https://res.cloudinary.com",
@@ -25,7 +24,7 @@ export function getCspContent() {
       "https://res.cloudinary.com",
     ],
     "style-src": ["'self'", "'unsafe-inline'", "https://www.gstatic.com"],
-    "form-action": ["'self'", "https://formspree.io"],
+    "form-action": ["'self'"],
   };
 
   return Object.entries(policy)

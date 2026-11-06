@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Link from "next/link";
 import Layout from "../components/general/Layout";
 import Title from "../components/general/Title";
 import Seo from "../components/general/Seo";
@@ -11,6 +10,7 @@ const Contact = ({ cookies }) => {
     const [isNameValid, setNameValid] = useState(true);
     const [isMessageValid, setMessageValid] = useState(true);
     const [message, setMessage] = useState('');
+    const [sendState, setSendState] = useState('idle');
 
     function checkData(event) {
       event.preventDefault();
@@ -35,13 +35,24 @@ const Contact = ({ cookies }) => {
       submitForm(nameValidity, messageValidity, emailValidity, event);
     }
 
-    // comment in the form action path for mail transfer
-    function submitForm(nameValidity, messageValidity, emailValidity) {
-      if (nameValidity && messageValidity && emailValidity) {
-        let form = document.getElementById("mailForm");
-        form.method = "post";
-        form.action = `${process.env.NEXT_PUBLIC_FS_API_URL}`;
-        form.submit();
+    // Netlify Forms: post to the static detection file, not to this page.
+    // See public/__forms.html and https://opennext.js.org/netlify/forms
+    async function submitForm(nameValidity, messageValidity, emailValidity, event) {
+      if (!(nameValidity && messageValidity && emailValidity)) return;
+      const form = event.target;
+      setSendState('sending');
+      try {
+        const response = await fetch("/__forms.html", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(new FormData(form)).toString(),
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        form.reset();
+        setMessage('');
+        setSendState('sent');
+      } catch (err) {
+        setSendState('error');
       }
     }
 
@@ -83,7 +94,14 @@ const Contact = ({ cookies }) => {
           <FadeInSection>
             <article className="contact-form shadow-box-dark">
               <h3>get in touch</h3>
-              <form id="mailForm" onSubmit={checkData}>
+              <form id="mailForm" name="contact" onSubmit={checkData}>
+                <input type="hidden" name="form-name" value="contact" />
+                <p className="visually-hidden" aria-hidden="true">
+                  <label>
+                    Leave this field empty
+                    <input type="text" name="bot-field" tabIndex={-1} autoComplete="off" />
+                  </label>
+                </p>
                 <div className="form-group">
                   <label htmlFor="name" className="visually-hidden">
                     Name
@@ -145,13 +163,21 @@ const Contact = ({ cookies }) => {
                     <p>- INVALID EMAIL</p>
                   </div>
                 )}
-                <p className="form-consent">
-                  By sending, you consent to your name, email address,
-                  message and technical data of the submission being
-                  transferred to Formspree in the USA. Details:{" "}
-                  <Link href="/privacy">privacy policy</Link>.
-                </p>
-                <button type="submit" className="submit-btn btn">
+                {sendState === 'sent' && (
+                  <div className="success-message" role="status">
+                    <p>MESSAGE SENT</p>
+                  </div>
+                )}
+                {sendState === 'error' && (
+                  <div className="invalid invalid-header" role="alert">
+                    <p>MAIL NOT SENT, PLEASE TRY AGAIN</p>
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  className="submit-btn btn"
+                  disabled={sendState === 'sending'}
+                >
                   SUBMIT
                 </button>
               </form>
