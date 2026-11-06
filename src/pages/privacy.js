@@ -375,12 +375,20 @@ const privacy = () => {
                     that the launch animation has already been shown, so that
                     it is not played again on every visit.
                   </li>
+                  <li>
+                    <strong>contact_last_sent</strong> (sessionStorage, until
+                    you close the browser tab): stores the time of your last
+                    message, so that the contact form accepts at most one
+                    message per minute.
+                  </li>
                 </ul>
                 <p>
                   The legal basis is Art. 6(1)(f) GDPR (legitimate interest in
-                  a working, consistent presentation). You can delete or block
+                  a working, consistent presentation and in protecting the
+                  contact form from abuse). You can delete or block
                   cookies and local storage in your browser; some functions
-                  (theme, launch animation) may then not work as intended.
+                  (theme, launch animation, message limit) may then not work as
+                  intended.
                 </p>
               </div>
             </div>
