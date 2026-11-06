@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Link from "next/link";
 import Layout from "../components/general/Layout";
 import Title from "../components/general/Title";
 import Seo from "../components/general/Seo";
@@ -144,6 +145,12 @@ const Contact = ({ cookies }) => {
                     <p>- INVALID EMAIL</p>
                   </div>
                 )}
+                <p className="form-consent">
+                  By sending, you consent to your name, email address,
+                  message and technical data of the submission being
+                  transferred to Formspree in the USA. Details:{" "}
+                  <Link href="/privacy">privacy policy</Link>.
+                </p>
                 <button type="submit" className="submit-btn btn">
                   SUBMIT
                 </button>

@@ -4902,6 +4902,18 @@ textarea:focus {
   letter-spacing: var(--spacing);
 }
 
+.form-consent {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  margin: 0.75rem 1rem;
+  color: var(--clr-passive);
+}
+
+.form-consent a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .submit-btn {
   display: block;
   border-radius: unset !important;

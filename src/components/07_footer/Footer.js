@@ -18,11 +18,7 @@ const Footer = ({ darkFooter }) => {
             onClick={(e) => handleInternalLinkClick(e, "/legal")}
             onKeyDown={(e) => handleInternalKeyDown(e, "/legal")}
           >
-            Legal Notice |{" "}
-            <span className="obf">Im</span>
-            <span className="obf">pre</span>
-            <span className="obf">ss</span>
-            <span className="obf">um</span>
+            Legal Notice
           </Link>
           <Link
             href="/privacy"
@@ -30,7 +26,7 @@ const Footer = ({ darkFooter }) => {
             onClick={(e) => handleInternalLinkClick(e, "/privacy")}
             onKeyDown={(e) => handleInternalKeyDown(e, "/privacy")}
           >
-            Privacy Policy | Datenschutzerklärung
+            Privacy Policy
           </Link>
         </div>
       </div>
