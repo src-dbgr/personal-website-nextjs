@@ -825,6 +825,105 @@ p {
   color: var(--clr-green-minor);
 }
 
+/*
+===============
+Hero liquid words (SAMUEL, IT), see LiquidWord.js
+The real text stays for layout and accessibility but is transparent; the SVG
+outline sits on its baseline: Oswald's ascender is 1.193em, the SVG's
+baseline is 0.9em below its top, so top = 0.293em.
+===============
+*/
+.liquid-word {
+  position: relative;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.liquid-word span {
+  -webkit-text-fill-color: transparent;
+}
+
+.liquid-word-svg {
+  position: absolute;
+  left: 0;
+  top: 0.293em;
+  height: 1em;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Below 800px the hero h2 is bold (synthesised), so IT gets the same
+   stroke as SAMUEL. */
+@media screen and (max-width: 799px) {
+  .liquid-word-it .liquid-word-body {
+    stroke-width: 22px;
+  }
+}
+
+/* Liquid oil colours, taken from the logo (emerald, slate, grey, silver),
+   each at least 3:1 against the hero background. Light theme: deep shades;
+   dark theme: bright ones. */
+.liquid-chrome-0 {
+  stop-color: rgb(52, 92, 74);
+}
+.liquid-chrome-1 {
+  stop-color: rgb(40, 58, 62);
+}
+.liquid-chrome-2 {
+  stop-color: rgb(20, 80, 52);
+}
+.liquid-chrome-3 {
+  stop-color: rgb(60, 70, 72);
+}
+/* Oil streaks (emerald, slate, silver, blue slate, green), blended softly
+   over the metal. */
+.liquid-streaks {
+  opacity: 0.6;
+}
+.liquid-streak-0 {
+  fill: rgb(26, 98, 64);
+}
+.liquid-streak-1 {
+  fill: rgb(48, 60, 64);
+}
+.liquid-streak-2 {
+  fill: rgb(72, 80, 80);
+}
+.liquid-streak-3 {
+  fill: rgb(44, 54, 70);
+}
+.liquid-streak-4 {
+  fill: rgb(20, 86, 56);
+}
+
+.dark-theme .liquid-chrome-0 {
+  stop-color: rgb(184, 188, 180);
+}
+.dark-theme .liquid-chrome-1 {
+  stop-color: rgb(120, 138, 138);
+}
+.dark-theme .liquid-chrome-2 {
+  stop-color: rgb(60, 150, 102);
+}
+.dark-theme .liquid-chrome-3 {
+  stop-color: rgb(150, 156, 148);
+}
+.dark-theme .liquid-streak-0 {
+  fill: rgb(60, 156, 100);
+}
+.dark-theme .liquid-streak-1 {
+  fill: rgb(112, 128, 132);
+}
+.dark-theme .liquid-streak-2 {
+  fill: rgb(160, 163, 154);
+}
+.dark-theme .liquid-streak-3 {
+  fill: rgb(110, 126, 140);
+}
+.dark-theme .liquid-streak-4 {
+  fill: rgb(76, 168, 114);
+}
+
 /*  global classes */
 
 .btn {

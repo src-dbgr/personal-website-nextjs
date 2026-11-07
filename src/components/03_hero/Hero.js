@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import HeroMountains from "./HeroMountains";
+import LiquidWord from "./LiquidWord";
 
 const Threejsrender = dynamic(() => import("./Threejs/ThreejsRender"), {
   ssr: false,
@@ -18,17 +19,17 @@ const Hero = () => {
               <div className="underline"></div>
               <h4>HI, MY NAME IS</h4>
               <h1 className="big-heading">
-                <span className="highlight">
+                <LiquidWord word="samuel" stroke={22}>
                   <span>S</span>
                   <span>A</span>
                   <span>M</span>
                   <span>U</span>
                   <span>E</span>
                   <span>L</span>
-                </span>
+                </LiquidWord>
               </h1>
               <h2 className="big-heading">
-                I BUILD <span className="highlight">IT</span> STUFF
+                I BUILD <LiquidWord word="it">IT</LiquidWord> STUFF
               </h2>
               <div className="hero-description">
                 <p className="hero-slogan-line">9+ years building</p>
