@@ -944,7 +944,7 @@ baseline is 0.9em below its top, so top = 0.293em.
     rgb(119, 68, 127)
   );
   box-shadow: none;
-  color: #fff;
+  color: var(--clr-background-major);
   opacity: 1;
 }
 .dark-theme .btn.liquid-btn,
@@ -955,18 +955,16 @@ baseline is 0.9em below its top, so top = 0.293em.
     rgb(194, 198, 209) 60%,
     rgb(156, 153, 160)
   );
-  color: var(--clr-background-major);
 }
 .btn.liquid-btn.liquid-gl,
 .btn.liquid-btn.liquid-gl:hover {
   background: transparent;
 }
-/* Light theme: the metal has the triangle's mid tones, so the label is
-   white with a soft dark shadow (readable on light and dark spots). */
-body:not(.dark-theme) .liquid-btn .liquid-btn-label {
-  text-shadow:
-    0 0 3px rgba(0, 0, 0, 0.55),
-    0 1px 2px rgba(0, 0, 0, 0.45);
+/* The label looks cut out: it has the page background's colour, and once
+   the metal runs the letters are holes in it (the text itself turns
+   transparent but stays for screen readers). */
+.liquid-btn.liquid-gl .liquid-btn-label {
+  color: transparent;
 }
 
 /* Keyboard focus on link buttons (.btn removes the default outline). */

@@ -23,8 +23,45 @@ const MAX_DPR = 2;
  *   lum                     fixed luminance band [darkMin, darkMax,
  *                           lightMin, lightMax], e.g. under a label
  *   hitOn                   "click" (default) or "hover" (mouse only)
+ * `cutRef` (optional) points at a text element inside the root whose
+ * letters are cut out of the metal (button label): the page shows through
+ * them. The element stays in the DOM for screen readers.
  * Without `d` (shape not measured yet) nothing runs.
  */
+
+// Draws the letters of `label` in shape units (k units per CSS px, origin
+// at the root's top-left corner), at the positions the browser laid them out.
+function textHoles(label, root, k) {
+  const origin = root.getBoundingClientRect();
+  const style = getComputedStyle(label);
+  const font = `${style.fontStyle} ${style.fontWeight} ${
+    parseFloat(style.fontSize) * k
+  }px ${style.fontFamily}`;
+  // The baseline: bottom of an empty inline-block on it.
+  const probe = document.createElement("span");
+  probe.style.cssText =
+    "display:inline-block;width:0;height:0;vertical-align:baseline";
+  label.appendChild(probe);
+  const baseline = (probe.getBoundingClientRect().bottom - origin.top) * k;
+  probe.remove();
+  const glyphs = [];
+  const walker = document.createTreeWalker(label, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    for (let i = 0; i < node.length; i++) {
+      const ch = node.data[i];
+      if (!ch.trim()) continue;
+      range.setStart(node, i);
+      range.setEnd(node, i + 1);
+      glyphs.push([ch, (range.getBoundingClientRect().left - origin.left) * k]);
+    }
+  }
+  return (ctx) => {
+    ctx.font = font;
+    ctx.textBaseline = "alphabetic";
+    for (const [ch, left] of glyphs) ctx.fillText(ch, left, baseline);
+  };
+}
 export default function useLiquidMetal(
   rootRef,
   canvasRef,
@@ -32,6 +69,7 @@ export default function useLiquidMetal(
   d,
   box,
   tuning,
+  cutRef,
 ) {
   const { x, y, w, h } = box;
 
@@ -83,10 +121,12 @@ export default function useLiquidMetal(
       const stroke = strokeRef?.current
         ? parseFloat(getComputedStyle(strokeRef.current).strokeWidth) || 0
         : 0;
+      const label = cutRef?.current;
       metal.resize(
         Math.round(rect.width * dpr),
         Math.round(rect.height * dpr),
         stroke,
+        label ? textHoles(label, root, w / root.offsetWidth) : null,
       );
       readPalette();
       render(still ? 0 : now());
@@ -126,6 +166,13 @@ export default function useLiquidMetal(
     observer.observe(root);
     const sizeObserver = new ResizeObserver(resize);
     sizeObserver.observe(root);
+    // Cut-out letters need the web font: redraw them once it is loaded.
+    let alive = true;
+    if (cutRef) {
+      document.fonts?.ready.then(() => {
+        if (alive) rebuild();
+      });
+    }
     // Theme switch: new colours, redraw at once.
     const themeObserver = new MutationObserver(() => {
       readPalette();
@@ -166,6 +213,7 @@ export default function useLiquidMetal(
     root.addEventListener(hitEvent, hitHandler);
 
     return () => {
+      alive = false;
       observer.disconnect();
       sizeObserver.disconnect();
       themeObserver.disconnect();
@@ -176,5 +224,5 @@ export default function useLiquidMetal(
       root.classList.remove("liquid-gl");
       metal.dispose();
     };
-  }, [rootRef, canvasRef, strokeRef, d, x, y, w, h, tuning]);
+  }, [rootRef, canvasRef, strokeRef, d, x, y, w, h, tuning, cutRef]);
 }

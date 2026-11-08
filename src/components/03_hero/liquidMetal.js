@@ -22,6 +22,7 @@
 export const PAD = 80; // font units around the word for the flow at the edges
 const RIM = 24; // font units, darker chrome rim in the light theme (~1 px at 80 px)
 const BLUR = 46; // font units, inflation profile
+const HOLE_EDGE = 6; // units, chamfer around cut-out holes
 const MAX_HITS = 3;
 export const HIT_LIFE = 1.8; // seconds a click wobble lasts
 const FRAME_IDLE_MS = 32; // ~30 fps while only flowing
@@ -37,7 +38,7 @@ void main() {
 const FRAG = `
 precision highp float;
 varying vec2 vUv;
-uniform sampler2D uMask;   // r: sharp shape, g: blurred, b: eroded (rim)
+uniform sampler2D uMask;   // r: sharp shape, g: blurred, b: eroded (rim), a: 0 in cut-out holes
 uniform vec3 uC1;
 uniform vec3 uC2;
 uniform vec3 uC3;
@@ -176,7 +177,9 @@ void main() {
   vec2 edge = vec2(snoise(vec3(p * 0.004, uTime * 0.35)),
                    snoise(vec3(p * 0.004 + 31.7, uTime * 0.35))) * 9.0;
   vec2 outline = uv + edge * texel;
-  float mask = texture2D(uMask, outline).r;
+  // Cut-out holes (button label) follow the wave but not the edge flow, so
+  // the letters stay crisp.
+  float mask = texture2D(uMask, outline).r * texture2D(uMask, uv).a;
   // 0 right at the outline, fading to 1 about RIM inside it.
   float inner = smoothstep(0.7, 0.99, texture2D(uMask, outline).b);
   inner = mix(1.0, inner, uRim);
@@ -378,8 +381,9 @@ export function createLiquidMetal(canvas, { d, box, tuning }) {
     [0.95, 0.72, 0.3],
   ];
 
-  // (Re)builds the glyph mask for a canvas of w x h device pixels.
-  function resize(w, h, stroke) {
+  // (Re)builds the glyph mask for a canvas of w x h device pixels. `holes`
+  // (optional) draws shapes in units that are cut out of the metal.
+  function resize(w, h, stroke, holes) {
     canvas.width = w;
     canvas.height = h;
     gl.viewport(0, 0, w, h);
@@ -405,17 +409,37 @@ export function createLiquidMetal(canvas, { d, box, tuning }) {
       ctx.stroke(path);
     }
     const sharp = ctx.getImageData(0, 0, w, h).data;
+    let cut = null;
+    if (holes) {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      ctx.restore();
+      ctx.fillStyle = "#fff";
+      holes(ctx);
+      cut = ctx.getImageData(0, 0, w, h).data;
+    }
     const soft = new Float32Array(w * h);
     for (let i = 0; i < w * h; i++) soft[i] = sharp[i * 4 + 3] / 255;
     const rim = soft.slice();
     blur(soft, w, h, (response.bevel * scale) / 1.7);
     blur(rim, w, h, (RIM * scale) / 1.9);
+    if (cut) {
+      // Holes get only a narrow, crisp chamfer (like a punched edge), not
+      // the wide bevel, so no soft halo forms around the letters.
+      const edge = new Float32Array(w * h);
+      for (let i = 0; i < w * h; i++) edge[i] = cut[i * 4 + 3] / 255;
+      blur(edge, w, h, (HOLE_EDGE * scale) / 1.7);
+      for (let i = 0; i < w * h; i++) {
+        soft[i] *= 1 - Math.min(1, edge[i] * 1.6);
+      }
+    }
     const pixels = new Uint8Array(w * h * 4);
     for (let i = 0; i < w * h; i++) {
       pixels[i * 4] = sharp[i * 4 + 3];
       pixels[i * 4 + 1] = Math.min(255, soft[i] * 255 * 1.15);
       pixels[i * 4 + 2] = rim[i] * 255;
-      pixels[i * 4 + 3] = 255;
+      pixels[i * 4 + 3] = cut ? 255 - cut[i * 4 + 3] : 255;
     }
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
     gl.texImage2D(

@@ -3,14 +3,15 @@ import { PAD } from "./liquidMetal";
 import useLiquidMetal from "./useLiquidMetal";
 
 /**
- * A pill button whose surface is liquid metal (see liquidMetal.js), with the
- * label on top. Until WebGL has drawn (and without it) the button keeps its
- * normal CSS background.
+ * A pill button whose surface is liquid metal (see liquidMetal.js). The
+ * label is cut out of the metal, so the page background shows through the
+ * letters, with the metal's rounded edge around them; the real text stays
+ * for screen readers (transparent once the metal has drawn). Until then, and
+ * without WebGL, the button shows a static gradient (globals.css).
  *
- * Dark theme: the metal stays inside a bright luminance band so the dark
- * label keeps >= 4.5:1. Light theme: exactly the colours of the logo
- * triangle; the label is white with a soft shadow there (globals.css).
- * Hovering with the mouse sends a gentle wave through it (a click navigates away at once, so it gets no wave).
+ * Dark theme: the metal stays inside a bright luminance band. Light theme:
+ * the colours of the logo triangle. Hovering with the mouse sends a gentle
+ * wave through it (a click navigates away at once, so it gets no wave).
  * Units: 4 per CSS px, like the logo triangle.
  */
 
@@ -34,6 +35,7 @@ const pill = (w, h) => {
 const LiquidButton = ({ className = "", children }) => {
   const rootRef = useRef(null);
   const canvasRef = useRef(null);
+  const labelRef = useRef(null);
   const [size, setSize] = useState(null);
 
   // The pill follows the button's CSS size.
@@ -61,6 +63,7 @@ const LiquidButton = ({ className = "", children }) => {
     size ? pill(w, h) : null,
     { x: 0, y: 0, w, h },
     TUNING,
+    labelRef,
   );
 
   const pad = PAD / UNITS_PER_PX;
@@ -79,7 +82,9 @@ const LiquidButton = ({ className = "", children }) => {
           aria-hidden="true"
         />
       )}
-      <span className="liquid-btn-label">{children}</span>
+      <span ref={labelRef} className="liquid-btn-label">
+        {children}
+      </span>
     </div>
   );
 };
