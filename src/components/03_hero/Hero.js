@@ -3,6 +3,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import HeroMountains from "./HeroMountains";
 import LiquidWord from "./LiquidWord";
+import LiquidButton from "./LiquidButton";
 
 const Threejsrender = dynamic(() => import("./Threejs/ThreejsRender"), {
   ssr: false,
@@ -40,7 +41,7 @@ const Hero = () => {
               </div>
 
               <Link href="/contact">
-                <div className="btn">GET IN TOUCH</div>
+                <LiquidButton>GET IN TOUCH</LiquidButton>
               </Link>
             </div>
           </article>

@@ -300,7 +300,7 @@ const BackpropVisualizer = () => {
       mathHTML: (
         <span>
           ŷ = σ(A<sup>[2]</sup> · W<sup>[3]</sup> + b<sup>[3]</sup>) ={" "}
-          <strong style={{ color: "#4ade80" }}>
+          <strong style={{ color: "var(--bp-forward)" }}>
             [{a3.map((n) => n.toFixed(2)).join(", ")}]
           </strong>
         </span>
@@ -965,7 +965,7 @@ const BackpropVisualizer = () => {
                 <div style={{ marginBottom: "1rem" }}>
                   <div
                     style={{
-                      color: "#4ade80",
+                      color: "var(--bp-forward)",
                       fontWeight: "bold",
                       marginBottom: "0.25rem",
                     }}
@@ -987,7 +987,7 @@ const BackpropVisualizer = () => {
                 <div style={{ marginBottom: "1rem" }}>
                   <div
                     style={{
-                      color: "#4ade80",
+                      color: "var(--bp-forward)",
                       fontWeight: "bold",
                       marginBottom: "0.25rem",
                     }}
@@ -1003,7 +1003,7 @@ const BackpropVisualizer = () => {
                 <div style={{ marginBottom: "1rem" }}>
                   <div
                     style={{
-                      color: "#4ade80",
+                      color: "var(--bp-forward)",
                       fontWeight: "bold",
                       marginBottom: "0.25rem",
                     }}
@@ -1036,7 +1036,7 @@ const BackpropVisualizer = () => {
                 <div>
                   <div
                     style={{
-                      color: "#4ade80",
+                      color: "var(--bp-forward)",
                       fontWeight: "bold",
                       marginBottom: "0.25rem",
                     }}
@@ -2040,7 +2040,7 @@ const BackpropVisualizer = () => {
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
                   marginBottom: "0.5rem",
-                  color: isBackprop ? "#a78bfa" : "#4ade80",
+                  color: isBackprop ? "#a78bfa" : "var(--bp-forward)",
                 }}
               >
                 Step {step + 1}: {isBackprop ? "Backward Pass" : "Forward Pass"}
@@ -2149,10 +2149,10 @@ const BackpropVisualizer = () => {
                   borderRadius: "50%",
                   // Logik: Leuchtet bei Training ODER Steps 1-4 (Forward Phase)
                   backgroundColor:
-                    isTraining || (step >= 1 && step <= 4) ? "#10b981" : "#333", // Grün vs Dunkelgrau
+                    isTraining || (step >= 1 && step <= 4) ? "var(--bp-forward-strong)" : "#333", // Grün vs Dunkelgrau
                   boxShadow:
                     isTraining || (step >= 1 && step <= 4)
-                      ? "0 0 10px #10b981"
+                      ? "0 0 10px var(--bp-forward-strong)"
                       : "none", // Glow vs kein Glow
                   transition: "all 0.3s ease",
                 }}
@@ -2231,7 +2231,7 @@ const BackpropVisualizer = () => {
                 refY="3"
                 orient="auto"
               >
-                <path d="M0,0 L0,6 L9,3 z" fill="#4ade80" />
+                <path d="M0,0 L0,6 L9,3 z" fill="var(--bp-forward)" />
               </marker>
 
               <marker
@@ -2415,7 +2415,7 @@ const BackpropVisualizer = () => {
 
                 const fwd = flowL1;
 
-                const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#aaa";
+                const stroke = back ? "#a78bfa" : fwd ? "var(--bp-forward)" : "#aaa";
 
                 const opacity = back || fwd ? 1 : 0.3;
 
@@ -2500,7 +2500,7 @@ const BackpropVisualizer = () => {
 
                 const fwd = flowL2;
 
-                const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#aaa";
+                const stroke = back ? "#a78bfa" : fwd ? "var(--bp-forward)" : "#aaa";
 
                 const opacity = back || fwd ? 1 : 0.3;
 
@@ -2585,7 +2585,7 @@ const BackpropVisualizer = () => {
 
                 const fwd = flowOut;
 
-                const stroke = back ? "#a78bfa" : fwd ? "#4ade80" : "#aaa";
+                const stroke = back ? "#a78bfa" : fwd ? "var(--bp-forward)" : "#aaa";
 
                 const opacity = back || fwd ? 1 : 0.3;
 
@@ -2688,14 +2688,14 @@ const BackpropVisualizer = () => {
                     isBackprop && step >= 7
                       ? "rgba(167, 139, 250, 0.15)"
                       : flowL1
-                      ? "rgba(74,222,128,0.1)"
+                      ? "var(--bp-forward-faint)"
                       : "transparent"
                   }
                   stroke={
                     isBackprop && step >= 7
                       ? "#a78bfa"
                       : flowL1
-                      ? "#4ade80"
+                      ? "var(--bp-forward)"
                       : "#333"
                   }
                   strokeWidth="2"
@@ -2754,7 +2754,7 @@ const BackpropVisualizer = () => {
                   <text
                     y="15"
                     textAnchor="middle"
-                    fill="#4ade80"
+                    fill="var(--bp-forward)"
                     fontSize="11"
                     fontFamily="monospace"
                     fontWeight="bold"
@@ -2777,14 +2777,14 @@ const BackpropVisualizer = () => {
                     isBackprop && step >= 6
                       ? "rgba(167, 139, 250, 0.15)"
                       : flowL2
-                      ? "rgba(74,222,128,0.1)"
+                      ? "var(--bp-forward-faint)"
                       : "transparent"
                   }
                   stroke={
                     isBackprop && step >= 6
                       ? "#a78bfa"
                       : flowL2
-                      ? "#4ade80"
+                      ? "var(--bp-forward)"
                       : "#333"
                   }
                   strokeWidth="2"
@@ -2844,7 +2844,7 @@ const BackpropVisualizer = () => {
                   <text
                     y="15"
                     textAnchor="middle"
-                    fill="#4ade80"
+                    fill="var(--bp-forward)"
                     fontSize="11"
                     fontFamily="monospace"
                     fontWeight="bold"
@@ -2863,8 +2863,8 @@ const BackpropVisualizer = () => {
 
                 <circle
                   r="36"
-                  fill={flowOut ? "rgba(74,222,128,0.1)" : "transparent"}
-                  stroke={isBackprop ? "#a78bfa" : flowOut ? "#4ade80" : "#333"}
+                  fill={flowOut ? "var(--bp-forward-faint)" : "transparent"}
+                  stroke={isBackprop ? "#a78bfa" : flowOut ? "var(--bp-forward)" : "#333"}
                   strokeWidth="3"
                 />
 
@@ -2919,7 +2919,7 @@ const BackpropVisualizer = () => {
                   <text
                     y="18"
                     textAnchor="middle"
-                    fill="#4ade80"
+                    fill="var(--bp-forward)"
                     fontSize="13"
                     fontWeight="bold"
                     fontFamily="monospace"
@@ -3067,9 +3067,9 @@ const BackpropVisualizer = () => {
               style={{
                 animation: "pulse 1.5s infinite",
                 fontSize: "10px",
-                color: "#4ade80",
+                color: "var(--bp-forward)",
                 fontWeight: "bold",
-                backgroundColor: "rgba(16, 185, 129, 0.2)",
+                backgroundColor: "var(--bp-forward-tint)",
                 padding: "2px 8px",
                 borderRadius: "4px",
               }}
@@ -3086,12 +3086,12 @@ const BackpropVisualizer = () => {
                   alignItems: "center",
                   gap: "0.25rem",
                   fontSize: "10px",
-                  color: "#4ade80",
+                  color: "var(--bp-forward)",
                   fontWeight: "bold",
-                  backgroundColor: "rgba(16, 185, 129, 0.2)",
+                  backgroundColor: "var(--bp-forward-tint)",
                   padding: "2px 8px",
                   borderRadius: "4px",
-                  border: "1px solid rgba(74, 222, 128, 0.3)",
+                  border: "1px solid var(--bp-forward-line)",
                 }}
               >
                 <CheckCircle2 size={10} /> TARGET REACHED
@@ -3146,7 +3146,7 @@ const BackpropVisualizer = () => {
             style={{
               fontSize: "10px",
               fontFamily: "monospace",
-              color: "#4ade80",
+              color: "var(--bp-forward)",
               width: "2rem",
               textAlign: "right",
             }}
@@ -3166,7 +3166,7 @@ const BackpropVisualizer = () => {
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.5)",
               backgroundColor: isTraining
                 ? "rgba(239, 68, 68, 0.1)"
-                : "#10b981",
+                : "var(--bp-forward-strong)",
               color: isTraining ? "#f87171" : "white",
               border: isTraining ? "1px solid rgba(239, 68, 68, 0.5)" : "none",
               cursor: "pointer",
@@ -3249,7 +3249,7 @@ const BackpropVisualizer = () => {
                     </div>
                     <div
                       style={{
-                        color: "#4ade80",
+                        color: "var(--bp-forward)",
                         fontFamily: "monospace",
                         fontWeight: "bold",
                         fontSize: "0.65rem",
@@ -3335,7 +3335,7 @@ const BackpropVisualizer = () => {
                           <span
                             style={{
                               fontSize: "0.65rem",
-                              color: "#4ade80", // Grün passend zum Forward Flow
+                              color: "var(--bp-forward)", // Grün passend zum Forward Flow
                               opacity: 0.8,
                               textTransform: "uppercase",
                               letterSpacing: "0.05em",
@@ -3393,7 +3393,7 @@ const BackpropVisualizer = () => {
                             <div>
                               <div
                                 style={{
-                                  color: "rgb(16, 185, 129)",
+                                  color: "var(--bp-forward-strong)",
                                   fontSize: "0.65rem",
                                   fontWeight: "bold",
                                 }}
@@ -3679,7 +3679,7 @@ const BackpropVisualizer = () => {
                           <div>
                             <div
                               style={{
-                                color: "rgb(16, 185, 129)",
+                                color: "var(--bp-forward-strong)",
                                 marginBottom: "0.25rem",
                                 fontWeight: "bold",
                               }}
@@ -3702,7 +3702,7 @@ const BackpropVisualizer = () => {
                           <div>
                             <div
                               style={{
-                                color: "rgb(16, 185, 129)",
+                                color: "var(--bp-forward-strong)",
                                 marginBottom: "0.25rem",
                                 fontWeight: "bold",
                                 opacity: 0.9,

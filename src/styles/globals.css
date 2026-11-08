@@ -58,10 +58,21 @@
   --clr-dark-opaque-overlay: rgba(46, 46, 46, 0.4);
   --clr-light-dark: rgb(86, 95, 97);
   --clr-triangle-nav-stroke: rgb(53, 160, 103);
-  --clr-green-major: rgb(31, 107, 73);
+  /* Light theme: accents (underlines, hover, active states) in the dark
+     text colour, no green; the dark theme sets its own greens. */
+  --clr-green-major: rgb(42, 56, 60);
   --clr-green-blog-circle: rgba(52, 69, 73, 0.5);
-  --clr-green-minor: rgb(31, 107, 73);
-  --clr-green-everywhere: rgb(74, 177, 130);
+  --clr-green-minor: rgb(42, 56, 60);
+  /* Light theme: data series (playground charts) in the logo's purple. */
+  --clr-green-everywhere: rgb(128, 52, 116);
+  /* Backprop tool, forward flow: magenta in the light theme (the backward
+     flow is violet), green in the dark theme. */
+  --bp-forward: rgb(224, 112, 200);
+  --bp-forward-strong: rgb(172, 74, 156);
+  --bp-forward-deep: rgb(128, 52, 116);
+  --bp-forward-tint: rgba(172, 74, 156, 0.2);
+  --bp-forward-line: rgba(224, 112, 200, 0.3);
+  --bp-forward-faint: rgba(224, 112, 200, 0.1);
   --clr-magenta: rgb(118, 112, 129);
   --clr-topbar-font-hover: rgb(181, 178, 166);
   --clr-mountain-stroke: rgb(181, 178, 166);
@@ -153,6 +164,12 @@
   --clr-dark-transparent: transparent;
   --clr-light-dark: rgb(46, 46, 46);
   --clr-green-everywhere: rgb(120, 170, 143);
+  --bp-forward: #4ade80;
+  --bp-forward-strong: rgb(16, 185, 129);
+  --bp-forward-deep: rgb(4, 120, 87);
+  --bp-forward-tint: rgba(16, 185, 129, 0.2);
+  --bp-forward-line: rgba(74, 222, 128, 0.3);
+  --bp-forward-faint: rgba(74, 222, 128, 0.1);
   --clr-green-major: rgb(138, 199, 170);
   --clr-green-blog-circle: rgba(138, 199, 170, 0.6);
   --clr-magenta: rgb(53, 161, 105);
@@ -839,6 +856,16 @@ baseline is 0.9em below its top, so top = 0.293em.
   color: transparent;
 }
 
+/* Shimmer colours of the liquid metal (aurora reflections and oil film),
+   RGB 0..1, read by useLiquidMetal.js. Brightness is adapted per theme
+   in the shader for >= 3:1 contrast. */
+.liquid-metal {
+  /* Logo colours: green #00af64, a cool blue-grey, purple #ac4a9c. */
+  --liquid-c1: 0.05 0.8 0.45;
+  --liquid-c2: 0.45 0.52 0.66;
+  --liquid-c3: 0.8 0.35 0.72;
+}
+
 .liquid-word span {
   -webkit-text-fill-color: transparent;
 }
@@ -860,68 +887,103 @@ baseline is 0.9em below its top, so top = 0.293em.
   }
 }
 
-/* Liquid oil colours, taken from the logo (emerald, slate, grey, silver),
-   each at least 3:1 against the hero background. Light theme: deep shades;
-   dark theme: bright ones. */
+.liquid-word-canvas,
+.liquid-logo-canvas,
+.liquid-btn-canvas {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* Once the WebGL canvas has drawn its first frame it fades in over the SVG;
+   the SVG goes only when the canvas is fully visible (no gap while both
+   are half transparent). Without WebGL (or when its context is lost) the
+   SVG is back at once. */
+.liquid-gl .liquid-word-canvas,
+.liquid-gl .liquid-logo-canvas,
+.liquid-gl .liquid-btn-canvas {
+  opacity: 1;
+}
+.liquid-gl .liquid-word-svg,
+.liquid-gl .liquid-logo-svg {
+  opacity: 0;
+  transition: opacity 0s linear 0.4s;
+}
+
+/* Logo triangle (LiquidLogo.js): the canvas reaches a little beyond the
+   triangle so its edges can flow. */
+#logo_2.liquid-logo {
+  overflow: visible;
+}
+.liquid-logo-svg {
+  display: block;
+}
+
+/* GET IN TOUCH button (LiquidButton.js): metal surface behind the label.
+   Once the canvas draws, the CSS background goes; hover is the metal's
+   wave instead of a colour change. Dark theme: the label keeps the button's
+   colour (the metal stays in a band with >= 4.5:1 to it). */
+.liquid-btn {
+  position: relative;
+}
+.liquid-btn-label {
+  position: relative;
+  z-index: 1;
+}
+/* No CSS shadow either: the metal's outline flows, a fixed shadow under it
+   would show as a second button. */
+.liquid-btn.liquid-gl,
+.liquid-btn.liquid-gl:hover {
+  background: transparent;
+  box-shadow: none;
+  color: var(--clr-background-major);
+  opacity: 1;
+}
+/* Light theme: the metal has the triangle's mid tones, so the label is
+   white with a soft dark shadow (readable on light and dark spots). */
+body:not(.dark-theme) .liquid-btn.liquid-gl {
+  color: #fff;
+}
+body:not(.dark-theme) .liquid-btn.liquid-gl .liquid-btn-label {
+  text-shadow:
+    0 0 3px rgba(0, 0, 0, 0.55),
+    0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+/* Keyboard focus on link buttons (.btn removes the default outline). */
+a:focus-visible > .btn {
+  outline: 2px solid var(--clr-dark) !important;
+  outline-offset: 3px;
+}
+
+/* Static chrome for the SVG fallback (no JS / no WebGL), each stop at least
+   3:1 against the hero background. Light theme: dark gunmetal; dark theme:
+   bright silver. */
 .liquid-chrome-0 {
-  stop-color: rgb(52, 92, 74);
+  stop-color: rgb(78, 80, 88);
 }
 .liquid-chrome-1 {
-  stop-color: rgb(40, 58, 62);
+  stop-color: rgb(46, 48, 56);
 }
 .liquid-chrome-2 {
-  stop-color: rgb(20, 80, 52);
+  stop-color: rgb(22, 24, 30);
 }
 .liquid-chrome-3 {
-  stop-color: rgb(60, 70, 72);
-}
-/* Oil streaks (emerald, slate, silver, blue slate, green), blended softly
-   over the metal. */
-.liquid-streaks {
-  opacity: 0.6;
-}
-.liquid-streak-0 {
-  fill: rgb(26, 98, 64);
-}
-.liquid-streak-1 {
-  fill: rgb(48, 60, 64);
-}
-.liquid-streak-2 {
-  fill: rgb(72, 80, 80);
-}
-.liquid-streak-3 {
-  fill: rgb(44, 54, 70);
-}
-.liquid-streak-4 {
-  fill: rgb(20, 86, 56);
+  stop-color: rgb(70, 72, 80);
 }
 
 .dark-theme .liquid-chrome-0 {
-  stop-color: rgb(184, 188, 180);
+  stop-color: rgb(236, 238, 242);
 }
 .dark-theme .liquid-chrome-1 {
-  stop-color: rgb(120, 138, 138);
+  stop-color: rgb(170, 174, 182);
 }
 .dark-theme .liquid-chrome-2 {
-  stop-color: rgb(60, 150, 102);
+  stop-color: rgb(120, 124, 132);
 }
 .dark-theme .liquid-chrome-3 {
-  stop-color: rgb(150, 156, 148);
-}
-.dark-theme .liquid-streak-0 {
-  fill: rgb(60, 156, 100);
-}
-.dark-theme .liquid-streak-1 {
-  fill: rgb(112, 128, 132);
-}
-.dark-theme .liquid-streak-2 {
-  fill: rgb(160, 163, 154);
-}
-.dark-theme .liquid-streak-3 {
-  fill: rgb(110, 126, 140);
-}
-.dark-theme .liquid-streak-4 {
-  fill: rgb(76, 168, 114);
+  stop-color: rgb(200, 204, 210);
 }
 
 /*  global classes */
@@ -1649,6 +1711,9 @@ Hero
   height: 15px;
   border-radius: 50%;
   background-color: rgb(61, 139, 104);
+}
+body:not(.dark-theme) .pulse-bubble {
+  background-color: var(--clr-dark);
 }
 
 .pulse-bubble-1 {
@@ -2679,6 +2744,11 @@ Blog
   color: rgb(61, 139, 104);
   stroke: rgb(61, 139, 104);
 }
+body:not(.dark-theme) .rounded-img-child svg,
+body:not(.dark-theme) .tile-card-icon {
+  color: var(--clr-dark);
+  stroke: var(--clr-dark);
+}
 
 @keyframes slideAndReturn {
   33% {
@@ -2723,6 +2793,12 @@ Blog
   height: 5rem;
   width: auto;
   aspect-ratio: 1 / 1;
+}
+/* The blog icons are green images; in the light theme they become a
+   blue-grey (about rgb(76, 86, 90)) between the card titles and the circle. */
+body:not(.dark-theme) .blog-img {
+  filter: grayscale(1) brightness(0.66) sepia(0.3) hue-rotate(150deg)
+    saturate(1.4);
 }
 
 .blog-card h3 {
@@ -3169,6 +3245,9 @@ PLAYGROUND VISUALIZER STYLES
   letter-spacing: 0.1em;
   margin-bottom: 0.75rem;
 }
+body:not(.dark-theme) .backprop-header {
+  color: var(--bp-forward);
+}
 
 .backprop-h3 {
   color: #fff;
@@ -3213,7 +3292,7 @@ PLAYGROUND VISUALIZER STYLES
   /* Ersetzt: background: #000; border: 1px solid #333; color: #4ade80; ... */
   background: black;
   border: 1px solid #333;
-  color: #4ade80;
+  color: var(--bp-forward);
   font-family: monospace;
   text-align: center;
   border-radius: 4px;
@@ -3224,8 +3303,8 @@ PLAYGROUND VISUALIZER STYLES
 }
 
 .matrix-input:focus {
-  outline: 1px solid #4ade80;
-  border-color: #4ade80;
+  outline: 1px solid var(--bp-forward);
+  border-color: var(--bp-forward);
 }
 
 .matrix-input:disabled {
@@ -3256,8 +3335,8 @@ PLAYGROUND VISUALIZER STYLES
 /* Active State (Green Border + Scale) */
 .legend-trigger.active > span {
   transform: scale(1.05);
-  border-color: #4ade80 !important;
-  box-shadow: 0 0 8px rgba(74, 222, 128, 0.3); /* Optional: adds a glow */
+  border-color: var(--bp-forward) !important;
+  box-shadow: 0 0 8px var(--bp-forward-line); /* Optional: adds a glow */
 }
 
 /* Tooltip Visibility based on .active class */
@@ -3325,7 +3404,7 @@ PLAYGROUND VISUALIZER STYLES
 .tooltip-title {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #4ade80; /* Grün */
+  color: var(--bp-forward); /* Grün */
   /* text-transform: uppercase; */
   letter-spacing: 0.05em;
 }
@@ -3341,7 +3420,7 @@ PLAYGROUND VISUALIZER STYLES
 .legend-tooltip strong {
   display: block;
   font-size: 1rem;
-  color: #4ade80; /* Grün für den Titel */
+  color: var(--bp-forward); /* Grün für den Titel */
   margin-bottom: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 0.5rem;
@@ -3464,7 +3543,7 @@ PLAYGROUND VISUALIZER STYLES
 
 .backprop-randomize-btn:hover:not(:disabled) {
   border-color: rgb(51, 51, 51);
-  color: #4ade80;
+  color: var(--bp-forward);
   background-color: rgba(255, 255, 255, 0.05);
 }
 
@@ -3517,14 +3596,14 @@ PLAYGROUND VISUALIZER STYLES
 }
 
 .backprop-update-btn {
-  background-color: rgb(4, 120, 87) !important;
+  background-color: var(--bp-forward-deep) !important;
   color: white !important;
   border: none !important;
   transition: background-color 0.2s;
 }
 
 .backprop-update-btn:hover:not(:disabled) {
-  background-color: rgb(16, 185, 129) !important;
+  background-color: var(--bp-forward-strong) !important;
 }
 
 /* Standard Zustand (Dunkel/Inaktiv) */
