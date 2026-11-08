@@ -4,8 +4,9 @@ import useLiquidMetal from "./useLiquidMetal";
 
 /**
  * The hero's logo triangle in liquid metal, matching SAMUEL and IT. The SVG
- * with the brand gradient stays as the first paint and the fallback without
- * WebGL; the canvas takes over once it has drawn (see useLiquidMetal.js).
+ * with a static gradient in the metal's tones (globals.css) is the first
+ * paint and the fallback without WebGL; the canvas takes over once it has
+ * drawn (see useLiquidMetal.js).
  * Units: the 250 px triangle is drawn 1000 units wide (4 units per px), so
  * the shader's noise and bevel sizes match the hero words.
  */
@@ -49,8 +50,8 @@ const LiquidLogo = () => {
             gradientTransform="rotate(180 257.05 127.8)"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset={0} stopColor="#ac4a9c" />
-            <stop offset={1} stopColor="#00af64" />
+            <stop className="liquid-logo-stop-0" offset={0} />
+            <stop className="liquid-logo-stop-1" offset={1} />
           </linearGradient>
         </defs>
         <path

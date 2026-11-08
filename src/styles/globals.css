@@ -931,21 +931,39 @@ baseline is 0.9em below its top, so top = 0.293em.
   position: relative;
   z-index: 1;
 }
-/* No CSS shadow either: the metal's outline flows, a fixed shadow under it
-   would show as a second button. */
-.liquid-btn.liquid-gl,
-.liquid-btn.liquid-gl:hover {
-  background: transparent;
+/* Until the metal has drawn (and without WebGL) the button shows a static
+   gradient in the metal's typical colours, so the switch is barely visible.
+   No CSS shadow: the metal's outline flows, a fixed shadow under it would
+   show as a second button. (.btn.liquid-btn: must beat .btn further down.) */
+.btn.liquid-btn,
+.btn.liquid-btn:hover {
+  background: linear-gradient(
+    180deg,
+    rgb(124, 144, 141),
+    rgb(101, 112, 122) 60%,
+    rgb(119, 68, 127)
+  );
   box-shadow: none;
-  color: var(--clr-background-major);
+  color: #fff;
   opacity: 1;
+}
+.dark-theme .btn.liquid-btn,
+.dark-theme .btn.liquid-btn:hover {
+  background: linear-gradient(
+    180deg,
+    rgb(205, 231, 229),
+    rgb(194, 198, 209) 60%,
+    rgb(156, 153, 160)
+  );
+  color: var(--clr-background-major);
+}
+.btn.liquid-btn.liquid-gl,
+.btn.liquid-btn.liquid-gl:hover {
+  background: transparent;
 }
 /* Light theme: the metal has the triangle's mid tones, so the label is
    white with a soft dark shadow (readable on light and dark spots). */
-body:not(.dark-theme) .liquid-btn.liquid-gl {
-  color: #fff;
-}
-body:not(.dark-theme) .liquid-btn.liquid-gl .liquid-btn-label {
+body:not(.dark-theme) .liquid-btn .liquid-btn-label {
   text-shadow:
     0 0 3px rgba(0, 0, 0, 0.55),
     0 1px 2px rgba(0, 0, 0, 0.45);
@@ -957,33 +975,47 @@ a:focus-visible > .btn {
   outline-offset: 3px;
 }
 
-/* Static chrome for the SVG fallback (no JS / no WebGL), each stop at least
-   3:1 against the hero background. Light theme: dark gunmetal; dark theme:
-   bright silver. */
+/* Static chrome for the SVG fallback (first paint, no WebGL), in the
+   metal's typical colours (measured from the shader): blue-grey with a
+   purple lower edge. */
 .liquid-chrome-0 {
-  stop-color: rgb(78, 80, 88);
+  stop-color: rgb(130, 148, 144);
 }
 .liquid-chrome-1 {
-  stop-color: rgb(46, 48, 56);
+  stop-color: rgb(101, 113, 122);
 }
 .liquid-chrome-2 {
-  stop-color: rgb(22, 24, 30);
+  stop-color: rgb(92, 100, 112);
 }
 .liquid-chrome-3 {
-  stop-color: rgb(70, 72, 80);
+  stop-color: rgb(122, 78, 128);
 }
 
 .dark-theme .liquid-chrome-0 {
-  stop-color: rgb(236, 238, 242);
+  stop-color: rgb(205, 228, 226);
 }
 .dark-theme .liquid-chrome-1 {
-  stop-color: rgb(170, 174, 182);
+  stop-color: rgb(170, 176, 186);
 }
 .dark-theme .liquid-chrome-2 {
-  stop-color: rgb(120, 124, 132);
+  stop-color: rgb(150, 154, 166);
 }
 .dark-theme .liquid-chrome-3 {
-  stop-color: rgb(200, 204, 210);
+  stop-color: rgb(175, 150, 180);
+}
+
+/* Logo triangle fallback in the same metal tones. */
+.liquid-logo-stop-0 {
+  stop-color: rgb(139, 91, 142);
+}
+.liquid-logo-stop-1 {
+  stop-color: rgb(124, 147, 140);
+}
+.dark-theme .liquid-logo-stop-0 {
+  stop-color: rgb(160, 140, 165);
+}
+.dark-theme .liquid-logo-stop-1 {
+  stop-color: rgb(162, 183, 179);
 }
 
 /*  global classes */
