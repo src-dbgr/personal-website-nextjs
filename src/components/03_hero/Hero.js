@@ -1,19 +1,16 @@
 import React from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import HeroMountains from "./HeroMountains";
 import LiquidWord from "./LiquidWord";
 import LiquidButton from "./LiquidButton";
-
-const Threejsrender = dynamic(() => import("./Threejs/ThreejsRender"), {
-  ssr: false,
-  loading: () => <div className="hero-canvas-placeholder" aria-hidden="true" />,
-});
+import HeroBlackHole from "./HeroBlackHole";
+import LiquidLogo from "./LiquidLogo";
 
 const Hero = () => {
   return (
     <header className="hero">
       <div className="fixed-position">
+        <HeroBlackHole />
         <div className="section-center hero-center">
           <article className="hero-info">
             <div className="hero-description-wrapper">
@@ -46,7 +43,7 @@ const Hero = () => {
             </div>
           </article>
           <div className="hero-img">
-            <Threejsrender />
+            <LiquidLogo />
           </div>
         </div>
       </div>
