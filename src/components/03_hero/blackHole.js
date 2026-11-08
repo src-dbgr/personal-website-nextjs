@@ -82,8 +82,10 @@ void main() {
   float r = max(length(d), 1e-3);
   float E = uHole * 1.9;                     // Einstein radius
   float bend = E * E / (r * r);
-  // Swirl: frame dragging, strongest near the hole, slowly turning.
-  float ang = bend * 1.6 + uTime * 0.08 * min(bend, 2.0);
+  // Swirl: frame dragging, strongest near the hole. The twist itself only
+  // sways a little; the motion is a uniform rotation of the whole backdrop,
+  // so the structure never winds up into fine rings over time.
+  float ang = bend * (1.6 + 0.25 * sin(uTime * 0.11)) + uTime * 0.045;
   float c = cos(ang);
   float s = sin(ang);
   vec2 dr = vec2(c * d.x - s * d.y, s * d.x + c * d.y);
