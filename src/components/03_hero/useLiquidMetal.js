@@ -115,7 +115,9 @@ export default function useLiquidMetal(
     };
 
     const rebuild = () => {
-      const rect = canvas.getBoundingClientRect();
+      // Layout size, not the on-screen box: a CSS transform (the logo's
+      // intro scale) must not shrink the mask.
+      const rect = { width: canvas.offsetWidth, height: canvas.offsetHeight };
       if (!rect.width) return;
       const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
       const stroke = strokeRef?.current

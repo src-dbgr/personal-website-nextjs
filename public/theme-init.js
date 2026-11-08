@@ -33,10 +33,15 @@
       }
     } catch (e) {}
 
+    // The launch animation is switched off: every visit lands on the page
+    // directly. Its code (components/01_launch, Layout.js) stays; set this
+    // to true to bring it back.
+    var LAUNCH_ENABLED = false;
+
     // The launch animation only plays when a visit starts on the home page.
     // Deep links (blog posts, tools) render their content right away.
     var path = location.pathname;
-    if (path !== "/" && path !== "/index.html") {
+    if (!LAUNCH_ENABLED || (path !== "/" && path !== "/index.html")) {
       document.documentElement.classList.add("launch-seen");
     }
 
