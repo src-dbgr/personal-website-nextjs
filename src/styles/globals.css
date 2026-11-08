@@ -1854,6 +1854,13 @@ body:not(.dark-theme) .pulse-bubble {
   font-family: var(--ff-secondary);
 }
 
+/* GET IN TOUCH: a larger label, so the cut-out letters stay readable on
+   the metal (the button grows with it). */
+.hero .btn.liquid-btn {
+  width: 10.5rem;
+  font-size: 1.05rem;
+}
+
 .hero p {
   margin-bottom: 0;
 }
