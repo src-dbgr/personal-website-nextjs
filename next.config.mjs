@@ -7,14 +7,23 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig = {
   agentRules: false,
   reactStrictMode: true,
+  poweredByHeader: false,
   images: {
     qualities: [75, 90],
+    // Only our own Cloudinary accounts, so the image endpoint cannot be
+    // used to proxy images from other accounts.
     remotePatterns: [
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
         port: "",
-        pathname: "/**",
+        pathname: "/dwqb9oegd/**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/dqalsnm35/**",
       },
     ],
     // unoptimized: true,
@@ -38,11 +47,16 @@ const nextConfig = {
           },
           {
             key: "Referrer-Policy",
-            value: "no-referrer-when-downgrade",
+            value: "strict-origin-when-cross-origin",
           },
           {
             key: "X-Frame-Options",
             value: "DENY",
+          },
+          {
+            key: "Permissions-Policy",
+            value:
+              "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
           },
         ],
       },

@@ -3,13 +3,11 @@ export function getCspContent() {
     "default-src": ["'self'"],
     "script-src": [
       "'self'",
-      "'unsafe-eval'",
-      "https://www.google.com",
-      "https://www.gstatic.com",
       "https://www.googletagmanager.com",
       "https://www.google-analytics.com",
-          ],
-    "frame-src": ["https://www.google.com"],
+    ],
+    "object-src": ["'none'"],
+    "base-uri": ["'self'"],
     "connect-src": [
       "'self'",
       "https://submit-form.com",
@@ -25,7 +23,7 @@ export function getCspContent() {
       "https://www.google-analytics.com",
       "https://res.cloudinary.com",
     ],
-    "style-src": ["'self'", "'unsafe-inline'", "https://www.gstatic.com"],
+    "style-src": ["'self'", "'unsafe-inline'"],
     "form-action": ["'self'"],
   };
 
