@@ -7,7 +7,7 @@
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "fullscreen"],
-  "theme_color": "#3d8b68",
+  "theme_color": "#2e2e2e",
   "background_color": "#2e2e2e",
   "orientation": "any",
   "icons": [
@@ -34,12 +34,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
-    },
-    {
-      "src": "/assets/images/icons/fav.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
     }
   ],
   "screenshots": [
