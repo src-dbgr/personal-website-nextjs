@@ -138,6 +138,8 @@ export const GET_BLOG_BY_SLUG = gql`
       desc
       slug
       documentId
+      date
+      updatedAt
     }
   }
 `;

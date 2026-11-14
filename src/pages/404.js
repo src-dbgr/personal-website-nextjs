@@ -12,6 +12,7 @@ const Error = ({ cookies }) => {
       <Seo
         title="404"
         description="The requested content could not be found. Check if the entered URL is correct."
+        noindex
       />
       <section className="section error-section">
         <div className="error-page">

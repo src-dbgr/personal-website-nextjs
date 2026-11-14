@@ -35,12 +35,18 @@ const markdownComponents = {
 };
 
 const BlogTemplate = ({ blog, cookies }) => {
-  const { content, title, desc } = blog;
+  const { content, title, desc, date, updatedAt } = blog;
   const bodyRef = useRef(null);
 
   return (
     <Layout darkFooter={false} cookies={cookies}>
-      <Seo title={title} description={desc} />
+      <Seo
+        title={title}
+        description={desc}
+        type="article"
+        publishedTime={date}
+        modifiedTime={updatedAt}
+      />
       <section className="blog-template">
         <Title title={title} />
         <FadeInSection>

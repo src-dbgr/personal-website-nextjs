@@ -1,0 +1,10 @@
+# Only redirects live here; build settings stay in the Netlify UI.
+
+# The Netlify subdomain serves the same site as devsam.io. Send it to the
+# real domain so search engines see one copy. Deploy previews use other
+# hostnames (deploy-preview-N--sblm.netlify.app) and are not affected.
+[[redirects]]
+  from = "https://sblm.netlify.app/*"
+  to = "https://devsam.io/:splat"
+  status = 301
+  force = true
