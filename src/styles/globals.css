@@ -821,6 +821,12 @@ p {
   height: 1rem;
 }
 
+/* The theme toggle sits in its own <li>; keep it laid out like before. */
+.nav-links li.theme-toggle-item {
+  margin-right: 0;
+  display: flex;
+}
+
 #themeiconwrapper {
   display: flex;
   flex-direction: column;

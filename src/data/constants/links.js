@@ -120,18 +120,23 @@ const Links = function (props) {
         <CustomLink href="/contact">contact</CustomLink>
       </li>
 
+      <li key="7" className="theme-toggle-item">
       <div
         id="themeiconwrapper"
         onClick={handleThemeToggle}
         onKeyDown={(e) => e.key === "Enter" && handleThemeToggle()}
         role="button"
         tabIndex={0}
+        aria-label={
+          theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+        }
         data-aos={`${navanimation ? "fade-down" : ""}`}
         data-aos-once="true"
         data-aos-delay={`${navanimation ? "400" : "0"}`}
       >
         <svg
           id="sunmoon"
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="200"
           height="200"
@@ -164,6 +169,7 @@ const Links = function (props) {
           </g>
         </svg>
       </div>
+      </li>
     </ul>
   );
 };

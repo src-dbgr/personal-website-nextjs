@@ -43,7 +43,7 @@ const Experience = ({ jobs }) => {
         </div>
       </FadeInSection>
       <Link href="/about" className="btn center-btn">
-        more info
+        more info<span className="visually-hidden"> about my experience</span>
       </Link>
     </section>
   );
