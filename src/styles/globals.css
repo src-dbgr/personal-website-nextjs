@@ -2865,6 +2865,12 @@ body:not(.dark-theme) .tile-card-icon {
   color: var(--clr-dark);
   stroke: var(--clr-dark);
 }
+/* Playground icons get the same blue-grey as the filtered blog icons
+   (.blog-img below) in the light theme. */
+body:not(.dark-theme) .rounded-img-child .tile-card-icon {
+  color: rgb(76, 86, 90);
+  stroke: rgb(76, 86, 90);
+}
 
 @keyframes slideAndReturn {
   33% {
