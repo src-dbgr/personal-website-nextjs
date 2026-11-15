@@ -29,6 +29,12 @@ class MyDocument extends Document {
           />
           <link rel="icon" href="/favicon.ico" />
           <link rel="manifest" href="/manifest.json" />
+          <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="Samuel IT – Blog"
+            href="/rss.xml"
+          />
           {/* <style> is only valid in <noscript> inside <head>. */}
           <noscript>
             <style>

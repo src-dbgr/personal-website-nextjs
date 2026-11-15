@@ -43,6 +43,13 @@ const Seo = ({
     name: 'Samuel',
     url: siteUrl,
     jobTitle: 'Senior Software Developer',
+    knowsAbout: [
+      'Distributed Systems',
+      'Software Architecture',
+      'Application Security',
+      'AI Agents',
+      'Model Context Protocol',
+    ],
     sameAs: [
       'https://github.com/src-dbgr',
       'https://bsky.app/profile/devsam.bsky.social',
