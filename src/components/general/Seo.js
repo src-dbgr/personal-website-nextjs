@@ -28,6 +28,9 @@ const Seo = ({
     siteUrl,
     image,
     twitterUsername,
+    jobTitle,
+    knowsAbout,
+    sameAs,
   } = siteMetadata;
 
   const path = (asPath || '/').split(/[?#]/)[0].replace(/\/$/, '');
@@ -42,19 +45,9 @@ const Seo = ({
     '@id': `${siteUrl}/#person`,
     name: 'Samuel',
     url: siteUrl,
-    jobTitle: 'Senior Software Developer',
-    knowsAbout: [
-      'Distributed Systems',
-      'Software Architecture',
-      'Application Security',
-      'AI Agents',
-      'Model Context Protocol',
-    ],
-    sameAs: [
-      'https://github.com/src-dbgr',
-      'https://bsky.app/profile/devsam.bsky.social',
-      'https://x.com/smlblm',
-    ],
+    jobTitle,
+    knowsAbout,
+    sameAs,
   };
 
   let jsonLd = null;

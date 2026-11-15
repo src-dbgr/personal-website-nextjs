@@ -12,6 +12,29 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
+  // WebMCP tools for AI agents (src/lib/webmcp.js): the module is only
+  // downloaded where the browser supports WebMCP, once the page is idle.
+  useEffect(() => {
+    const modelContext = document.modelContext ?? navigator.modelContext;
+    if (!modelContext?.registerTool) return undefined;
+    const controller = new AbortController();
+    const start = () =>
+      import("../lib/webmcp")
+        .then(({ registerTools }) => {
+          if (!controller.signal.aborted)
+            registerTools(modelContext, controller.signal);
+        })
+        .catch(() => {});
+    const idle = window.requestIdleCallback
+      ? window.requestIdleCallback(start, { timeout: 3000 })
+      : window.setTimeout(start, 1500);
+    return () => {
+      controller.abort();
+      if (window.cancelIdleCallback) window.cancelIdleCallback(idle);
+      else window.clearTimeout(idle);
+    };
+  }, []);
+
   const devsamio =
     "" +
     "\n  ;                                                                                               " +

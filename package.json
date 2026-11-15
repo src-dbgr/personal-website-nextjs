@@ -5,7 +5,7 @@
   "scripts": {
     "analyze": "ANALYZE=true next build --webpack",
     "develop": "next dev",
-    "prebuild": "node scripts/generate-sitemap.mjs && node scripts/generate-rss.mjs",
+    "prebuild": "node scripts/generate-sitemap.mjs && node scripts/generate-rss.mjs && node scripts/generate-agent-data.mjs",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "next lint",

@@ -2,6 +2,8 @@ import bundleAnalyzer from '@next/bundle-analyzer';
 import { getCspContent } from './src/lib/csp.mjs';
 
 const isDev = process.env.NODE_ENV === 'development';
+const WEBMCP_ORIGIN_TRIAL =
+  "AqdG3sNelgx2pRAm+8v28szavpsmU6c/GLz0seeSO5dgHyBam7Hd1Rm6xVbYasjh2atiKc/rkWQ0cQTD2eRdFwsAAABJeyJvcmlnaW4iOiJodHRwczovL2RldnNhbS5pbzo0NDMiLCJmZWF0dXJlIjoiV2ViTUNQIiwiZXhwaXJ5IjoxODA2MzY0ODAwfQ==";
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -64,6 +66,13 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value: getCspContent({ dev: isDev }),
+          },
+          {
+            // Chrome origin trial for WebMCP (src/lib/webmcp.js), registered
+            // for https://devsam.io; expires 30 Mar 2027, renew it on
+            // developer.chrome.com/origintrials. Public, not a secret.
+            key: "Origin-Trial",
+            value: WEBMCP_ORIGIN_TRIAL,
           },
         ],
       },
