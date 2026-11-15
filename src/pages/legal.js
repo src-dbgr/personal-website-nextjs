@@ -8,7 +8,7 @@ const legal  = () => {
     <Layout darkFooter={true}>
       <Seo title="Legal Notice" />
       <section className="legal-page">
-        <Title title="Legal Notice" />
+        <Title as="h1" title="Legal Notice" />
         <div className="section-center">
           <h1>
             <span className="obf">Le</span>

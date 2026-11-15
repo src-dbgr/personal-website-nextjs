@@ -16,7 +16,7 @@ const Error = ({ cookies }) => {
       />
       <section className="section error-section">
         <div className="error-page">
-          <Title title="PAGE NOT FOUND" />
+          <Title as="h1" title="PAGE NOT FOUND" />
           <NotFoundIllustration />
           <Link href="/" className="btn center-btn">
             <span className="btn">back home</span>

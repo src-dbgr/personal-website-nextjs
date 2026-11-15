@@ -48,7 +48,7 @@ const BlogTemplate = ({ blog, cookies }) => {
         modifiedTime={updatedAt}
       />
       <section className="blog-template">
-        <Title title={title} />
+        <Title as="h1" title={title} />
         <FadeInSection>
           <div className="section-center">
             <article className="blog-content">

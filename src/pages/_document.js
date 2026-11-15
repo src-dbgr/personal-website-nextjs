@@ -1,5 +1,4 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
-import { getCspContent } from "../lib/csp";
 
 class MyDocument extends Document {
   render() {
@@ -7,7 +6,7 @@ class MyDocument extends Document {
       <Html className="theme-pending" lang="en">
         <Head>
           <style>{"html.theme-pending{visibility:hidden}"}</style>
-          <meta httpEquiv="Content-Security-Policy" content={getCspContent()} />
+          {/* The Content-Security-Policy is sent as a header (next.config.mjs). */}
           {/* Blocking, CSP 'self': set the theme class on <html> before first paint. */}
           <script src="/theme-init.js" />
           {/* Favicon and manifest links */}
@@ -30,10 +29,7 @@ class MyDocument extends Document {
           />
           <link rel="icon" href="/favicon.ico" />
           <link rel="manifest" href="/manifest.json" />
-        </Head>
-        <body>
-          {/* Blocking, CSP 'self': apply saved theme before Main paints. */}
-          <script src="/theme-init.js" />
+          {/* <style> is only valid in <noscript> inside <head>. */}
           <noscript>
             <style>
               {
@@ -41,6 +37,10 @@ class MyDocument extends Document {
               }
             </style>
           </noscript>
+        </Head>
+        <body>
+          {/* Blocking, CSP 'self': apply saved theme before Main paints. */}
+          <script src="/theme-init.js" />
           <Main />
           <NextScript />
         </body>

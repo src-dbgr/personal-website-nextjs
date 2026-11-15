@@ -1,4 +1,7 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
+import { getCspContent } from './src/lib/csp.mjs';
+
+const isDev = process.env.NODE_ENV === 'development';
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -57,6 +60,10 @@ const nextConfig = {
             key: "Permissions-Policy",
             value:
               "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: getCspContent({ dev: isDev }),
           },
         ],
       },

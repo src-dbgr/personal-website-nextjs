@@ -131,12 +131,12 @@ const Stations = ({ stations, categories }) => {
             {legendCollapsed ? (
               <>
                 <HiOutlineChevronDoubleDown className="timeline-flex-collapsible-icon" />
-                <h4>Stations Legend</h4>
+                <span className="flex-heading">Stations Legend</span>
               </>
             ) : (
               <>
                 <HiOutlineChevronDoubleUp className="timeline-flex-collapsible-icon" />
-                <h4 className="timeline-flex-title-dark">Stations Legend</h4>
+                <span className="flex-heading timeline-flex-title-dark">Stations Legend</span>
               </>
             )}
           </div>
@@ -177,7 +177,7 @@ const Stations = ({ stations, categories }) => {
       <section className="timeline">
         <div className="timeline-heading-wrapper">
           <div className="timeline-heading">
-            <time>STATIONS</time>
+            <span className="timeline-heading-label">STATIONS</span>
           </div>
         </div>
         <ul>

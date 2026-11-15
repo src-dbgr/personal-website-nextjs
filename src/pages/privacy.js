@@ -8,7 +8,7 @@ const privacy = () => {
     <Layout darkFooter={true}>
       <Seo title="Privacy Policy" />
       <section className="legal-page">
-        <Title title="Privacy Policy" />
+        <Title as="h1" title="Privacy Policy" />
         <div className="section-center privacy-policy">
           <div>
             <div className="ce_text privacy_item general_part1 block">

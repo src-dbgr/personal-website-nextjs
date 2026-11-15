@@ -122,7 +122,7 @@ const Links = function (props) {
 
       <li key="7" className="theme-toggle-item">
       <div
-        id="themeiconwrapper"
+        className="themeiconwrapper"
         onClick={handleThemeToggle}
         onKeyDown={(e) => e.key === "Enter" && handleThemeToggle()}
         role="button"
@@ -135,7 +135,7 @@ const Links = function (props) {
         data-aos-delay={`${navanimation ? "400" : "0"}`}
       >
         <svg
-          id="sunmoon"
+          className="sunmoon"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="200"
@@ -143,7 +143,7 @@ const Links = function (props) {
           viewBox="0 0 200 200"
         >
           <path
-            id="moon"
+            className="moon"
             d="M166.8,151.4C81.7,152.9,51.7,39.8,125.2,1.9,61.2-10.3-.7,38.3,0,100.6c-1.8,105,154.3,137.9,200,44.3A86.9,86.9,0,0,1,166.8,151.4Z"
             fill="#212121"
             opacity={`${
@@ -151,7 +151,7 @@ const Links = function (props) {
             }`}
           />
           <g
-            id="sun"
+            className="sun"
             fill="#565f61"
             opacity={`${
               useContext(GlobalStateContext).theme === "dark" ? "0" : "1"

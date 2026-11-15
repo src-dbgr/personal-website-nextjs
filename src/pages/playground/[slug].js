@@ -45,7 +45,7 @@ const ToolTemplate = ({ tool, cookies }) => {
     <Layout darkFooter={true} cookies={cookies}>
       <Seo title={tool.title} description={tool.desc} />
       <section className="backprop-template blog-template">
-        <Title title={tool.title} />
+        <Title as="h1" title={tool.title} />
         <FadeInSection>
           {/* No blog-content: article reading styles would break Backprop centering. */}
           <div className="section-center wide-container">

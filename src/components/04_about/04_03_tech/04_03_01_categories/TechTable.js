@@ -24,12 +24,12 @@ const TechTable = ({ caption, technologies }) => {
           {tableCollapsed ? (
             <>
               <HiOutlineChevronDoubleDown className="timeline-flex-collapsible-icon" />
-              <h4>{caption}</h4>
+              <span className="flex-heading">{caption}</span>
             </>
           ) : (
             <>
               <HiOutlineChevronDoubleUp className="timeline-flex-collapsible-icon" />
-              <h4 className="timeline-flex-title-dark">{caption}</h4>
+              <span className="flex-heading timeline-flex-title-dark">{caption}</span>
             </>
           )}
         </div>
