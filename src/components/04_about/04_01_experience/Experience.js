@@ -11,8 +11,6 @@ const Experience = ({ jobs }) => {
     return null;
   }
 
-  const { company, position, date, desc } = jobs[value];
-
   return (
     <section id="sctn_experience" className="section jobs">
       <Title title="Experience" />
@@ -29,17 +27,30 @@ const Experience = ({ jobs }) => {
               </button>
             ))}
           </div>
-          <article className="job-info shadow-box">
-            <h3>{position}</h3>
-            <h4>{company}</h4>
-            <p className="job-date">{date}</p>
-            {desc.map((description) => (
-              <div key={description.id} className="job-desc">
-                <VscCircleFilled className="job-icon" />
-                <p>{description.name}</p>
-              </div>
+          {/* All jobs share one grid cell, so the box is always as tall as
+              the longest one at the current width: switching does not make
+              the page jump. Only the selected one is visible (the others
+              are hidden from screen readers and keyboard too). */}
+          <div className="job-panels">
+            {jobs.map(({ company, position, date, desc }, index) => (
+              <article
+                key={index}
+                className={`job-info shadow-box ${
+                  index === value ? "" : "job-info-hidden"
+                }`}
+              >
+                <h3>{position}</h3>
+                <h4>{company}</h4>
+                <p className="job-date">{date}</p>
+                {desc.map((description) => (
+                  <div key={description.id} className="job-desc">
+                    <VscCircleFilled className="job-icon" />
+                    <p>{description.name}</p>
+                  </div>
+                ))}
+              </article>
             ))}
-          </article>
+          </div>
         </div>
       </FadeInSection>
       <Link href="/about" className="btn center-btn">

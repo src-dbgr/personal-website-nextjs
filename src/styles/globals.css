@@ -2517,6 +2517,19 @@ Jobs
   letter-spacing: var(--spacing-big);
 }
 
+/* Experience.js: all jobs in one grid cell, only the selected one visible. */
+.job-panels {
+  display: grid;
+  /* As wide as the container, like a block: no wider for long words. */
+  grid-template-columns: minmax(0, 1fr);
+}
+.job-panels > .job-info {
+  grid-area: 1 / 1;
+}
+.job-info-hidden {
+  visibility: hidden;
+}
+
 .job-info::before {
   content: "";
   position: absolute;
